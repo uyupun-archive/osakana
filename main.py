@@ -1,13 +1,24 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+from routes import ping
+from settings import get_settings
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+settings = get_settings()
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
+def init_app(app: FastAPI) -> FastAPI:
+    register_routes(app)
+    return app
+
+
+def register_routes(app: FastAPI) -> None:
+    app.include_router(ping.router)
+
+
+app = init_app(
+    FastAPI(
+        title=settings.PROJECT_NAME,
+        description=settings.DESCRIPTION
+    )
+)

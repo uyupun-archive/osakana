@@ -9,6 +9,7 @@ ja-ginza = "*"
 pymongo = "*"
 fastapi = "*"
 uvicorn = {extras = ["standard"]}
+pydantic = "*"
 
 [dev-packages]
 
