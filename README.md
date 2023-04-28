@@ -8,4 +8,5 @@
 $ pipenv install
 $ pipenv shell
 $ ptyhon labeling.py
+$ docker compose up -d
 ```
