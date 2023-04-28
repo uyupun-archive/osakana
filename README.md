@@ -1,6 +1,6 @@
 # Osakana
 
-- 自動タグ付け機能と検索機能を持つ「あとで読む」記事を管理できるWebアプリケーション
+- 自動タグ付け機能と検索機能を持つ「あとで読む」記事を管理できるWebアプリ
 
 ## 環境構築
 
@@ -10,6 +10,7 @@ $ pipenv shell
 $ ptyhon labeling.py
 $ docker compose up -d
 $ uvicorn main:app --reload
+$ open http://localhost:8000/redoc
 ```
 
 ## MongoDBの操作
