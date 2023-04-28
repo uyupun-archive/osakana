@@ -7,7 +7,7 @@
 ```bash
 $ pipenv install
 $ pipenv shell
-$ python labeling.py
+$ python labeler.py
 $ python scraper.py
 $ docker compose up -d
 $ uvicorn main:app --reload

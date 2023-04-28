@@ -8,16 +8,15 @@ response = requests.get(url)
 
 soup = BeautifulSoup(markup=response.content, features="html.parser")
 
+title = soup.find("title").text
+
 og_description = soup.find('meta', property='og:description')
 if og_description:
     og_description = og_description.get('content')
 
-# keywordsメタタグを検索
 keywords = soup.find('meta', attrs={'name': 'keywords'})
 if keywords:
     keywords = keywords.get('content')
-
-title = soup.find("title").text
 
 print("Title:", title)
 print("og:description:", og_description)
