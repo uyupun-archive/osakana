@@ -7,4 +7,5 @@
 ```bash
 $ pipenv install
 $ pipenv shell
+$ ptyhon labeling.py
 ```
