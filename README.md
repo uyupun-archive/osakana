@@ -8,4 +8,26 @@
 $ pipenv install
 $ pipenv shell
 $ ptyhon labeling.py
+$ docker compose up -d
+```
+
+## MongoDBの操作
+
+```bash
+$ brew tap mongodb/brew
+$ brew update
+$ brew install mongodb-community@6.0
+$ mongosh mongodb://localhost:27017 -u root -p password
+> show dbs
+> use my_db
+> show collections
+> db.my_collection.find({name: "John Doe"})
+[
+  {
+    _id: ObjectId("644b9fb9fd7ead2e1edf2154"),
+    name: 'John Doe',
+    age: 30,
+    city: 'New York'
+  }
+]
 ```
