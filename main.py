@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
-from routes import ping
+from routes import ping, list
 from settings import get_settings
 
 
@@ -13,7 +13,10 @@ def init_app(app: FastAPI) -> FastAPI:
 
 
 def register_routes(app: FastAPI) -> None:
-    app.include_router(ping.router)
+    router = APIRouter(prefix="/api")
+    router.include_router(router=ping.router)
+    router.include_router(router=list.router)
+    app.include_router(router=router)
 
 
 app = init_app(
