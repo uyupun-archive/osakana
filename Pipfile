@@ -10,6 +10,8 @@ pymongo = "*"
 fastapi = "*"
 uvicorn = {extras = ["standard"]}
 pydantic = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

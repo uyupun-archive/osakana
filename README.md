@@ -7,7 +7,8 @@
 ```bash
 $ pipenv install
 $ pipenv shell
-$ ptyhon labeling.py
+$ python labeler.py
+$ python scraper.py
 $ docker compose up -d
 $ uvicorn main:app --reload
 $ open http://localhost:8000/redoc
