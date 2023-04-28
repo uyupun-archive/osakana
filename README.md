@@ -9,6 +9,7 @@ $ pipenv install
 $ pipenv shell
 $ ptyhon labeling.py
 $ docker compose up -d
+$ uvicorn main:app --reload
 ```
 
 ## MongoDBの操作
