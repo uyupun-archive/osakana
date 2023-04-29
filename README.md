@@ -10,7 +10,7 @@ $ pipenv shell
 $ python labeler.py
 $ python scraper.py
 $ docker compose up -d
-$ uvicorn main:app --reload
+$ python main.py
 $ open http://localhost:8000/redoc
 ```
 

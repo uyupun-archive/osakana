@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI, APIRouter
 
 from api.routes import ping, list
@@ -23,3 +24,7 @@ app = init_app(
         description=settings.DESCRIPTION
     )
 )
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host=settings.ADDRESS, port=settings.PORT)
