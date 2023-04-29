@@ -5,6 +5,8 @@ from pydantic import BaseSettings, Field
 
 
 class Settings(BaseSettings):
+    DB_NAME: str
+    DB_COLLECTION_NAME: str
     ADDRESS: str = Field("localhost", env="DB_ADDRESS")
     PORT: int = Field(27017, env="DB_PORT")
     USERNAME: str = Field("root", env="DB_USERNAME")
