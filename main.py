@@ -27,4 +27,4 @@ app = init_app(
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=settings.ADDRESS, port=settings.PORT)
+    uvicorn.run("main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
