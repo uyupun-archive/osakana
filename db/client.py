@@ -1,11 +1,11 @@
 from pymongo import MongoClient
 
-from db.settings import get_settings
+from db.settings import Settings
 
 
 class DBClient():
     def __init__(self):
-        settings = get_settings()
+        settings = Settings.get_settings()
         address = settings.ADDRESS
         port = settings.PORT
         username = settings.USERNAME
