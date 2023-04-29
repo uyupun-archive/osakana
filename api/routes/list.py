@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from schemas.list import ListAddRequest, ListAddResponse, ListSearchResponse
+from api.schemas.list import ListAddRequest, ListAddResponse, ListSearchResponse
 from deps import get_db_client
 
 

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 
-from routes import ping, list
+from api.routes import ping, list
 from settings import get_settings
 
 
