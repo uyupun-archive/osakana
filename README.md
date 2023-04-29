@@ -5,6 +5,7 @@
 ## 環境構築
 
 ```bash
+$ cp .env.example .env
 $ pipenv install
 $ pipenv shell
 $ python labeler.py
