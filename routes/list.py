@@ -1,15 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
 from schemas.list import ListAddRequest, ListAddResponse, ListSearchResponse
+from deps import get_db_client
 
 
 router = APIRouter(prefix="/list", tags=["list"])
 
 
 @router.post("", response_model=ListAddResponse)
-def add(req: ListAddRequest):
+def add(req: ListAddRequest, db_client=Depends(get_db_client)):
     """
     リーディングリストに追加
     """
+    print(db_client)
     # TODO: URLからタイトルを取得する
     # TODO: URLからラベルを生成する
     # TODO: URL、タイトル、ラベル、ステータス、追加/更新日時をDBに保存する
