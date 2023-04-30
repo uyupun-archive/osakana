@@ -11,7 +11,6 @@ def init_app(settings: Settings=get_global_settings()) -> FastAPI:
         title=settings.PROJECT_NAME,
         description=settings.DESCRIPTION
     )
-    register_routes(app)
     return app
 
 
@@ -22,9 +21,13 @@ def register_routes(app: FastAPI) -> None:
     app.include_router(router=router)
 
 
+def run_app(app: FastAPI, settings: Settings=get_global_settings()) -> None:
+    uvicorn.run("main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
+
+
 app = init_app()
+register_routes(app=app)
 
 
 if __name__ == "__main__":
-    settings = get_global_settings()
-    uvicorn.run("main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
+    run_app(app=app)
