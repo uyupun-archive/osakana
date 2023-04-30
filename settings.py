@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import lru_cache
 
 from dotenv import load_dotenv
@@ -14,11 +15,11 @@ class Settings(BaseSettings):
     class Config:
         env_file: str = ".env"
 
-    def __init__(self, *args, **kwargs):
-        load_dotenv()
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        load_dotenv()
 
     @classmethod
-    @lru_cache
-    def get_settings(cls):
+    @lru_cache(maxsize=1)
+    def get_settings(cls) -> Settings:
         return Settings()
