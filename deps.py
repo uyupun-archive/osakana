@@ -1,12 +1,11 @@
 from settings import Settings
-from db.client import DBClient
+from db.repos.reading_list import ReadingListRepository
 
 
-def get_db_client() -> DBClient:
-    db_client = DBClient()
-    return db_client
-
-
-def get_settings() -> Settings:
+def get_global_settings() -> Settings:
     settings = Settings.get_settings()
     return settings
+
+
+def get_reading_list_repository() -> ReadingListRepository:
+    return ReadingListRepository.get_repository()
