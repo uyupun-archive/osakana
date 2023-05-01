@@ -7,7 +7,6 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingList, ReadingListStatus
 from db.repos.reading_list import ReadingListRepository
-from deps import get_reading_list_repository
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
@@ -16,7 +15,7 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 @router.post("", response_model=ReadingListAddResponse)
 def add(
     req: ReadingListAddRequest,
-    repo: ReadingListRepository=Depends(get_reading_list_repository)
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListAddResponse:
     """
     リーディングリストに追加
