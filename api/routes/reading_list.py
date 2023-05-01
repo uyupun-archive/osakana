@@ -1,22 +1,42 @@
 from fastapi import APIRouter, Depends
+from starlette.status import HTTP_400_BAD_REQUEST
 
-from api.schemas.reading_list import (ReadingListAddRequest, ReadingListAddResponse, ReadingListSearchResponse)
+from api.errors import APIError
+from api.schemas.reading_list import (
+    ReadingListAddRequest,
+    ReadingListAddResponse,
+    ReadingListSearchResponse
+)
+from db.models.reading_list import ReadingList, ReadingListStatus
 from db.repos.reading_list import ReadingListRepository
-from deps import get_reading_list_repository
+from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
 @router.post("", response_model=ReadingListAddResponse)
-def add(req: ReadingListAddRequest, repo: ReadingListRepository=Depends(get_reading_list_repository)) -> ReadingListAddResponse:
+def add(
+    req: ReadingListAddRequest,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
+    scraper: WebPageScraper=Depends(WebPageScraper.create_scraper)
+) -> ReadingListAddResponse:
     """
     リーディングリストに追加
     """
-    print(repo)
-    # TODO: URLからタイトルを取得する
-    # TODO: URLからラベルを生成する
-    # TODO: URL、タイトル、ラベル、ステータス、追加/更新日時をDBに保存する
+    try:
+        title = scraper.get_title()
+    except WebPageAccessError as e:
+        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e)
+    except TitleNotFoundError:
+        title = "No title"
+
+    reading_list = ReadingList(
+        url=req.url,
+        title=title,
+        status=ReadingListStatus.YET
+    )
+    repo.add(reading_list=reading_list)
     return ReadingListAddResponse(message=req.url)
 
 

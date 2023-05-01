@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel, AnyHttpUrl
+from pydantic import BaseModel, HttpUrl
 
 
 class ReadingListStatus(str, Enum):
@@ -9,6 +9,6 @@ class ReadingListStatus(str, Enum):
 
 
 class ReadingList(BaseModel):
-    url: AnyHttpUrl
+    url: HttpUrl
     title: str
     status: ReadingListStatus
