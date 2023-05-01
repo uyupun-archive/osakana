@@ -9,7 +9,7 @@ from db.settings import Settings
 from timezone import get_timezone
 
 
-class DBClient():
+class DBClient:
     def __init__(self, settings: Settings=Settings.get_settings()) -> None:
         address = settings.ADDRESS
         port = settings.PORT

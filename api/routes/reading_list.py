@@ -7,6 +7,7 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingList, ReadingListStatus
 from db.repos.reading_list import ReadingListRepository
+from scraper import WebPageScraper
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
@@ -15,20 +16,19 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 @router.post("", response_model=ReadingListAddResponse)
 def add(
     req: ReadingListAddRequest,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
+    scraper: WebPageScraper=Depends(WebPageScraper.create_scraper)
 ) -> ReadingListAddResponse:
     """
     リーディングリストに追加
     """
+    title = scraper.get_title()
     reading_list = ReadingList(
         url=req.url,
-        title="test",
+        title=title,
         status=ReadingListStatus.YET
     )
     repo.add(reading_list=reading_list)
-    # TODO: URLからタイトルを取得する
-    # TODO: URLからラベルを生成する
-    # TODO: URL、タイトル、ラベル、ステータス、追加/更新日時をDBに保存する
     return ReadingListAddResponse(message=req.url)
 
 
