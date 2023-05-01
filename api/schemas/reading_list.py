@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 
 class ReadingListAddRequest(BaseModel):
-    url: str
+    url: HttpUrl
 
 
 class ReadingListAddResponse(BaseModel):
