@@ -1,11 +1,15 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Type
 from zoneinfo import ZoneInfo
 
+import pymongo
+from bson import json_util
+from pydantic import BaseModel
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
 from db.settings import Settings
+from db.models.reading_list import ReadingListIndex
 from timezone import get_timezone
 
 
@@ -27,7 +31,17 @@ class DBClient:
 
     def _get_collection(self, collection_name: str) -> Collection:
         client = self._get_client()
-        return client[self._db_name][collection_name]
+        collection = client[self._db_name][collection_name]
+        return collection
+
+    def _create_index(self, collection: Collection, index: Type[BaseModel]) -> None:
+        _index = []
+        for name, field in index.__fields__.items():
+            if issubclass(field.type_, str):
+                _index.append((name, pymongo.TEXT))
+                continue
+            raise NotSupportedIndexTypeError
+        collection.create_index(_index)
 
     def add(
         self,
@@ -40,3 +54,13 @@ class DBClient:
         document["updated_at"] = datetime.now(tz=timezone)
         res = collection.insert_one(document)
         return str(res.inserted_id)
+
+    def search(self, collection_name: str, keyword: str, index: Type[ReadingListIndex]) -> list[dict]:
+        collection = self._get_collection(collection_name)
+        self._create_index(collection=collection, index=index)
+        reading_list = list(collection.find({"$text": {"$search": keyword}}))
+        return reading_list
+
+
+class NotSupportedIndexTypeError(Exception):
+    pass

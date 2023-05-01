@@ -11,5 +11,14 @@ class ReadingListAddResponse(BaseModel):
     title: str
 
 
+class ReadingListSearchRow(BaseModel):
+    id: str
+    url: HttpUrl
+    title: str
+    status: str
+    created_at: str
+    updated_at: str
+
+
 class ReadingListSearchResponse(BaseModel):
-    message: str
+    reading_list: list[ReadingListSearchRow]

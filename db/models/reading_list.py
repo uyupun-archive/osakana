@@ -12,3 +12,8 @@ class ReadingList(BaseModel):
     url: HttpUrl
     title: str
     status: ReadingListStatus
+
+
+class ReadingListIndex(BaseModel):
+    url: HttpUrl
+    title: str

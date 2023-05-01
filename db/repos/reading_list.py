@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from db.models.reading_list import ReadingList
+from db.models.reading_list import ReadingList, ReadingListIndex
 from db.repos.base import BaseRepository
 
 
@@ -11,6 +11,14 @@ class ReadingListRepository(BaseRepository):
             document=reading_list.dict()
         )
         return inserted_id
+
+    def search(self, keyword: str) -> list[dict]:
+        reading_list = self._db_client.search(
+            collection_name="reading_list",
+            keyword=keyword,
+            index=ReadingListIndex
+        )
+        return reading_list
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:

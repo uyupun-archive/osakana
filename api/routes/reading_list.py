@@ -5,6 +5,7 @@ from api.errors import APIError
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
+    ReadingListSearchRow,
     ReadingListSearchResponse
 )
 from db.models.reading_list import ReadingList, ReadingListStatus
@@ -45,9 +46,20 @@ def add(
 
 
 @router.get("", response_model=ReadingListSearchResponse)
-def search(label: str) -> ReadingListSearchResponse:
+def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
-    # TODO: ラベルで検索する
-    return ReadingListSearchResponse(message=label)
+    reading_list = repo.search(keyword=keyword)
+    rows = []
+    for row in reading_list:
+        rows.append(ReadingListSearchRow(
+            id=str(row["_id"]),
+            url=row["url"],
+            title=row["title"],
+            status=row["status"],
+            created_at=str(row["created_at"]),
+            updated_at=str(row["updated_at"])
+        ))
+    print(rows)
+    return ReadingListSearchResponse(reading_list=rows)
