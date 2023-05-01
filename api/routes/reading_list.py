@@ -36,8 +36,12 @@ def add(
         title=title,
         status=ReadingListStatus.YET
     )
-    repo.add(reading_list=reading_list)
-    return ReadingListAddResponse(message=req.url)
+    inserted_id = repo.add(reading_list=reading_list)
+    return ReadingListAddResponse(
+        inserted_id=inserted_id,
+        url=req.url,
+        title=title
+    )
 
 
 @router.get("", response_model=ReadingListSearchResponse)

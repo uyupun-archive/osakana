@@ -6,7 +6,9 @@ class ReadingListAddRequest(BaseModel):
 
 
 class ReadingListAddResponse(BaseModel):
-    message: str
+    inserted_id: str
+    url: HttpUrl
+    title: str
 
 
 class ReadingListSearchResponse(BaseModel):
