@@ -8,7 +8,7 @@ from api.schemas.reading_list import (
     ReadingListSearchRow,
     ReadingListSearchResponse
 )
-from db.models.reading_list import ReadingList, ReadingListStatus
+from db.models.reading_list import ReadingList
 from db.repos.reading_list import ReadingListRepository
 from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
@@ -35,7 +35,7 @@ def add(
     reading_list = ReadingList(
         url=req.url,
         title=title,
-        status=ReadingListStatus.YET
+        is_read=False
     )
     inserted_id = repo.add(reading_list=reading_list)
     return ReadingListAddResponse(
@@ -57,7 +57,7 @@ def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListReposito
             id=str(row["_id"]),
             url=row["url"],
             title=row["title"],
-            status=row["status"],
+            is_read=row["is_read"],
             created_at=str(row["created_at"]),
             updated_at=str(row["updated_at"])
         ))

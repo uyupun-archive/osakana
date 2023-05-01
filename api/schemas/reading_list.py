@@ -15,7 +15,7 @@ class ReadingListSearchRow(BaseModel):
     id: str
     url: HttpUrl
     title: str
-    status: str
+    is_read: bool
     created_at: str
     updated_at: str
 

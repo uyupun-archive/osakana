@@ -3,7 +3,6 @@ from typing import Any, Type
 from zoneinfo import ZoneInfo
 
 import pymongo
-from bson import json_util
 from pydantic import BaseModel
 from pymongo import MongoClient
 from pymongo.collection import Collection
