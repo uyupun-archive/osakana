@@ -12,15 +12,17 @@ class WebPageScraper:
         self.url = url
 
     def get_title(self) -> str:
-        response = requests.get(self.url)
-        if response.status_code != 200:
-            raise WebPageAccessError
+        try:
+            response = requests.get(self.url)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            raise WebPageAccessError(e)
 
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find("title")
         if title:
             return title.text
-        raise TitleNotFoundError
+        raise TitleNotFoundError("Title not found error")
 
     @classmethod
     def create_scraper(cls, req: ReadingListAddRequest=Body(...)) -> WebPageScraper:

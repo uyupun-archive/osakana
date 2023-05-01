@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from api.schemas.reading_list import (
     ReadingListAddRequest,
@@ -7,7 +7,7 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingList, ReadingListStatus
 from db.repos.reading_list import ReadingListRepository
-from scraper import WebPageScraper
+from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
@@ -22,7 +22,13 @@ def add(
     """
     リーディングリストに追加
     """
-    title = scraper.get_title()
+    try:
+        title = scraper.get_title()
+    except WebPageAccessError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except TitleNotFoundError:
+        title = "No title"
+
     reading_list = ReadingList(
         url=req.url,
         title=title,
