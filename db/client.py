@@ -1,9 +1,12 @@
+from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
 from db.settings import Settings
+from timezone import get_timezone
 
 
 class DBClient():
@@ -26,7 +29,14 @@ class DBClient():
         client = self._get_client()
         return client[self._db_name][collection_name]
 
-    def add(self, collection_name: str, document: dict[str, Any]) -> str:
+    def add(
+        self,
+        collection_name: str,
+        document: dict[str, Any],
+        timezone: ZoneInfo=get_timezone()
+    ) -> str:
         collection = self._get_collection(collection_name)
+        document["created_at"] = datetime.now(tz=timezone)
+        document["updated_at"] = datetime.now(tz=timezone)
         res = collection.insert_one(document)
         return str(res.inserted_id)

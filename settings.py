@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     ADDRESS: str = Field("localhost", env="APP_ADDRESS")
     PORT: int = Field("8000", env="APP_PORT")
+    TIMEZONE: str = Field("Asia/Tokyo", env="TIMEZONE")
 
     class Config:
         env_file: str = ".env"
