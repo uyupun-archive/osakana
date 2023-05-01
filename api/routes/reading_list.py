@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from starlette.status import HTTP_400_BAD_REQUEST
 
+from api.errors import APIError
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
@@ -25,7 +27,7 @@ def add(
     try:
         title = scraper.get_title()
     except WebPageAccessError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e)
     except TitleNotFoundError:
         title = "No title"
 
