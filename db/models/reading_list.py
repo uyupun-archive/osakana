@@ -26,14 +26,14 @@ class ReadingListRecord(BaseModel):
         return document
 
     @classmethod
-    def convert_instance(cls, document: dict[str, Any]) -> ReadingListRecord:
+    def convert_instance(cls, document: dict[str, Any], timezone: ZoneInfo=get_timezone()) -> ReadingListRecord:
         reading_list_record = ReadingListRecord(
             id=str(document["_id"]),
             url=document["url"],
             title=document["title"],
             is_read=document["is_read"],
-            created_at=document["created_at"],
-            updated_at=document["updated_at"]
+            created_at=document["created_at"].astimezone(tz=timezone),
+            updated_at=document["updated_at"].astimezone(tz=timezone)
         )
         return reading_list_record
 
