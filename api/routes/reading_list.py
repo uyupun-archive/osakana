@@ -7,6 +7,7 @@ from api.schemas.reading_list import (
     ReadingListAddResponse,
     ReadingListSearchResponse
 )
+from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
@@ -27,18 +28,25 @@ def add(
     try:
         title = scraper.get_title()
     except WebPageAccessError as e:
-        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e)
+        raise APIError(status_code=e.status_code, message=e.message)
     except TitleNotFoundError:
         title = "No title"
 
     new_reading_list_record = ReadingListRecord(url=req.url, title=title)
-    created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
+
+    try:
+        created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
+    except URLAlreadyExistsError as e:
+        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
 
     return ReadingListAddResponse(reading_list_record=created_reading_list_record)
 
 
 @router.get("", response_model=ReadingListSearchResponse)
-def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)) -> ReadingListSearchResponse:
+def search(
+    keyword: str,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """

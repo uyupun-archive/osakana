@@ -8,11 +8,15 @@
 $ cp .env.example .env
 $ pipenv install
 $ pipenv shell
-$ python labeler.py
-$ python scraper.py
+# MongoDBの起動
 $ docker compose up -d
+# FastAPIの起動
 $ python main.py
+# ReDocを開く
 $ open http://localhost:8000/redoc
+# DBマイグレーションの実行
+$ python -m db.migration.run 01 up
+$ python -m db.migration.run 01 down
 ```
 
 ## MongoDBの操作

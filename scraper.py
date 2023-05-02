@@ -3,6 +3,7 @@ from __future__ import annotations
 import requests
 from bs4 import BeautifulSoup
 from fastapi import Body
+from requests.exceptions import HTTPError
 
 from api.schemas.reading_list import ReadingListAddRequest
 
@@ -15,7 +16,7 @@ class WebPageScraper:
         try:
             response = requests.get(self.url)
             response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
+        except HTTPError as e:
             raise WebPageAccessError(e)
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -30,20 +31,12 @@ class WebPageScraper:
 
 
 class WebPageAccessError(Exception):
-    pass
+    def __init__(self, http_error: HTTPError) -> None:
+        super().__init__(str(http_error))
+
+        self.status_code = http_error.response.status_code
+        self.message = str(http_error)
 
 
 class TitleNotFoundError(Exception):
     pass
-
-
-# og_description = soup.find('meta', property='og:description')
-# if og_description:
-#     og_description = og_description.get('content')
-
-# keywords = soup.find('meta', attrs={'name': 'keywords'})
-# if keywords:
-#     keywords = keywords.get('content')
-
-# print("og:description:", og_description)
-# print("Keywords:", keywords)

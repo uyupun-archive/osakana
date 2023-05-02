@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from db.models.reading_list import ReadingListRecord, ReadingListIndex
+from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
 
@@ -19,8 +19,7 @@ class ReadingListRepository(BaseRepository):
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.find(
             collection_name="reading_list",
-            keyword=keyword,
-            index=ReadingListIndex
+            keyword=keyword
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list
