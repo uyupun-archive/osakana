@@ -28,7 +28,7 @@ def add(
     try:
         title = scraper.get_title()
     except WebPageAccessError as e:
-        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e)
+        raise APIError(status_code=e.status_code, message=e.message)
     except TitleNotFoundError:
         title = "No title"
 
@@ -37,13 +37,16 @@ def add(
     try:
         created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
     except UrlAlreadyExistsError as e:
-        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e)
+        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=str(e))
 
     return ReadingListAddResponse(reading_list_record=created_reading_list_record)
 
 
 @router.get("", response_model=ReadingListSearchResponse)
-def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)) -> ReadingListSearchResponse:
+def search(
+    keyword: str,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
