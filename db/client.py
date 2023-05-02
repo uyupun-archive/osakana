@@ -54,7 +54,7 @@ class DBClient:
         try:
             inserted_id = collection.insert_one(document).inserted_id
         except errors.DuplicateKeyError:
-            raise UrlAlreadyExistsError
+            raise URLAlreadyExistsError
 
         new_document = collection.find_one({"_id": inserted_id})
         if new_document is None:
@@ -75,5 +75,7 @@ class DocumentNotFoundError(Exception):
     pass
 
 
-class UrlAlreadyExistsError(Exception):
-    pass
+class URLAlreadyExistsError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "URL already exists"

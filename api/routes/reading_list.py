@@ -7,7 +7,7 @@ from api.schemas.reading_list import (
     ReadingListAddResponse,
     ReadingListSearchResponse
 )
-from db.client import UrlAlreadyExistsError
+from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
@@ -36,8 +36,8 @@ def add(
 
     try:
         created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
-    except UrlAlreadyExistsError as e:
-        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=str(e))
+    except URLAlreadyExistsError as e:
+        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
 
     return ReadingListAddResponse(reading_list_record=created_reading_list_record)
 
