@@ -1,4 +1,6 @@
+from __future__ import annotations
 from datetime import datetime
+from typing import Any
 from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, HttpUrl
@@ -17,6 +19,23 @@ class ReadingListRecord(BaseModel):
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.created_at = datetime.now(tz=timezone)
         self.updated_at = datetime.now(tz=timezone)
+
+    @classmethod
+    def convert_dict(cls, reading_list_record: ReadingListRecord) -> dict[str, Any]:
+        document = reading_list_record.dict()
+        return document
+
+    @classmethod
+    def convert_instance(cls, document: dict[str, Any]) -> ReadingListRecord:
+        reading_list_record = ReadingListRecord(
+            id=str(document["_id"]),
+            url=document["url"],
+            title=document["title"],
+            is_read=document["is_read"],
+            created_at=document["created_at"],
+            updated_at=document["updated_at"]
+        )
+        return reading_list_record
 
 
 class ReadingListIndex(BaseModel):
