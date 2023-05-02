@@ -23,4 +23,4 @@ class CreateReadingListCollectionMigrator(BaseMigrator):
         )
 
     def down(self) -> None:
-        pass
+        self._db_client.drop(collection_name=self._collection_name)

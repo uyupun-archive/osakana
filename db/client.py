@@ -60,6 +60,10 @@ class DBClient:
         documents = list(collection.find({"$text": {"$search": keyword}}))
         return documents
 
+    def drop(self, collection_name: str) -> None:
+        collection = self._get_collection(collection_name)
+        collection.drop()
+
 
 class DocumentNotFoundError(Exception):
     pass

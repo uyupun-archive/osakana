@@ -29,11 +29,9 @@ class MigratorExecutor:
         migrator = self._find_migrator(migration_id=migration_id)
 
         if action == "up":
-            print("up", migrator)
-            # migrator.up()
+            migrator.up()
         elif action == "down":
-            print("down", migrator)
-            # migrator.down()
+            migrator.down()
         else:
             raise InvalidActionError
 
