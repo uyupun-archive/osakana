@@ -11,8 +11,16 @@ class CreateReadingListCollectionMigrator(BaseMigrator):
         return self._name
 
     def up(self) -> None:
-        self._db_client.create_search_index(collection_name=self._collection_name, field_names=["url", "title"])
-        self._db_client.create_unique_constraints(collection_name=self._collection_name, field_names=["url"])
+        self._db_client.create_search_index(
+            collection_name=self._collection_name,
+            field_names=["url", "title"],
+            index_name="url_title_search_index"
+        )
+        self._db_client.create_unique_constraints(
+            collection_name=self._collection_name,
+            field_names=["url"],
+            index_name="url_unique_constraint"
+        )
 
     def down(self) -> None:
         pass

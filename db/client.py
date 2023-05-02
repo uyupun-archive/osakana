@@ -22,13 +22,30 @@ class DBClient:
         collection = self._client[self._db_name][collection_name]
         return collection
 
-    def create_unique_constraints(self, collection_name: str, field_names: list[str]):
+    def create_unique_constraints(
+        self,
+        collection_name: str,
+        field_names: list[str],
+        index_name: str
+    ) -> None:
         collection = self._get_collection(collection_name)
-        collection.create_index([(field_name, pymongo.ASCENDING) for field_name in field_names], unique=True)
+        collection.create_index(
+            [(field_name, pymongo.ASCENDING) for field_name in field_names],
+            name=index_name,
+            unique=True
+        )
 
-    def create_search_index(self, collection_name: str, field_names: list[str]) -> None:
+    def create_search_index(
+        self,
+        collection_name: str,
+        field_names: list[str],
+        index_name: str
+    ) -> None:
         collection = self._get_collection(collection_name)
-        collection.create_index([(field_name, pymongo.TEXT) for field_name in field_names])
+        collection.create_index(
+            [(field_name, pymongo.TEXT) for field_name in field_names],
+            name=index_name
+        )
 
     def create(self, collection_name: str, document: dict[str, Any]) -> dict[str, Any]:
         collection = self._get_collection(collection_name)
