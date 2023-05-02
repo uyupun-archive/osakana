@@ -1,6 +1,7 @@
 from typing import Any
 
 import pymongo
+from pymongo import errors
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
@@ -49,7 +50,12 @@ class DBClient:
 
     def create(self, collection_name: str, document: dict[str, Any]) -> dict[str, Any]:
         collection = self._get_collection(collection_name)
-        inserted_id = collection.insert_one(document).inserted_id
+
+        try:
+            inserted_id = collection.insert_one(document).inserted_id
+        except errors.DuplicateKeyError:
+            raise UrlAlreadyExistsError
+
         new_document = collection.find_one({"_id": inserted_id})
         if new_document is None:
             raise DocumentNotFoundError
@@ -66,4 +72,8 @@ class DBClient:
 
 
 class DocumentNotFoundError(Exception):
+    pass
+
+
+class UrlAlreadyExistsError(Exception):
     pass
