@@ -36,8 +36,3 @@ class ReadingListRecord(BaseModel):
             updated_at=document["updated_at"].astimezone(tz=timezone)
         )
         return reading_list_record
-
-
-class ReadingListIndex(BaseModel):
-    url: HttpUrl
-    title: str
