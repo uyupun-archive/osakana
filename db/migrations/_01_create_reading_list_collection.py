@@ -7,7 +7,7 @@ class CreateReadingListCollectionMigrator(BaseMigrator):
         self._name = "01_create_reading_list_collection"
         self._collection_name = "reading_list"
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self._name
 
     def up(self) -> None:

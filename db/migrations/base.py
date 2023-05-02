@@ -8,6 +8,10 @@ class BaseMigrator(ABC):
         self._db_client = db_client
 
     @abstractmethod
+    def get_name(self):
+        pass
+
+    @abstractmethod
     def up(self):
         pass
 
