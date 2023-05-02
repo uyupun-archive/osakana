@@ -1,15 +1,15 @@
 from pydantic import BaseModel, HttpUrl
 
+from db.models.reading_list import ReadingListRecord
+
 
 class ReadingListAddRequest(BaseModel):
     url: HttpUrl
 
 
 class ReadingListAddResponse(BaseModel):
-    inserted_id: str
-    url: HttpUrl
-    title: str
+    reading_list_record: ReadingListRecord
 
 
 class ReadingListSearchResponse(BaseModel):
-    message: str
+    reading_list: list[ReadingListRecord]

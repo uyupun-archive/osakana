@@ -7,7 +7,7 @@ from api.schemas.reading_list import (
     ReadingListAddResponse,
     ReadingListSearchResponse
 )
-from db.models.reading_list import ReadingList, ReadingListStatus
+from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
@@ -31,23 +31,16 @@ def add(
     except TitleNotFoundError:
         title = "No title"
 
-    reading_list = ReadingList(
-        url=req.url,
-        title=title,
-        status=ReadingListStatus.YET
-    )
-    inserted_id = repo.add(reading_list=reading_list)
-    return ReadingListAddResponse(
-        inserted_id=inserted_id,
-        url=req.url,
-        title=title
-    )
+    new_reading_list_record = ReadingListRecord(url=req.url, title=title)
+    created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
+
+    return ReadingListAddResponse(reading_list_record=created_reading_list_record)
 
 
 @router.get("", response_model=ReadingListSearchResponse)
-def search(label: str) -> ReadingListSearchResponse:
+def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
-    # TODO: ラベルで検索する
-    return ReadingListSearchResponse(message=label)
+    reading_list = repo.search(keyword=keyword)
+    return ReadingListSearchResponse(reading_list=reading_list)
