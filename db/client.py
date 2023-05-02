@@ -36,24 +36,27 @@ class DBClient:
             if issubclass(field.type_, str):
                 _index.append((name, pymongo.TEXT))
                 continue
-            raise NotSupportedIndexTypeError
+            raise IndexTypeNotSupportedError
         collection.create_index(_index)
 
-    def add(
-        self,
-        collection_name: str,
-        document: dict[str, Any],
-    ) -> str:
+    def create(self, collection_name: str, document: dict[str, Any]) -> dict[str, Any]:
         collection = self._get_collection(collection_name)
-        res = collection.insert_one(document)
-        return str(res.inserted_id)
+        inserted_id = collection.insert_one(document).inserted_id
+        new_document = collection.find_one({"_id": inserted_id})
+        if new_document is None:
+            raise DocumentNotFoundError
+        return new_document
 
-    def search(self, collection_name: str, keyword: str, index: Type[ReadingListIndex]) -> list[dict]:
+    def find(self, collection_name: str, keyword: str, index: Type[ReadingListIndex]) -> list[dict[str, Any]]:
         collection = self._get_collection(collection_name)
         self._create_index(collection=collection, index=index)
-        reading_list = list(collection.find({"$text": {"$search": keyword}}))
-        return reading_list
+        documents = list(collection.find({"$text": {"$search": keyword}}))
+        return documents
 
 
-class NotSupportedIndexTypeError(Exception):
+class IndexTypeNotSupportedError(Exception):
+    pass
+
+
+class DocumentNotFoundError(Exception):
     pass

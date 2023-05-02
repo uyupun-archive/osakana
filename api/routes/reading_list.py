@@ -5,7 +5,6 @@ from api.errors import APIError
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
-    ReadingListSearchRow,
     ReadingListSearchResponse
 )
 from db.models.reading_list import ReadingListRecord
@@ -32,18 +31,10 @@ def add(
     except TitleNotFoundError:
         title = "No title"
 
-    reading_list_record = ReadingListRecord(
-        url=req.url,
-        title=title,
-        is_read=False
-    )
-    inserted_id = repo.add(reading_list_record=reading_list_record)
+    new_reading_list_record = ReadingListRecord(url=req.url, title=title)
+    created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
 
-    return ReadingListAddResponse(
-        inserted_id=inserted_id,
-        url=req.url,
-        title=title
-    )
+    return ReadingListAddResponse(reading_list_record=created_reading_list_record)
 
 
 @router.get("", response_model=ReadingListSearchResponse)
@@ -52,15 +43,4 @@ def search(keyword: str, repo: ReadingListRepository=Depends(ReadingListReposito
     リーディングリストの検索
     """
     reading_list = repo.search(keyword=keyword)
-    rows = []
-    for row in reading_list:
-        rows.append(ReadingListSearchRow(
-            id=str(row["_id"]),
-            url=row["url"],
-            title=row["title"],
-            is_read=row["is_read"],
-            created_at=str(row["created_at"]),
-            updated_at=str(row["updated_at"])
-        ))
-    print(rows)
-    return ReadingListSearchResponse(reading_list=rows)
+    return ReadingListSearchResponse(reading_list=reading_list)
