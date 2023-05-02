@@ -1,7 +1,7 @@
 from pydantic import BaseModel, HttpUrl
 
 
-class ReadingList(BaseModel):
+class ReadingListRecord(BaseModel):
     url: HttpUrl
     title: str
     is_read: bool

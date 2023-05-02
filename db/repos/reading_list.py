@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from db.models.reading_list import ReadingList, ReadingListIndex
+from db.models.reading_list import ReadingListRecord, ReadingListIndex
 from db.repos.base import BaseRepository
 
 
 class ReadingListRepository(BaseRepository):
-    def add(self, reading_list: ReadingList) -> str:
+    def add(self, reading_list_record: ReadingListRecord) -> str:
         inserted_id = self._db_client.add(
             collection_name="reading_list",
-            document=reading_list.dict()
+            document=reading_list_record.dict()
         )
         return inserted_id
 

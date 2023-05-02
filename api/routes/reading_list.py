@@ -8,7 +8,7 @@ from api.schemas.reading_list import (
     ReadingListSearchRow,
     ReadingListSearchResponse
 )
-from db.models.reading_list import ReadingList
+from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
@@ -32,12 +32,13 @@ def add(
     except TitleNotFoundError:
         title = "No title"
 
-    reading_list = ReadingList(
+    reading_list_record = ReadingListRecord(
         url=req.url,
         title=title,
         is_read=False
     )
-    inserted_id = repo.add(reading_list=reading_list)
+    inserted_id = repo.add(reading_list_record=reading_list_record)
+
     return ReadingListAddResponse(
         inserted_id=inserted_id,
         url=req.url,
