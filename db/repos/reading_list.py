@@ -6,6 +6,7 @@ from db.repos.base import BaseRepository
 
 class ReadingListRepository(BaseRepository):
     def add(self, reading_list_record: ReadingListRecord) -> str:
+        reading_list_record.set_timestamps()
         inserted_id = self._db_client.add(
             collection_name="reading_list",
             document=reading_list_record.dict()

@@ -1,6 +1,4 @@
-from datetime import datetime
 from typing import Any, Type
-from zoneinfo import ZoneInfo
 
 import pymongo
 from pydantic import BaseModel
@@ -9,7 +7,6 @@ from pymongo.collection import Collection
 
 from db.settings import Settings
 from db.models.reading_list import ReadingListIndex
-from timezone import get_timezone
 
 
 class DBClient:
@@ -46,11 +43,8 @@ class DBClient:
         self,
         collection_name: str,
         document: dict[str, Any],
-        timezone: ZoneInfo=get_timezone()
     ) -> str:
         collection = self._get_collection(collection_name)
-        document["created_at"] = datetime.now(tz=timezone)
-        document["updated_at"] = datetime.now(tz=timezone)
         res = collection.insert_one(document)
         return str(res.inserted_id)
 
