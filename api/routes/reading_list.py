@@ -39,7 +39,7 @@ def add(
     except URLAlreadyExistsError as e:
         raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
 
-    return ReadingListAddResponse(reading_list_record=created_reading_list_record)
+    return created_reading_list_record
 
 
 @router.get("", response_model=ReadingListSearchResponse)
@@ -51,4 +51,4 @@ def search(
     リーディングリストの検索
     """
     reading_list = repo.search(keyword=keyword)
-    return ReadingListSearchResponse(reading_list=reading_list)
+    return reading_list
