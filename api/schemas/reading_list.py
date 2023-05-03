@@ -7,9 +7,7 @@ class ReadingListAddRequest(BaseModel):
     url: HttpUrl
 
 
-class ReadingListAddResponse(BaseModel):
-    reading_list_record: ReadingListRecord
+ReadingListAddResponse = ReadingListRecord
 
 
-class ReadingListSearchResponse(BaseModel):
-    reading_list: list[ReadingListRecord]
+ReadingListSearchResponse = list[ReadingListRecord]
