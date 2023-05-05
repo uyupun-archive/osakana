@@ -1,6 +1,5 @@
 from __future__ import annotations
 from datetime import datetime
-from typing import Any
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -17,6 +16,17 @@ class ReadingListRecord(BaseModel):
     is_read: bool = False
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
+
+    @classmethod
+    def get_name(cls) -> str:
+        return "reading_list"
+
+    @classmethod
+    def has_field(cls, field: str) -> str:
+        fields = list(cls.__fields__.keys())
+        if field in fields:
+            return field
+        raise FieldNotFoundError
 
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.created_at = datetime.now(tz=timezone)
@@ -45,3 +55,7 @@ class ReadingListRecord(BaseModel):
             updated_at=document["updated_at"]
         )
         return reading_list_record
+
+
+class FieldNotFoundError(Exception):
+    pass
