@@ -38,10 +38,10 @@ class DBClient:
             return True
         return False
 
-    def add_document(self, index_name: str, document: Document) -> None:
+    def add_document(self, index_name: str, key: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
 
-        documents = self.search_documents(index_name=index_name, attributes=["url"], keyword=f'"{document["url"]}"')
+        documents = self.search_documents(index_name=index_name, attributes=[key], keyword=f'"{document[key]}"')
         if documents:
             raise URLAlreadyExistsError
 

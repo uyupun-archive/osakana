@@ -12,6 +12,7 @@ class ReadingListRepository(BaseRepository):
         new_document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.add_document(
             index_name=self._collection_name,
+            key="url",
             document=new_document
         )
 
