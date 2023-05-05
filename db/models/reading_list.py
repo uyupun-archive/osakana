@@ -3,13 +3,14 @@ from datetime import datetime
 from uuid import uuid4, UUID
 from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import HttpUrl
 
 from db.client import Document
+from db.models.base import OsakanaBaseModel
 from lib.timezone import get_timezone
 
 
-class ReadingListRecord(BaseModel):
+class ReadingListRecord(OsakanaBaseModel):
     id: UUID = uuid4()
     url: HttpUrl
     title: str
@@ -20,13 +21,6 @@ class ReadingListRecord(BaseModel):
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
-
-    @classmethod
-    def has_field(cls, field: str) -> str:
-        fields = list(cls.__fields__.keys())
-        if field in fields:
-            return field
-        raise FieldNotFoundError
 
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.created_at = datetime.now(tz=timezone)
@@ -55,7 +49,3 @@ class ReadingListRecord(BaseModel):
             updated_at=document["updated_at"]
         )
         return reading_list_record
-
-
-class FieldNotFoundError(Exception):
-    pass
