@@ -12,6 +12,7 @@ class CreateReadingListCollectionMigrator(BaseMigrator):
 
     def up(self) -> None:
         self._db_client.create_index(index_name=self._index_name)
+        self._db_client.sortable(index_name=self._index_name, attribute="updated_at")
 
     def down(self) -> None:
         self._db_client.delete_index(index_name=self._index_name)

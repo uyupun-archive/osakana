@@ -29,7 +29,7 @@ class ReadingListRepository(BaseRepository):
     def random(self) -> ReadingListRecord:
         documents = self._db_client.search_documents(
             index_name=self._collection_name,
-            options={"attributesToRetrieve": ["id"], "limit": 1000}
+            options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
         random_id = random.choice(document_ids)
