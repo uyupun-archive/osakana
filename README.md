@@ -7,6 +7,8 @@
 ```bash
 $ cp .env.example .env
 $ pipenv install
+# cchardetのインストールに失敗する場合は以下を実行
+$ pip install --upgrade Cython
 $ pipenv shell
 # MeiliSearchの起動
 $ docker compose up -d

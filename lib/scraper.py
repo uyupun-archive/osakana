@@ -1,5 +1,7 @@
 from __future__ import annotations
+import sys
 
+import cchardet
 import requests
 from bs4 import BeautifulSoup
 from fastapi import Body
@@ -18,6 +20,9 @@ class WebPageScraper:
             response.raise_for_status()
         except HTTPError as e:
             raise WebPageAccessError(e)
+
+        encoding = cchardet.detect(response.content)["encoding"]
+        response.encoding = encoding
 
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find("title")
@@ -40,3 +45,10 @@ class WebPageAccessError(Exception):
 
 class TitleNotFoundError(Exception):
     pass
+
+
+if __name__ == "__main__":
+    url = sys.argv[1]
+    scraper = WebPageScraper(url=url)
+    title = scraper.get_title()
+    print(title)
