@@ -7,6 +7,8 @@
 ```bash
 $ cp .env.example .env
 $ pipenv install
+# cchardetのインストールに失敗する場合は以下を実行
+$ pip install --upgrade Cython
 $ pipenv shell
 # MeiliSearchの起動
 $ docker compose up -d
@@ -19,4 +21,6 @@ $ python -m db.migrations.run 01 down
 $ open http://localhost:8000/redoc
 # MeiliSearchを開く
 $ open http://localhost:7700/
+# タイトルを取得するスクレイピングの実行(検証用途)
+$ python -m lib.scraper <url>
 ```
