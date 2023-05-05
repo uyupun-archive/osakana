@@ -3,6 +3,7 @@ from time import sleep
 from typing import Any
 
 import meilisearch
+from meilisearch.models.task import TaskInfo
 
 from db.settings import Settings
 
@@ -36,12 +37,14 @@ class DBClient:
         if documents:
             raise URLAlreadyExistsError
 
-        task_id = index.add_documents(documents=[document]).task_uid
+        task = index.add_documents(documents=[document])
+        self._check_task_status(index_name=index_name, task=task)
 
+    def _check_task_status(self, index_name: str, task: TaskInfo) -> None:
         task_status = None
         while task_status != TaskStatus.Succeeded:
             sleep(1)
-            task_status = index.get_task(uid=task_id).status
+            task_status = self._client.index(uid=index_name).get_task(uid=task.task_uid).status
 
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError
