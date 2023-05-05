@@ -1,22 +1,26 @@
 from __future__ import annotations
 from datetime import datetime
-from typing import Any
-from uuid import uuid4
+from uuid import uuid4, UUID
 from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import HttpUrl
 
 from db.client import Document
+from db.models.base import OsakanaBaseModel
 from lib.timezone import get_timezone
 
 
-class ReadingListRecord(BaseModel):
-    id: str = str(uuid4())
+class ReadingListRecord(OsakanaBaseModel):
+    id: UUID = uuid4()
     url: HttpUrl
     title: str
     is_read: bool = False
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
+
+    @classmethod
+    def get_name(cls) -> str:
+        return "reading_list"
 
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.created_at = datetime.now(tz=timezone)
@@ -25,7 +29,7 @@ class ReadingListRecord(BaseModel):
     @classmethod
     def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:
         document = {
-            "id": reading_list_record.id,
+            "id": str(reading_list_record.id),
             "url": reading_list_record.url,
             "title": reading_list_record.title,
             "is_read": reading_list_record.is_read,

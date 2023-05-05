@@ -9,4 +9,4 @@ class BaseRepository(ABC):
 
     @abstractclassmethod
     def get_repository(cls):
-        pass
+        raise NotImplementedError()

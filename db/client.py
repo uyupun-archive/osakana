@@ -24,12 +24,12 @@ class DBClient:
 
     def create_index(self, index_name: str) -> None:
         if self._exists_index(index_name=index_name):
-            raise IndexAlreadyExistsError
+            raise IndexAlreadyExistsError()
         self._client.create_index(uid=index_name)
 
     def delete_index(self, index_name: str) -> None:
         if not self._exists_index(index_name=index_name):
-            raise IndexNotExistsError
+            raise IndexNotExistsError()
         self._client.delete_index(uid=index_name)
 
     def _exists_index(self, index_name: str) -> bool:
@@ -38,12 +38,19 @@ class DBClient:
             return True
         return False
 
+    def sortable(self, index_name: str, attribute: str) -> None:
+        self._client.index(uid=index_name).update_settings({"sortableAttributes": [attribute]})
+
     def add_document(self, index_name: str, key: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
 
-        documents = self.search_documents(index_name=index_name, attributes=[key], keyword=f'"{document[key]}"')
+        documents = self.search_documents(
+            index_name=index_name,
+            keyword=f'"{document[key]}"',
+            options={"attributesToHighlight": ["title", "url"]}
+        )
         if documents:
-            raise URLAlreadyExistsError
+            raise URLAlreadyExistsError()
 
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
@@ -55,10 +62,10 @@ class DBClient:
             task_status = self._client.index(uid=index_name).get_task(uid=task.task_uid).status
 
             if task_status == TaskStatus.Failed:
-                raise InvalidDocumentError
+                raise InvalidDocumentError()
 
-    def search_documents(self, index_name: str, attributes: list[str], keyword: str) -> Documents:
-        documents = self._client.index(uid=index_name).search(keyword, {"attributesToHighlight": attributes})
+    def search_documents(self, index_name: str, options: dict[str, Any], keyword: str="") -> Documents:
+        documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
         return documents["hits"]
 
 
