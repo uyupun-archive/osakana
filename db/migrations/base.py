@@ -9,12 +9,12 @@ class BaseMigrator(ABC):
 
     @abstractmethod
     def get_name(self):
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
-    def up(self):
-        pass
+    def up(self) -> None:
+        raise NotImplementedError()
 
     @abstractmethod
-    def down(self):
-        pass
+    def down(self) -> None:
+        raise NotImplementedError()
