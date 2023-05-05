@@ -8,17 +8,18 @@ class ReadingListRepository(BaseRepository):
     _collection_name = "reading_list"
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
-        reading_list_record.set_id()
         reading_list_record.set_timestamps()
         new_document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.add_document(
             index_name=self._collection_name,
+            key="url",
             document=new_document
         )
 
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.search_documents(
             index_name=self._collection_name,
+            attributes=["title", "url"],
             keyword=keyword
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
