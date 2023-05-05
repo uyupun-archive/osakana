@@ -17,6 +17,8 @@ $ open http://localhost:8000/redoc
 # DBマイグレーションの実行
 $ python -m db.migration.run 01 up
 $ python -m db.migration.run 01 down
+# MeiliSearchを開く
+$ open http://localhost:7700/
 ```
 
 ## MongoDBの操作
