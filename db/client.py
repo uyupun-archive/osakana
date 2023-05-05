@@ -31,7 +31,11 @@ class DBClient:
 
     def add_document(self, index_name: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
-        # TODO: URLのユニークチェック
+
+        documents = self.search_documents(index_name=index_name, attributes=["url"], keyword=document["url"])
+        if documents:
+            raise URLAlreadyExistsError
+
         task_id = index.add_documents(documents=[document]).task_uid
 
         task_status = None
