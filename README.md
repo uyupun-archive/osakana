@@ -15,8 +15,8 @@ $ python main.py
 # ReDocを開く
 $ open http://localhost:8000/redoc
 # DBマイグレーションの実行
-$ python -m db.migration.run 01 up
-$ python -m db.migration.run 01 down
+$ python -m db.migrations.run 01 up
+$ python -m db.migrations.run 01 down
 # MeiliSearchを開く
 $ open http://localhost:7700/
 ```
