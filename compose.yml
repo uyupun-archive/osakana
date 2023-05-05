@@ -3,10 +3,11 @@ services:
     image: mongo:latest
     container_name: mongodb
     ports:
-      - 27017:27017
+      - ${DB_PORT}:${DB_PORT}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./docker/mongodb/data:/data/db
+    command: --port ${DB_PORT}
     restart: always
