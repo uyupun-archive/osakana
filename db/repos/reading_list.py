@@ -8,7 +8,6 @@ class ReadingListRepository(BaseRepository):
     _collection_name = "reading_list"
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
-        reading_list_record.set_id()
         reading_list_record.set_timestamps()
         new_document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.add_document(

@@ -11,15 +11,12 @@ from lib.timezone import get_timezone
 
 
 class ReadingListRecord(BaseModel):
-    id: str | None = None
+    id: str = str(uuid4())
     url: HttpUrl
     title: str
     is_read: bool = False
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
-
-    def set_id(self) -> None:
-        self.id = str(uuid4())
 
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.created_at = datetime.now(tz=timezone)
