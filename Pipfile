@@ -6,12 +6,12 @@ name = "pypi"
 [packages]
 spacy = "*"
 ja-ginza = "*"
-pymongo = "*"
 fastapi = "*"
 uvicorn = {extras = ["standard"]}
 pydantic = "*"
 requests = "*"
 beautifulsoup4 = "*"
+meilisearch = "*"
 
 [dev-packages]
 
