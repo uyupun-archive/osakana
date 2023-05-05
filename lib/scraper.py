@@ -5,6 +5,7 @@ import cchardet
 import requests
 from bs4 import BeautifulSoup
 from fastapi import Body
+from requests import Response
 from requests.exceptions import HTTPError
 
 from api.schemas.reading_list import ReadingListAddRequest
@@ -15,20 +16,27 @@ class WebPageScraper:
         self.url = url
 
     def get_title(self) -> str:
-        try:
-            response = requests.get(self.url)
-            response.raise_for_status()
-        except HTTPError as e:
-            raise WebPageAccessError(e)
+        res = self._get()
 
-        encoding = cchardet.detect(response.content)["encoding"]
-        response.encoding = encoding
-
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(res.text, "html.parser")
         title = soup.find("title")
         if title:
             return title.text
         raise TitleNotFoundError("Title not found error")
+
+    def _get(self) -> Response:
+        try:
+            res = requests.get(url=self.url)
+            res.raise_for_status()
+        except HTTPError as e:
+            raise WebPageAccessError(e)
+        res = self._guess_encoding(res=res)
+        return res
+
+    def _guess_encoding(self, res: Response) -> Response:
+        encoding = cchardet.detect(res.content)["encoding"]
+        res.encoding = encoding
+        return res
 
     @classmethod
     def create_scraper(cls, req: ReadingListAddRequest=Body(...)) -> WebPageScraper:
