@@ -8,7 +8,8 @@ from settings import Settings
 def init_app(settings: Settings=Settings.get_settings()) -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
-        description=settings.DESCRIPTION
+        description=settings.DESCRIPTION,
+        version=settings.VERSION,
     )
     return app
 

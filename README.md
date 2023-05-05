@@ -1,6 +1,6 @@
 # Osakana
 
-- 自動タグ付け機能と検索機能を持つ「あとで読む」記事を管理できるWebアプリ
+- 「あとで読む」記事を管理できるWebアプリ
 
 ## 環境構築
 
@@ -12,11 +12,11 @@ $ pipenv shell
 $ docker compose up -d
 # FastAPIの起動
 $ python main.py
-# ReDocを開く
-$ open http://localhost:8000/redoc
 # DBマイグレーションの実行
 $ python -m db.migrations.run 01 up
 $ python -m db.migrations.run 01 down
+# ReDocを開く
+$ open http://localhost:8000/redoc
 # MeiliSearchを開く
 $ open http://localhost:7700/
 ```

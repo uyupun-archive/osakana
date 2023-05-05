@@ -10,7 +10,7 @@ from api.schemas.reading_list import (
 from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
-from scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
+from lib.scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])

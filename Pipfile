@@ -4,8 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-spacy = "*"
-ja-ginza = "*"
 fastapi = "*"
 uvicorn = {extras = ["standard"]}
 pydantic = "*"
