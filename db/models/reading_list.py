@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
-from uuid import uuid4
+from uuid import uuid4, UUID
 from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, HttpUrl
@@ -10,7 +10,7 @@ from lib.timezone import get_timezone
 
 
 class ReadingListRecord(BaseModel):
-    id: str = str(uuid4())
+    id: UUID = uuid4()
     url: HttpUrl
     title: str
     is_read: bool = False
@@ -35,7 +35,7 @@ class ReadingListRecord(BaseModel):
     @classmethod
     def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:
         document = {
-            "id": reading_list_record.id,
+            "id": str(reading_list_record.id),
             "url": reading_list_record.url,
             "title": reading_list_record.title,
             "is_read": reading_list_record.is_read,
