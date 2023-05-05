@@ -42,8 +42,8 @@ class DBClient:
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError
 
-    def search_documents(self, index_name: str, keyword: str) -> Documents:
-        documents = self._client.index(uid=index_name).search(keyword, {"attributesToHighlight": ["title", "url"]})
+    def search_documents(self, index_name: str, attributes: list[str], keyword: str) -> Documents:
+        documents = self._client.index(uid=index_name).search(keyword, {"attributesToHighlight": attributes})
         return documents["hits"]
 
 

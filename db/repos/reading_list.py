@@ -18,6 +18,7 @@ class ReadingListRepository(BaseRepository):
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.search_documents(
             index_name=self._collection_name,
+            attributes=["title", "url"],
             keyword=keyword
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
