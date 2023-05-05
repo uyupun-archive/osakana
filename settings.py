@@ -7,7 +7,7 @@ from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Osakana"
-    DESCRIPTION: str = "自動タグ付け機能と検索機能を持つ「あとで読む」記事を管理できるWebアプリ"
+    DESCRIPTION: str = "「あとで読む」記事を管理できるWebアプリ"
 
     ADDRESS: str = Field("localhost", env="APP_ADDRESS")
     PORT: int = Field("8000", env="APP_PORT")
