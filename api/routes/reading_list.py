@@ -35,11 +35,11 @@ def add(
     new_reading_list_record = ReadingListRecord(url=req.url, title=title)
 
     try:
-        created_reading_list_record = repo.add(reading_list_record=new_reading_list_record)
+        repo.add(reading_list_record=new_reading_list_record)
     except URLAlreadyExistsError as e:
         raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
 
-    return created_reading_list_record
+    return ReadingListAddResponse()
 
 
 @router.get("", response_model=ReadingListSearchResponse)

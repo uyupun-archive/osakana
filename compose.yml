@@ -1,17 +1,4 @@
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - ${DB_PORT}:${DB_PORT}
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - ./docker/mongodb/data:/data/db
-    command: --port ${DB_PORT}
-    restart: always
-
   meilisearch:
     image: getmeili/meilisearch:v1.1
     container_name: meilisearch

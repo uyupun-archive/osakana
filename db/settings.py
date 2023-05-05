@@ -6,11 +6,8 @@ from pydantic import BaseSettings, Field
 
 
 class Settings(BaseSettings):
-    DB_NAME: str
-    ADDRESS: str = Field("localhost", env="DB_ADDRESS")
-    PORT: int = Field(27017, env="DB_PORT")
-    USERNAME: str = Field("root", env="DB_USERNAME")
-    PASSWORD: str = Field("password", env="DB_PASSWORD")
+    ADDRESS: str = Field(default="localhost", env="MS_ADDRESS")
+    PORT: int = Field(default=7700, env="MS_PORT")
 
     class Config:
         env_file: str = ".env"
