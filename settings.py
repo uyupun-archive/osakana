@@ -8,6 +8,7 @@ from pydantic import BaseSettings, Field
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Osakana"
     DESCRIPTION: str = "「あとで読む」記事を管理できるWebアプリ"
+    VERSION: str = "v0.1.0"
 
     ADDRESS: str = Field("localhost", env="APP_ADDRESS")
     PORT: int = Field("8000", env="APP_PORT")
