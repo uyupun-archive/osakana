@@ -41,7 +41,11 @@ class DBClient:
     def add_document(self, index_name: str, key: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
 
-        documents = self.search_documents(index_name=index_name, attributes=[key], keyword=f'"{document[key]}"')
+        documents = self.search_documents(
+            index_name=index_name,
+            keyword=f'"{document[key]}"',
+            options={"attributesToHighlight": ["title", "url"]}
+        )
         if documents:
             raise URLAlreadyExistsError
 
@@ -57,8 +61,8 @@ class DBClient:
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError
 
-    def search_documents(self, index_name: str, attributes: list[str], keyword: str) -> Documents:
-        documents = self._client.index(uid=index_name).search(keyword, {"attributesToHighlight": attributes})
+    def search_documents(self, index_name: str, options: dict[str, Any], keyword: str="") -> Documents:
+        documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
         return documents["hits"]
 
 

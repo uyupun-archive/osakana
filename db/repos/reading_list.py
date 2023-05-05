@@ -1,4 +1,5 @@
 from __future__ import annotations
+import random
 
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
@@ -19,11 +20,26 @@ class ReadingListRepository(BaseRepository):
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.search_documents(
             index_name=self._collection_name,
-            attributes=["title", "url"],
-            keyword=keyword
+            keyword=keyword,
+            options={"attributesToHighlight": ["title", "url"]}
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list
+
+    def random(self) -> ReadingListRecord:
+        documents = self._db_client.search_documents(
+            index_name=self._collection_name,
+            options={"attributesToRetrieve": ["id"], "limit": 1000}
+        )
+        document_ids = [document["id"] for document in documents]
+        random_id = random.choice(document_ids)
+        document = self._db_client.search_documents(
+            index_name=self._collection_name,
+            keyword=random_id,
+            options={"attributesToHighlight": ["id"]}
+        )[0]
+        reading_list_record = ReadingListRecord.convert_instance(document=document)
+        return reading_list_record
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
