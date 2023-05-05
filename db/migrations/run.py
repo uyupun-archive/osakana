@@ -21,9 +21,9 @@ class MigratorExecutor:
         if len(migrator) == 1:
             return migrator[0]
         elif len(migrator) > 1:
-            raise MigratorDuplicateError
+            raise MigratorDuplicateError()
         else:
-            raise MigratorNotFoundError
+            raise MigratorNotFoundError()
 
     def exec_action(self, migration_id: str, action: str) -> None:
         migrator = self._find_migrator(migration_id=migration_id)
@@ -33,7 +33,7 @@ class MigratorExecutor:
         elif action == "down":
             migrator.down()
         else:
-            raise InvalidActionError
+            raise InvalidActionError()
 
 
 class InvalidArgumentCountError(Exception):
@@ -54,6 +54,6 @@ class MigratorDuplicateError(Exception):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        raise InvalidArgumentCountError
+        raise InvalidArgumentCountError()
     else:
         MigratorExecutor().exec_action(migration_id=sys.argv[1], action=sys.argv[2])
