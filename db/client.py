@@ -1,3 +1,4 @@
+from enum import Enum
 from time import sleep
 from typing import Any
 
@@ -34,16 +35,21 @@ class DBClient:
         task_id = index.add_documents(documents=[document]).task_uid
 
         task_status = None
-        while task_status != "succeeded":
+        while task_status != TaskStatus.Succeeded:
             sleep(1)
             task_status = index.get_task(uid=task_id).status
 
-            if task_status == "failed":
+            if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError
 
     def search_documents(self, index_name: str, keyword: str) -> Documents:
         documents = self._client.index(uid=index_name).search(keyword, {"attributesToHighlight": ["title", "url"]})
         return documents["hits"]
+
+
+class TaskStatus(str, Enum):
+    Succeeded = "succeeded"
+    Failed = "failed"
 
 
 class URLAlreadyExistsError(Exception):
