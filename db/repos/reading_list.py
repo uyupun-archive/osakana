@@ -4,6 +4,8 @@ import random
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
+from db.client import Document
+
 
 class ReadingListRepository(BaseRepository):
     _collection_name = "reading_list"
@@ -27,19 +29,28 @@ class ReadingListRepository(BaseRepository):
         return reading_list
 
     def random(self) -> ReadingListRecord:
+        document_ids = self._get_oldest_document_ids()
+        random_id = random.choice(document_ids)
+        document = self._get_random_document(random_id=random_id)
+
+        reading_list_record = ReadingListRecord.convert_instance(document=document)
+        return reading_list_record
+
+    def _get_oldest_document_ids(self) -> list[str]:
         documents = self._db_client.search_documents(
             index_name=self._collection_name,
             options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
-        random_id = random.choice(document_ids)
+        return document_ids
+
+    def _get_random_document(self, random_id: str) -> Document:
         document = self._db_client.search_documents(
             index_name=self._collection_name,
             keyword=random_id,
             options={"attributesToHighlight": ["id"]}
         )[0]
-        reading_list_record = ReadingListRecord.convert_instance(document=document)
-        return reading_list_record
+        return document
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
