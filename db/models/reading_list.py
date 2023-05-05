@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 from pydantic import BaseModel, HttpUrl
 
 from db.client import Document
-from timezone import get_timezone
+from lib.timezone import get_timezone
 
 
 class ReadingListRecord(BaseModel):
