@@ -8,20 +8,20 @@ from db.repos.base import BaseRepository
 
 
 class ReadingListRepository(BaseRepository):
-    _collection_name = "reading_list"
+    _index_name = "reading_list"
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.set_timestamps()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.add_document(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             key="url",
             document=document
         )
 
     def find(self, id: UUID) -> ReadingListRecord:
         documents = self._db_client.search_documents(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             keyword=str(id)
         )
         reading_list = ReadingListRecord.convert_instance(document=documents[0])
@@ -29,7 +29,7 @@ class ReadingListRepository(BaseRepository):
 
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.search_documents(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             keyword=keyword
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
@@ -45,7 +45,7 @@ class ReadingListRepository(BaseRepository):
 
     def _get_oldest_document_ids(self) -> list[str]:
         documents = self._db_client.search_documents(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
@@ -53,7 +53,7 @@ class ReadingListRepository(BaseRepository):
 
     def _get_random_document(self, random_id: str) -> Document:
         document = self._db_client.search_documents(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             keyword=random_id
         )[0]
         return document
@@ -63,7 +63,7 @@ class ReadingListRepository(BaseRepository):
         reading_list_record.is_read = True
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
-            index_name=self._collection_name,
+            index_name=self._index_name,
             document=document
         )
 
