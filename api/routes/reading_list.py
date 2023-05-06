@@ -6,7 +6,9 @@ from api.schemas.reading_list import (
     ReadingListSearchResponse,
     ReadingListFeelingResponse,
     ReadingListReadRequest,
-    ReadingListReadResponse
+    ReadingListReadResponse,
+    ReadingListUnreadRequest,
+    ReadingListUnreadResponse
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
@@ -81,3 +83,16 @@ def read(
     reading_list_record = repo.find(id=req.id)
     repo.read(reading_list_record=reading_list_record)
     return ReadingListReadResponse()
+
+
+@router.patch("/unread", response_model=ReadingListUnreadResponse)
+def unread(
+    req: ReadingListUnreadRequest,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListUnreadResponse:
+    """
+    未読にする
+    """
+    reading_list_record = repo.find(id=req.id)
+    repo.unread(reading_list_record=reading_list_record)
+    return ReadingListUnreadResponse()
