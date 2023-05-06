@@ -8,19 +8,21 @@ from bs4 import BeautifulSoup, Tag
 from fastapi import Body
 from requests import Response
 from requests.exceptions import HTTPError
-
-from api.schemas.reading_list import ReadingListAddRequest
+from typing import Type
 
 
 class WebPageScraper:
-    def __init__(self, url: str):
-        self._url = url
-        self._res = self._get()
-        self._soup = BeautifulSoup(self._res.text, "html.parser")
+    def __init__(self):
+        self._res = None
+        self._soup = None
 
-    def _get(self) -> Response:
+    def fetch(self, url: str, parser: Type[BeautifulSoup] = BeautifulSoup) -> None:
+        self._res = self._get(url=url)
+        self._soup = parser(self._res.text, "html.parser")
+
+    def _get(self, url: str) -> Response:
         try:
-            res = requests.get(url=self._url)
+            res = requests.get(url=url)
             res.raise_for_status()
         except HTTPError as e:
             raise WebPageAccessError(e)
@@ -33,6 +35,9 @@ class WebPageScraper:
         return res
 
     def get_title(self) -> str:
+        if not self._soup:
+            raise BeautifulSoupEmptyError()
+
         title = self._soup.find("title")
         if title:
             return title.text
@@ -48,14 +53,17 @@ class WebPageScraper:
         return favicon_link
 
     def _get_icon_element(self) -> Tag:
+        if not self._soup:
+            raise BeautifulSoupEmptyError()
+
         icon_link = self._soup.find("link", rel=["icon", "shortcut icon"])
         if (not icon_link) or (not isinstance(icon_link, Tag)) or (not icon_link.has_attr("href")):
             raise IconNotFoundError("Icon not found error")
         return icon_link
 
     @classmethod
-    def create_scraper(cls, req: ReadingListAddRequest=Body(...)) -> WebPageScraper:
-        return cls(url=req.url)
+    def create_scraper(cls) -> WebPageScraper:
+        return cls()
 
 
 class WebPageAccessError(Exception):
@@ -70,6 +78,10 @@ class TitleNotFoundError(Exception):
     pass
 
 
+class BeautifulSoupEmptyError(Exception):
+    pass
+
+
 class IconNotFoundError(Exception):
     pass
 
@@ -80,7 +92,8 @@ class FaviconNotFoundError(Exception):
 
 if __name__ == "__main__":
     url = sys.argv[1]
-    scraper = WebPageScraper(url=url)
+    scraper = WebPageScraper()
+    scraper.fetch(url=url)
 
     title = scraper.get_title()
     print("Title:", title)
