@@ -25,3 +25,11 @@ class ReadingListReadRequest(BaseModel):
 
 class ReadingListReadResponse(BaseModel):
     pass
+
+
+class ReadingListUnreadRequest(BaseModel):
+    id: UUID
+
+
+class ReadingListUnreadResponse(BaseModel):
+    pass
