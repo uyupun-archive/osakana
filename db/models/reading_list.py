@@ -25,8 +25,9 @@ class ReadingListRecord(OsakanaBaseModel):
         return "reading_list"
 
     def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
-        self.created_at = datetime.now(tz=timezone)
-        self.updated_at = datetime.now(tz=timezone)
+        now = datetime.now(tz=timezone)
+        self.created_at = now
+        self.updated_at = now
 
     def update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)
