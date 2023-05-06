@@ -13,7 +13,13 @@ from api.schemas.reading_list import (
 from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
-from lib.scraper import WebPageScraper, WebPageAccessError, TitleNotFoundError
+from lib.scraper import (
+    WebPageScraper,
+    WebPageAccessError,
+    TitleNotFoundError,
+    IconNotFoundError,
+    FaviconNotFoundError
+)
 
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
@@ -28,14 +34,19 @@ def add(
     """
     リーディングリストに追加
     """
+    scraper.fetch(url=req.url)
+
     try:
         title = scraper.get_title()
-    except WebPageAccessError as e:
-        raise APIError(status_code=e.status_code, message=e.message)
     except TitleNotFoundError:
         title = "No title"
 
-    new_reading_list_record = ReadingListRecord(url=req.url, title=title)
+    try:
+        thumb = scraper.get_favicon_link()
+    except (IconNotFoundError, FaviconNotFoundError):
+        thumb = None
+
+    new_reading_list_record = ReadingListRecord(url=req.url, title=title, thumb=thumb)
 
     try:
         repo.add(reading_list_record=new_reading_list_record)

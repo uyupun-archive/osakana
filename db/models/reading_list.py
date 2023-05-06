@@ -15,6 +15,7 @@ class ReadingListRecord(OsakanaBaseModel):
     url: HttpUrl
     title: str
     is_read: bool = False
+    thumb: HttpUrl | None = None
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
     read_at: datetime | None = None
@@ -41,6 +42,7 @@ class ReadingListRecord(OsakanaBaseModel):
             "url": reading_list_record.url,
             "title": reading_list_record.title,
             "is_read": reading_list_record.is_read,
+            "thumb": reading_list_record.thumb,
             "created_at": reading_list_record.created_at.isoformat(),
             "updated_at": reading_list_record.updated_at.isoformat(),
             "read_at": reading_list_record.read_at.isoformat() if reading_list_record.read_at else None
@@ -54,6 +56,7 @@ class ReadingListRecord(OsakanaBaseModel):
             url=document["url"],
             title=document["title"],
             is_read=document["is_read"],
+            thumb=document["thumb"],
             created_at=document["created_at"],
             updated_at=document["updated_at"],
             read_at=document["read_at"]
