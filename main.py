@@ -2,6 +2,9 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 
 from api.routes import ping, reading_list
+from db.client import URLAlreadyExistsError
+from errors.handlers import url_already_error_handler, web_page_access_error_handler
+from lib.scraper import WebPageAccessError
 from settings import Settings
 
 
@@ -21,12 +24,18 @@ def register_routes(app: FastAPI) -> None:
     app.include_router(router=router)
 
 
+def register_error_handlers(app: FastAPI) -> None:
+    app.add_exception_handler(URLAlreadyExistsError, url_already_error_handler)
+    app.add_exception_handler(WebPageAccessError, web_page_access_error_handler)
+
+
 def run_app(app: FastAPI, settings: Settings=Settings.get_settings()) -> None:
-    uvicorn.run("main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
+    uvicorn.run(app="main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
 
 
 app = init_app()
 register_routes(app=app)
+register_error_handlers(app=app)
 
 
 if __name__ == "__main__":
