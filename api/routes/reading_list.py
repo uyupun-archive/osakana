@@ -6,7 +6,9 @@ from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
     ReadingListSearchResponse,
-    ReadingListFeelingResponse
+    ReadingListFeelingResponse,
+    ReadingListReadRequest,
+    ReadingListReadResponse
 )
 from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
@@ -54,10 +56,26 @@ def search(
     reading_list = repo.search(keyword=keyword)
     return reading_list
 
+
 @router.get("/feeling", response_model=ReadingListFeelingResponse)
-def random(repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)) -> ReadingListFeelingResponse:
+def random(
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListFeelingResponse:
     """
     リーディングリストからランダムに１件取得
     """
     reading_list_record = repo.random()
     return reading_list_record
+
+
+@router.patch("/read", response_model=ReadingListReadResponse)
+def read(
+    req: ReadingListReadRequest,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListReadResponse:
+    """
+    既読にする
+    """
+    reading_list_record = repo.find(id=req.id)
+    repo.read(reading_list_record=reading_list_record)
+    return ReadingListReadResponse()
