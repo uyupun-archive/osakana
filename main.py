@@ -2,15 +2,7 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 
 from api.routes import ping, reading_list
-from db.client import URLAlreadyExistsError
-from db.repos.reading_list import ReadingListRecordAlreadyReadError, ReadingListRecordAlreadyUnreadError
-from errors.handlers import (
-    url_already_error_handler,
-    web_page_access_error_handler,
-    reading_list_record_already_read_error_handler,
-    reading_list_record_already_unread_error_handler
-)
-from lib.scraper import WebPageAccessError
+from errors.handlers import register_error_handlers
 from settings import Settings
 
 
@@ -28,13 +20,6 @@ def register_routes(app: FastAPI) -> None:
     router.include_router(router=ping.router)
     router.include_router(router=reading_list.router)
     app.include_router(router=router)
-
-
-def register_error_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(URLAlreadyExistsError, url_already_error_handler)
-    app.add_exception_handler(WebPageAccessError, web_page_access_error_handler)
-    app.add_exception_handler(ReadingListRecordAlreadyReadError, reading_list_record_already_read_error_handler)
-    app.add_exception_handler(ReadingListRecordAlreadyUnreadError, reading_list_record_already_unread_error_handler)
 
 
 def run_app(app: FastAPI, settings: Settings=Settings.get_settings()) -> None:
