@@ -55,6 +55,9 @@ class DBClient:
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
 
+    def update_document(self, index_name: str, document: Document) -> None:
+        self._client.index(uid=index_name).update_documents(documents=[document])
+
     def _check_task_status(self, index_name: str, task: TaskInfo) -> None:
         task_status = None
         while task_status != TaskStatus.Succeeded:
@@ -64,7 +67,7 @@ class DBClient:
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError()
 
-    def search_documents(self, index_name: str, options: dict[str, Any], keyword: str="") -> Documents:
+    def search_documents(self, index_name: str, options: dict={}, keyword: str="") -> Documents:
         documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
         return documents["hits"]
 

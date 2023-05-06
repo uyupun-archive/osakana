@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel, HttpUrl
 
 from db.models.reading_list import ReadingListRecord
@@ -15,3 +17,11 @@ ReadingListSearchResponse = list[ReadingListRecord]
 
 
 ReadingListFeelingResponse = ReadingListRecord
+
+
+class ReadingListReadRequest(BaseModel):
+    id: UUID
+
+
+class ReadingListReadResponse(BaseModel):
+    pass

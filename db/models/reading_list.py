@@ -26,6 +26,9 @@ class ReadingListRecord(OsakanaBaseModel):
         self.created_at = datetime.now(tz=timezone)
         self.updated_at = datetime.now(tz=timezone)
 
+    def update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
+        self.updated_at = datetime.now(tz=timezone)
+
     @classmethod
     def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:
         document = {
