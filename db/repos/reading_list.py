@@ -1,10 +1,12 @@
 from __future__ import annotations
 import random
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from db.client import Document
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
+from lib.timezone import get_timezone
 
 
 class ReadingListRepository(BaseRepository):
@@ -58,9 +60,9 @@ class ReadingListRepository(BaseRepository):
         )[0]
         return document
 
-    def read(self, reading_list_record: ReadingListRecord) -> None:
+    def read(self, reading_list_record: ReadingListRecord, timezone: ZoneInfo=get_timezone()) -> None:
         reading_list_record.update_timestamp()
-        reading_list_record.is_read = True
+        reading_list_record.read()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
             index_name=self._index_name,
