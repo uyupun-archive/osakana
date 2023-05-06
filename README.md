@@ -1,6 +1,8 @@
 # Osakana
 
-- 「あとで読む」記事を管理できるWebアプリ
+<img src="./images/logo.png" width="500">
+
+「あとで読む」記事を管理できるWebアプリ
 
 ## 環境構築
 
