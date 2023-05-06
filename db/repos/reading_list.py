@@ -20,11 +20,11 @@ class ReadingListRepository(BaseRepository):
         )
 
     def find(self, id: UUID) -> ReadingListRecord:
-        documents = self._db_client.search_documents(
+        document = self._db_client.get_document(
             index_name=self._index_name,
-            keyword=str(id)
+            id=id
         )
-        reading_list = ReadingListRecord.convert_instance(document=documents[0])
+        reading_list = ReadingListRecord.convert_instance(document=document)
         return reading_list
 
     def search(self, keyword: str) -> list[ReadingListRecord]:
@@ -60,7 +60,7 @@ class ReadingListRepository(BaseRepository):
 
     def read(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.update_timestamp()
-        reading_list_record.is_read = True
+        reading_list_record.read()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
             index_name=self._index_name,

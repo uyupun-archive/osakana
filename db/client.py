@@ -1,6 +1,7 @@
 from enum import Enum
 from time import sleep
 from typing import Any
+from uuid import UUID
 
 import meilisearch
 from meilisearch.models.task import TaskInfo
@@ -70,6 +71,10 @@ class DBClient:
     def search_documents(self, index_name: str, options: dict={}, keyword: str="") -> Documents:
         documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
         return documents["hits"]
+
+    def get_document(self, index_name: str, id: UUID) -> Document:
+        document = self._client.index(uid=index_name).get_document(document_id=str(id))
+        return dict(document)["_Document__doc"]
 
 
 class TaskStatus(str, Enum):
