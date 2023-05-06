@@ -5,7 +5,7 @@ from urllib.parse import urljoin
 import cchardet
 import requests
 from bs4 import BeautifulSoup, Tag
-from fastapi import Body
+from pydantic import HttpUrl, ValidationError, parse_obj_as
 from requests import Response
 from requests.exceptions import HTTPError
 from typing import Type
@@ -43,14 +43,19 @@ class WebPageScraper:
             return title.text
         raise TitleNotFoundError("Title not found error")
 
-    def get_favicon_link(self) -> str:
+    def get_favicon_link(self) -> HttpUrl:
         favicon_link = self._get_icon_element()["href"]
         if not isinstance(favicon_link, str):
             raise FaviconNotFoundError("Favicon not found error")
 
         if not favicon_link.startswith("http"):
             favicon_link = urljoin(url, favicon_link)
-        return favicon_link
+
+        try:
+            thumb = parse_obj_as(HttpUrl, favicon_link)
+        except ValidationError:
+            raise FaviconNotFoundError("Favicon not found error")
+        return thumb
 
     def _get_icon_element(self) -> Tag:
         if not self._soup:

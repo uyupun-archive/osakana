@@ -16,7 +16,9 @@ from db.repos.reading_list import ReadingListRepository
 from lib.scraper import (
     WebPageScraper,
     WebPageAccessError,
-    TitleNotFoundError
+    TitleNotFoundError,
+    IconNotFoundError,
+    FaviconNotFoundError
 )
 
 
@@ -39,7 +41,12 @@ def add(
     except TitleNotFoundError:
         title = "No title"
 
-    new_reading_list_record = ReadingListRecord(url=req.url, title=title)
+    try:
+        thumb = scraper.get_favicon_link()
+    except (IconNotFoundError, FaviconNotFoundError):
+        thumb = None
+
+    new_reading_list_record = ReadingListRecord(url=req.url, title=title, thumb=thumb)
 
     try:
         repo.add(reading_list_record=new_reading_list_record)
