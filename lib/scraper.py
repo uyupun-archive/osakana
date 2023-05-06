@@ -1,9 +1,10 @@
 from __future__ import annotations
 import sys
+from urllib.parse import urljoin
 
 import cchardet
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from fastapi import Body
 from requests import Response
 from requests.exceptions import HTTPError
@@ -13,20 +14,13 @@ from api.schemas.reading_list import ReadingListAddRequest
 
 class WebPageScraper:
     def __init__(self, url: str):
-        self.url = url
-
-    def get_title(self) -> str:
-        res = self._get()
-
-        soup = BeautifulSoup(res.text, "html.parser")
-        title = soup.find("title")
-        if title:
-            return title.text
-        raise TitleNotFoundError("Title not found error")
+        self._url = url
+        self._res = self._get()
+        self._soup = BeautifulSoup(self._res.text, "html.parser")
 
     def _get(self) -> Response:
         try:
-            res = requests.get(url=self.url)
+            res = requests.get(url=self._url)
             res.raise_for_status()
         except HTTPError as e:
             raise WebPageAccessError(e)
@@ -37,6 +31,27 @@ class WebPageScraper:
         encoding = cchardet.detect(res.content)["encoding"]
         res.encoding = encoding
         return res
+
+    def get_title(self) -> str:
+        title = self._soup.find("title")
+        if title:
+            return title.text
+        raise TitleNotFoundError("Title not found error")
+
+    def get_favicon_link(self) -> str:
+        favicon_link = self._get_icon_element()["href"]
+        if not isinstance(favicon_link, str):
+            raise FaviconNotFoundError("Favicon not found error")
+
+        if not favicon_link.startswith("http"):
+            favicon_link = urljoin(url, favicon_link)
+        return favicon_link
+
+    def _get_icon_element(self) -> Tag:
+        icon_link = self._soup.find("link", rel=["icon", "shortcut icon"])
+        if (not icon_link) or (not isinstance(icon_link, Tag)) or (not icon_link.has_attr("href")):
+            raise IconNotFoundError("Icon not found error")
+        return icon_link
 
     @classmethod
     def create_scraper(cls, req: ReadingListAddRequest=Body(...)) -> WebPageScraper:
@@ -55,8 +70,20 @@ class TitleNotFoundError(Exception):
     pass
 
 
+class IconNotFoundError(Exception):
+    pass
+
+
+class FaviconNotFoundError(Exception):
+    pass
+
+
 if __name__ == "__main__":
     url = sys.argv[1]
     scraper = WebPageScraper(url=url)
+
     title = scraper.get_title()
-    print(title)
+    print("Title:", title)
+
+    favicon_link = scraper.get_favicon_link()
+    print("Favicon link:", favicon_link)
