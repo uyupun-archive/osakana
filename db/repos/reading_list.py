@@ -60,6 +60,8 @@ class ReadingListRepository(BaseRepository):
 
     def read(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.update_timestamp()
+        if reading_list_record.is_read:
+            raise ReadingListRecordAlreadyReadError()
         reading_list_record.read()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
@@ -70,3 +72,9 @@ class ReadingListRepository(BaseRepository):
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
+
+
+class ReadingListRecordAlreadyReadError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Reading list record already read"
