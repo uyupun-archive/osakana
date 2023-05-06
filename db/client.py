@@ -5,6 +5,7 @@ from uuid import UUID
 
 import meilisearch
 from meilisearch.models.task import TaskInfo
+from meilisearch.errors import MeilisearchApiError
 
 from db.settings import Settings
 
@@ -56,8 +57,26 @@ class DBClient:
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
 
+    def get_document(self, index_name: str, id: UUID) -> Document:
+        try:
+            document = self._client.index(uid=index_name).get_document(document_id=str(id))
+        except MeilisearchApiError as e:
+            raise DocumentNotFoundError(e)
+        return dict(document)["_Document__doc"]
+
+    def search_documents(self, index_name: str, options: dict={}, keyword: str="") -> Documents:
+        documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
+        return documents["hits"]
+
     def update_document(self, index_name: str, document: Document) -> None:
         self._client.index(uid=index_name).update_documents(documents=[document])
+
+    def delete_document(self, index_name: str, id: UUID) -> None:
+        self.get_document(index_name=index_name, id=id)
+
+        index = self._client.index(uid=index_name)
+        task = index.delete_document(document_id=str(id))
+        self._check_task_status(index_name=index_name, task=task)
 
     def _check_task_status(self, index_name: str, task: TaskInfo) -> None:
         task_status = None
@@ -67,17 +86,6 @@ class DBClient:
 
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError()
-
-    def search_documents(self, index_name: str, options: dict={}, keyword: str="") -> Documents:
-        documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
-        return documents["hits"]
-
-    def get_document(self, index_name: str, id: UUID) -> Document:
-        document = self._client.index(uid=index_name).get_document(document_id=str(id))
-        return dict(document)["_Document__doc"]
-
-    def delete_document(self, index_name: str, id: UUID) -> None:
-        self._client.index(uid=index_name).delete_document(document_id=str(id))
 
 
 class TaskStatus(str, Enum):
@@ -101,6 +109,12 @@ class URLAlreadyExistsError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "URL already exists"
+
+
+class DocumentNotFoundError(Exception):
+    def __init__(self, e: MeilisearchApiError) -> None:
+        super().__init__()
+        self.message = e.message
 
 
 class InvalidDocumentError(Exception):
