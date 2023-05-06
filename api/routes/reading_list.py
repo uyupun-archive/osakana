@@ -8,7 +8,9 @@ from api.schemas.reading_list import (
     ReadingListReadRequest,
     ReadingListReadResponse,
     ReadingListUnreadRequest,
-    ReadingListUnreadResponse
+    ReadingListUnreadResponse,
+    ReadingListDeleteRequest,
+    ReadingListDeleteResponse
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
@@ -96,3 +98,15 @@ def unread(
     reading_list_record = repo.find(id=req.id)
     repo.unread(reading_list_record=reading_list_record)
     return ReadingListUnreadResponse()
+
+
+@router.delete("", response_model=ReadingListDeleteResponse)
+def delete(
+    req: ReadingListDeleteRequest,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListDeleteResponse:
+    """
+    リーディングリストから削除
+    """
+    repo.delete(id=req.id)
+    return ReadingListDeleteResponse()

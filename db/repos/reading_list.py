@@ -78,6 +78,12 @@ class ReadingListRepository(BaseRepository):
             document=document
         )
 
+    def delete(self, id: UUID) -> None:
+        self._db_client.delete_document(
+            index_name=self._index_name,
+            id=id
+        )
+
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()

@@ -76,6 +76,9 @@ class DBClient:
         document = self._client.index(uid=index_name).get_document(document_id=str(id))
         return dict(document)["_Document__doc"]
 
+    def delete_document(self, index_name: str, id: UUID) -> None:
+        self._client.index(uid=index_name).delete_document(document_id=str(id))
+
 
 class TaskStatus(str, Enum):
     Succeeded = "succeeded"
