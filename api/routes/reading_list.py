@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends
-from starlette.status import HTTP_400_BAD_REQUEST
 
-from api.errors import APIError
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
@@ -10,12 +8,10 @@ from api.schemas.reading_list import (
     ReadingListReadRequest,
     ReadingListReadResponse
 )
-from db.client import URLAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from lib.scraper import (
     WebPageScraper,
-    WebPageAccessError,
     TitleNotFoundError,
     IconNotFoundError,
     FaviconNotFoundError
@@ -47,12 +43,7 @@ def add(
         thumb = None
 
     new_reading_list_record = ReadingListRecord(url=req.url, title=title, thumb=thumb)
-
-    try:
-        repo.add(reading_list_record=new_reading_list_record)
-    except URLAlreadyExistsError as e:
-        raise APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
-
+    repo.add(reading_list_record=new_reading_list_record)
     return ReadingListAddResponse()
 
 
