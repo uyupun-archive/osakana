@@ -30,7 +30,7 @@ class DBClient:
 
     def delete_index(self, index_name: str) -> None:
         if not self._exists_index(index_name=index_name):
-            raise IndexNotExistsError()
+            raise IndexDoesNotExistsError()
         self._client.delete_index(uid=index_name)
 
     def _exists_index(self, index_name: str) -> bool:
@@ -88,7 +88,7 @@ class IndexAlreadyExistsError(Exception):
         self.message = "Index already exists"
 
 
-class IndexNotExistsError(Exception):
+class IndexDoesNotExistsError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Index not exists"
