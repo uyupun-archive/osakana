@@ -1,9 +1,17 @@
-// import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
+import { ping } from './api/ping'
 import LogoWithText from './assets/logo-with-text.svg'
 import './app.css'
 
 export function App() {
   // const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    (async () => {
+      const res = await ping();
+      console.log(res);
+    })();
+  }, []);
 
   return (
     <>
