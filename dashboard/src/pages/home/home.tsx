@@ -30,20 +30,31 @@ export function Home() {
         <thead>
 					<tr>
 						<th>Title</th>
+            <th>Created at</th>
+            <th>Read at</th>
 						<th>Action</th>
 					</tr>
 				</thead>
         <tbody>
-          <ReadingListRecord title="TestTestTestTestTest" url="https://preactjs.com/tutorial/" />
+          <ReadingListRecord
+            title="TestTestTestTestTest"
+            url="https://preactjs.com/tutorial/"
+            created_at={new Date()}
+            read_at={new Date()}
+          />
 				</tbody>
 			</table>
     </>
   )
 }
 
+type HttpUrl = string;
+
 interface ReadingListRecordProps {
   title: string;
-  url: string;
+  url: HttpUrl;
+  created_at: Date;
+  read_at: Date | null;
 };
 
 const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) => {
@@ -52,6 +63,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
       <td>
         <a href={props.url} target="_blank" rel="noreferrer noopener">{props.title}</a>
       </td>
+      <td>{props.created_at.toLocaleString()}</td>
+      <td>{props.read_at?.toLocaleString()}</td>
       <td>
         <button type="button" onClick={() => console.log("Read")}>Read</button>
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
