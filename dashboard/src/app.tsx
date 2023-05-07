@@ -1,29 +1,41 @@
-import { useState } from 'preact/hooks'
-import Logo from '/logo.svg'
+// import { useState } from 'preact/hooks'
+import LogoWithText from './assets/logo-with-text.svg'
 import './app.css'
 
 export function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   return (
     <>
+      <img src={LogoWithText} alt="Osakana logo with text" width="500" />
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={Logo} class="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
+				<input type="text" placeholder="https://..." />
+				<button type="button">Add</button>
+			</div>
+      <div>
+				<input type="text" placeholder="Keyword" />
+				<button type="button">Search</button>
+				<button type="button">Feeling</button>
+			</div>
+      <table border="1">
+        <thead>
+					<tr>
+						<th>Title</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="https://preactjs.com/tutorial/" target="_blank" rel="noreferrer noopener">TestTestTestTestTest</a>
+            </td>
+            <td>
+              <button type="button" onClick={() => console.log("Read")}>Read</button>
+              <button type="button" onClick={() => console.log("Delete")}>Delete</button>
+            </td>
+          </tr>
+				</tbody>
+			</table>
     </>
   )
 }
