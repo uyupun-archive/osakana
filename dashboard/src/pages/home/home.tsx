@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
-import { ping } from './api/ping'
-import LogoWithText from './assets/logo-with-text.svg'
-import './app.css'
+import { ping } from '../../api/ping'
+import LogoWithText from '../../assets/logo-with-text.svg'
+import './home.css'
 
-export function App() {
+export function Home() {
   // const [count, setCount] = useState(0)
 
   useEffect(() => {
