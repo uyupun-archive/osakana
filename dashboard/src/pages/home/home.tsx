@@ -1,8 +1,9 @@
-import { FunctionalComponent } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
-import { ping } from '../../api/ping'
-import LogoWithText from '../../assets/logo-with-text.svg'
-import './home.css'
+import { FunctionalComponent } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
+
+import { ping } from '../../api/ping';
+import LogoWithText from '../../assets/logo-with-text.svg';
+import './home.css';
 
 export function Home() {
   // const [count, setCount] = useState(0)
@@ -45,8 +46,8 @@ export function Home() {
 				</tbody>
 			</table>
     </>
-  )
-}
+  );
+};
 
 type HttpUrl = string;
 
