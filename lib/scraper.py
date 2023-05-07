@@ -17,12 +17,12 @@ class WebPageScraper:
         self._res = None
         self._soup = None
 
-    def fetch(self, url: str, parser: Type[BeautifulSoup] = BeautifulSoup) -> None:
+    def fetch(self, url: HttpUrl, parser: Type[BeautifulSoup] = BeautifulSoup) -> None:
         self._url = url
         self._res = self._get(url=url)
         self._soup = parser(self._res.text, "html.parser")
 
-    def _get(self, url: str) -> Response:
+    def _get(self, url: HttpUrl) -> Response:
         try:
             res = requests.get(url=url)
             res.raise_for_status()
@@ -103,7 +103,7 @@ class FaviconNotFoundError(Exception):
 if __name__ == "__main__":
     url = sys.argv[1]
     scraper = WebPageScraper()
-    scraper.fetch(url=url)
+    scraper.fetch(url=parse_obj_as(HttpUrl, url))
 
     title = scraper.get_title()
     print("Title:", title)
