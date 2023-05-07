@@ -3,8 +3,7 @@ import { h } from 'preact';
 const Home = () => {
 	return (
 		<div>
-			<img src="../../assets/logo.svg" alt="Osakana Logo" height="160" width="160" />
-			<h1>Osakana</h1>
+			<img src="../../assets/logo-with-text.svg" alt="Osakana logo with text" width="300" />
 			<section>
 				<Resource
 					title="Learn Preact"
