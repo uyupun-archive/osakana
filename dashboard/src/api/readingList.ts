@@ -1,9 +1,13 @@
 import axios from 'axios';
+import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
+import type { HttpUrl, ReadingList, ReadingListRecord } from '../types';
 import type { ReadingListRecordResponse } from './types';
-import type { ReadingList, ReadingListRecord } from '../types';
+import { isHttpUrl } from '../types';
 import { isValidReadingListRecordResponse } from './types';
-import { ReadingListRecordTypeError } from './errors';
+import { UnknownError, InvalidHttpUrlError } from '../errors';
+import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from './errors';
 
 export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
   const res = await axios.get('/api/reading-list', {
@@ -30,3 +34,25 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     readAt: record.read_at ? new Date(record.read_at) : null,
   };
 };
+
+export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
+  if (!isHttpUrl(url)) {
+    throw new InvalidHttpUrlError();
+  }
+  try {
+    await axios.post('/api/reading-list', {
+      url
+    });
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new UrlNotFoundError();
+      }
+      if (e.response?.status === StatusCodes.CONFLICT) {
+        throw new UrlAlreadyExistsError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+}

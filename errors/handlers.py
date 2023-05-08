@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from starlette.status import HTTP_400_BAD_REQUEST
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT
 
 from errors.responses import APIError
 from db.client import URLAlreadyExistsError, DocumentNotFoundError
@@ -8,7 +8,7 @@ from lib.scraper import WebPageAccessError
 
 
 async def url_already_exists_error_handler(req: Request, e: URLAlreadyExistsError):
-    return APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
+    return APIError(status_code=HTTP_409_CONFLICT, message=e.message)
 
 
 async def web_page_access_error_handler(req: Request, e: WebPageAccessError):
