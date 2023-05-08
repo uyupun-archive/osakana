@@ -53,11 +53,11 @@ export const Home = (): JSX.Element => {
                 id={readingListRecord.id}
                 url={readingListRecord.url}
                 title={readingListRecord.title}
-                is_read={readingListRecord.is_read}
+                isRead={readingListRecord.isRead}
                 thumb={readingListRecord.thumb}
-                created_at={readingListRecord.created_at}
-                updated_at={readingListRecord.updated_at}
-                read_at={readingListRecord.read_at}
+                createdAt={readingListRecord.createdAt}
+                updatedAt={readingListRecord.updatedAt}
+                readAt={readingListRecord.readAt}
               />
             ))}
           </tbody>
@@ -77,8 +77,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
       <td>
         <a href={props.url} target="_blank" rel="noreferrer noopener">{props.title}</a>
       </td>
-      <td>{props.created_at.toLocaleString()}</td>
-      <td>{props.read_at?.toLocaleString()}</td>
+      <td>{props.createdAt.toLocaleString()}</td>
+      <td>{props.readAt?.toLocaleString()}</td>
       <td>
         <button type="button" onClick={() => console.log("Read")}>Read</button>
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>

@@ -4,11 +4,11 @@ export interface ReadingListRecord {
   id: UUID;
   url: HttpUrl;
   title: string;
-  is_read: boolean;
+  isRead: boolean;
   thumb: HttpUrl | null;
-  created_at: Date;
-  updated_at: Date;
-  read_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  readAt: Date | null;
 };
 
 export type ReadingList = Array<ReadingListRecord>;
