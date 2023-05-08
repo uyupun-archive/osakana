@@ -35,20 +35,21 @@ export const Home = (): JSX.Element => {
 				<button type="button">Feeling</button>
 			</div>
       {readingList.length <= 0 && <p>No records</p>}
-      {readingList.length > 0 && readingList.map((readingListRecord: ReadingListRecordProps) => {
-        return (
-          <table border="1">
-            <thead>
-              <tr>
-                <th>Icon</th>
-                <th>Title</th>
-                <th>Created at</th>
-                <th>Read at</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
+      {readingList.length > 0 && (
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Icon</th>
+              <th>Title</th>
+              <th>Created at</th>
+              <th>Read at</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {readingList.map((readingListRecord: ReadingListRecordProps) => (
               <ReadingListRecord
+                key={readingListRecord.id}
                 id={readingListRecord.id}
                 url={readingListRecord.url}
                 title={readingListRecord.title}
@@ -58,10 +59,10 @@ export const Home = (): JSX.Element => {
                 updated_at={readingListRecord.updated_at}
                 read_at={readingListRecord.read_at}
               />
-            </tbody>
-          </table>
-        );
-      })}
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 };
