@@ -53,7 +53,7 @@ export const Home = (): JSX.Element => {
               <th>Icon</th>
               <th>Title</th>
               <th>Created at</th>
-              <th>Read at</th>
+              <th>Is read</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -89,7 +89,10 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
         <a href={props.url} target="_blank" rel="noreferrer noopener">{props.title}</a>
       </td>
       <td>{props.createdAt.toLocaleString()}</td>
-      <td>{props.readAt?.toLocaleString()}</td>
+      <td>
+        {props.isRead && <span>Read ({props.readAt?.toLocaleString()})</span>}
+        {!props.isRead && <span>Unread</span>}
+      </td>
       <td>
         <button type="button" onClick={() => console.log("Read")}>Read</button>
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
