@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-import { ReadingList, ReadingListRecord } from '../types';
+import { ReadingList, ReadingListRecord, ReadingListSearchParams } from '../types';
 
-export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
+export const searchReadingList = async (params: ReadingListSearchParams): Promise<ReadingList> => {
   const res = await axios.get('/api/reading-list', {
-    params: {
-      keyword
-    },
+    params: params
   });
   return _parseReadingList(res.data);
 };

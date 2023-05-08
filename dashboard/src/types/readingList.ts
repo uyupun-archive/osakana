@@ -1,5 +1,9 @@
 import { UUID, HttpUrl } from "./common";
 
+export interface ReadingListSearchParams {
+  keyword: string;
+}
+
 export interface ReadingListRecord {
   id: UUID;
   url: HttpUrl;

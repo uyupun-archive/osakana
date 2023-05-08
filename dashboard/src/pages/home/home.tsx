@@ -18,7 +18,7 @@ export const Home = (): JSX.Element => {
 
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
-    const res = await searchReadingList(keyword);
+    const res = await searchReadingList({keyword: keyword});
     setReadingList(res);
   };
 
