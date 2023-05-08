@@ -2,12 +2,12 @@ import axios from 'axios';
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
-import type { HttpUrl, ReadingList, ReadingListRecord } from '../types';
-import type { ReadingListRecordResponse } from './types';
-import { isHttpUrl } from '../types';
-import { isValidReadingListRecordResponse } from './types';
-import { UnknownError, InvalidHttpUrlError } from '../errors';
-import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from './errors';
+import type { HttpUrl, ReadingList, ReadingListRecord } from '../../types';
+import type { ReadingListRecordResponse } from '../types';
+import { isHttpUrl } from '../../types';
+import { isValidReadingListRecordResponse } from '../types';
+import { UnknownError, InvalidHttpUrlError } from '../../errors';
+import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../errors';
 
 export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
   if (!isHttpUrl(url)) {

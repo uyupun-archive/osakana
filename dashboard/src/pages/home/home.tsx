@@ -1,7 +1,7 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { addReadingListRecord, searchReadingList, fetchFeelingReadingListRecord } from '../../api/readingList';
+import { addReadingListRecord, searchReadingList, fetchFeelingReadingListRecord } from '../../api/endpoints/readingList';
 import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../../api/errors';
