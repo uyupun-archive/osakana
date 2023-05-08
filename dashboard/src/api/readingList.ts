@@ -30,3 +30,9 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     readAt: record.read_at ? new Date(record.read_at) : null,
   };
 };
+
+export const addReadingListRecord = async (url: string): Promise<void> => {
+  const res = await axios.post('/api/reading-list', {
+    url
+  });
+}

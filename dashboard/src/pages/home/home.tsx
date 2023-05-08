@@ -1,7 +1,7 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { searchReadingList } from '../../api/readingList';
+import { addReadingListRecord, searchReadingList } from '../../api/readingList';
 import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { ReadingListRecordTypeError } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
@@ -9,9 +9,20 @@ import NoImage from '../../assets/no-image.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
+  const [inputAddForm, setInputAddForm] = useState<string>('');
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [readingList, setReadingList] = useState<ReadingList>([]);
   const [readingListErrorMessage, setReadingListErrorMessage] = useState<string | null>(null);
+
+  const handleInputAddForm = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    setInputAddForm(target.value);
+  };
+
+  const handleAddReadingListRecord = async (): Promise<void> => {
+    console.log(inputAddForm);
+    const res = await addReadingListRecord(inputAddForm);
+  };
 
   const handleInputSearchForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -37,8 +48,8 @@ export const Home = (): JSX.Element => {
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
       <div>
-				<input type="text" placeholder="https://..." />
-				<button type="button">Add</button>
+				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
+				<button type="button" onClick={handleAddReadingListRecord}>Add</button>
 			</div>
       <div>
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
