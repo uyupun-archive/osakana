@@ -2,7 +2,7 @@ import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
 import { searchReadingList } from '../../api/readingList';
-import { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
+import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';

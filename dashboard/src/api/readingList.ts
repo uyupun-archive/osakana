@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { ReadingList, ReadingListRecord, ReadingListSearchParams } from '../types';
+import type { ReadingList, ReadingListRecord, ReadingListSearchParams } from '../types';
 
 export const searchReadingList = async (params: ReadingListSearchParams): Promise<ReadingList> => {
   const res = await axios.get('/api/reading-list', {

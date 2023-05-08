@@ -1,4 +1,4 @@
-import { UUID, HttpUrl } from "./common";
+import type { UUID, HttpUrl } from "./common";
 
 export interface ReadingListSearchParams {
   keyword: string;
