@@ -1,15 +1,16 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { searchReadingList } from '../../api/readingList';
+import { searchReadingList, ReadingListRecordTypeError } from '../../api/readingList';
 import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
-  const [inputSearchForm, setInputSearchForm] = useState('');
+  const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [readingList, setReadingList] = useState<ReadingList>([]);
+  const [readingListErrorMessage, setReadingListErrorMessage] = useState<string | null>(null);
 
   const handleInputSearchForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -18,8 +19,17 @@ export const Home = (): JSX.Element => {
 
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
-    const res = await searchReadingList({keyword: keyword});
-    setReadingList(res);
+    try {
+      const res = await searchReadingList({keyword: keyword});
+      setReadingListErrorMessage(null);
+      setReadingList(res);
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordTypeError) {
+        setReadingListErrorMessage(e.message);
+        return;
+      }
+      setReadingListErrorMessage('Unknown error');
+    }
   };
 
   return (
@@ -34,6 +44,7 @@ export const Home = (): JSX.Element => {
 				<button type="button" onClick={handleSearchReadingList}>Search</button>
 				<button type="button">Feeling</button>
 			</div>
+      {readingListErrorMessage && <p>{readingListErrorMessage}</p>}
       {readingList.length <= 0 && <p>No records</p>}
       {readingList.length > 0 && (
         <table border="1">

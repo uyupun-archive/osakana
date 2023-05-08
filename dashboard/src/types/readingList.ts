@@ -1,4 +1,4 @@
-import type { Uuid, HttpUrl } from "./common";
+import type { Uuid, HttpUrl } from './common';
 import { isUuid4, isHttpUrl, isIso8601 } from '../types/common';
 
 export interface ReadingListSearchParams {

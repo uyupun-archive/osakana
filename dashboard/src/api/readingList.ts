@@ -11,7 +11,7 @@ export const searchReadingList = async (params: ReadingListSearchParams): Promis
   if (Array.isArray(res.data) && res.data.every(isValidReadingListRecordResponse)) {
     return res.data.map(_parseReadingListRecord);
   }
-  throw new Error('Invalid response');
+  throw new ReadingListRecordTypeError();
 };
 
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
@@ -24,5 +24,14 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
     readAt: record.read_at ? new Date(record.read_at) : null,
+  };
+};
+
+export class ReadingListRecordTypeError extends Error {
+  constructor() {
+    const message = "ReadingListRecord type error";
+    super(message);
+    this.name = 'ReadingListRecordTypeError';
+    Object.setPrototypeOf(this, new.target.prototype);
   };
 };
