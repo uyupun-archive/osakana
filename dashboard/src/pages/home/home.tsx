@@ -16,7 +16,7 @@ export const Home = (): JSX.Element => {
     setInputSearchForm(target.value);
   };
 
-  const searchReadingListRecord = async (): Promise<void> => {
+  const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
     const res = await searchReadingList(keyword);
     setReadingList(res);
@@ -31,7 +31,7 @@ export const Home = (): JSX.Element => {
 			</div>
       <div>
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
-				<button type="button" onClick={searchReadingListRecord}>Search</button>
+				<button type="button" onClick={handleSearchReadingList}>Search</button>
 				<button type="button">Feeling</button>
 			</div>
       {readingList.length <= 0 && <p>No records</p>}
