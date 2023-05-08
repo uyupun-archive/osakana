@@ -1,8 +1,9 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { searchReadingList, ReadingListRecordTypeError } from '../../api/readingList';
-import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
+import { searchReadingList } from '../../api/readingList';
+import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
+import { ReadingListRecordTypeError } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';
@@ -20,7 +21,7 @@ export const Home = (): JSX.Element => {
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
     try {
-      const res = await searchReadingList({keyword: keyword});
+      const res = await searchReadingList(keyword);
       setReadingListErrorMessage(null);
       setReadingList(res);
     } catch (e: unknown) {
