@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import type { PingResponse } from './types';
 import { isValidPingResponse } from './types';
+import { PingTypeError } from './errors';
 
 export const ping = async (): Promise<PingResponse> => {
   const res = await axios.get('/api/ping');
@@ -9,13 +10,4 @@ export const ping = async (): Promise<PingResponse> => {
     return res.data;
   }
   throw new PingTypeError();
-};
-
-class PingTypeError extends Error {
-  constructor() {
-    const message = 'Ping type error';
-    super(message);
-    this.name = 'PingTypeError';
-    Object.setPrototypeOf(this, new.target.prototype);
-  };
 };
