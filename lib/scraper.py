@@ -13,14 +13,16 @@ from typing import Type
 
 class WebPageScraper:
     def __init__(self):
+        self._url = None
         self._res = None
         self._soup = None
 
-    def fetch(self, url: str, parser: Type[BeautifulSoup] = BeautifulSoup) -> None:
+    def fetch(self, url: HttpUrl, parser: Type[BeautifulSoup] = BeautifulSoup) -> None:
+        self._url = url
         self._res = self._get(url=url)
         self._soup = parser(self._res.text, "html.parser")
 
-    def _get(self, url: str) -> Response:
+    def _get(self, url: HttpUrl) -> Response:
         try:
             res = requests.get(url=url)
             res.raise_for_status()
@@ -36,7 +38,7 @@ class WebPageScraper:
 
     def get_title(self) -> str:
         if not self._soup:
-            raise BeautifulSoupEmptyError()
+            raise FetchMethodNotCalledError()
 
         title = self._soup.find("title")
         if title:
@@ -44,12 +46,15 @@ class WebPageScraper:
         raise TitleNotFoundError("Title not found error")
 
     def get_favicon_link(self) -> HttpUrl:
+        if not self._url:
+            raise FetchMethodNotCalledError()
+
         favicon_link = self._get_icon_element()["href"]
         if not isinstance(favicon_link, str):
             raise FaviconNotFoundError("Favicon not found error")
 
         if not favicon_link.startswith("http"):
-            favicon_link = urljoin(url, favicon_link)
+            favicon_link = urljoin(self._url, favicon_link)
 
         try:
             thumb = parse_obj_as(HttpUrl, favicon_link)
@@ -59,7 +64,7 @@ class WebPageScraper:
 
     def _get_icon_element(self) -> Tag:
         if not self._soup:
-            raise BeautifulSoupEmptyError()
+            raise FetchMethodNotCalledError()
 
         icon_link = self._soup.find("link", rel=["icon", "shortcut icon"])
         if (not icon_link) or (not isinstance(icon_link, Tag)) or (not icon_link.has_attr("href")):
@@ -83,7 +88,7 @@ class TitleNotFoundError(Exception):
     pass
 
 
-class BeautifulSoupEmptyError(Exception):
+class FetchMethodNotCalledError(Exception):
     pass
 
 
@@ -98,7 +103,7 @@ class FaviconNotFoundError(Exception):
 if __name__ == "__main__":
     url = sys.argv[1]
     scraper = WebPageScraper()
-    scraper.fetch(url=url)
+    scraper.fetch(url=parse_obj_as(HttpUrl, url))
 
     title = scraper.get_title()
     print("Title:", title)

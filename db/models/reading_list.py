@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import uuid4, UUID
 from zoneinfo import ZoneInfo
 
-from pydantic import HttpUrl
+from pydantic import Field, HttpUrl
 
 from db.client import Document
 from db.models.base import OsakanaBaseModel
@@ -11,23 +11,18 @@ from lib.timezone import get_timezone
 
 
 class ReadingListRecord(OsakanaBaseModel):
-    id: UUID = uuid4()
+    id: UUID = Field(default_factory=uuid4)
     url: HttpUrl
     title: str
     is_read: bool = False
     thumb: HttpUrl | None = None
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
     read_at: datetime | None = None
 
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
-
-    def set_timestamps(self, timezone: ZoneInfo=get_timezone()) -> None:
-        now = datetime.now(tz=timezone)
-        self.created_at = now
-        self.updated_at = now
 
     def _update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)

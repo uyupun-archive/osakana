@@ -48,8 +48,7 @@ class DBClient:
 
         documents = self.search_documents(
             index_name=index_name,
-            keyword=f'"{document[key]}"',
-            options={"attributesToHighlight": ["title", "url"]}
+            keyword=f'"{document[key]}"'
         )
         if documents:
             raise URLAlreadyExistsError()
