@@ -3,16 +3,18 @@ import { useState } from 'preact/hooks';
 
 import { addReadingListRecord, searchReadingList } from '../../api/readingList';
 import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
-import { ReadingListRecordTypeError } from '../../api/errors';
+import { InvalidHttpUrlError } from '../../errors';
+import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
   const [inputAddForm, setInputAddForm] = useState<string>('');
+  const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
+  const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
-  const [readingListErrorMessage, setReadingListErrorMessage] = useState<string | null>(null);
 
   const handleInputAddForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -20,8 +22,28 @@ export const Home = (): JSX.Element => {
   };
 
   const handleAddReadingListRecord = async (): Promise<void> => {
-    console.log(inputAddForm);
-    const res = await addReadingListRecord(inputAddForm);
+    const url = inputAddForm;
+    setInputAddFormMessage("Adding ...");
+    try {
+      await addReadingListRecord(url);
+      setInputAddFormMessage("Added");
+    } catch (e: unknown) {
+      if (e instanceof InvalidHttpUrlError) {
+        setInputAddFormMessage(e.message);
+        return;
+      }
+      if (e instanceof UrlNotFoundError) {
+        setInputAddFormMessage(e.message);
+        return;
+      }
+      if (e instanceof UrlAlreadyExistsError) {
+        setInputAddFormMessage(e.message);
+        return;
+      }
+      setInputAddFormMessage('Unknown error');
+    } finally {
+      setInputAddForm('');
+    }
   };
 
   const handleInputSearchForm = (e: Event): void => {
@@ -33,14 +55,14 @@ export const Home = (): JSX.Element => {
     const keyword = inputSearchForm;
     try {
       const res = await searchReadingList(keyword);
-      setReadingListErrorMessage(null);
+      setInputSearchErrorMessage(null);
       setReadingList(res);
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordTypeError) {
-        setReadingListErrorMessage(e.message);
+        setInputSearchErrorMessage(e.message);
         return;
       }
-      setReadingListErrorMessage('Unknown error');
+      setInputSearchErrorMessage('Unknown error');
     }
   };
 
@@ -50,13 +72,14 @@ export const Home = (): JSX.Element => {
       <div>
 				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
 				<button type="button" onClick={handleAddReadingListRecord}>Add</button>
+        {inputAddFormMessage && <div>{inputAddFormMessage}</div>}
 			</div>
       <div>
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
 				<button type="button" onClick={handleSearchReadingList}>Search</button>
 				<button type="button">Feeling</button>
+        {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
-      {readingListErrorMessage && <p>{readingListErrorMessage}</p>}
       {readingList.length <= 0 && <p>No records</p>}
       {readingList.length > 0 && (
         <table border="1">
