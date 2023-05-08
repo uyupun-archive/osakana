@@ -44,6 +44,15 @@ export const searchReadingList = async (keyword: string): Promise<ReadingList> =
   throw new ReadingListRecordTypeError();
 };
 
+export const fetchFeelingReadingListRecord = async (): Promise<ReadingListRecord> => {
+  const res = await axios.get('/api/reading-list/feeling');
+
+  if (isValidReadingListRecordResponse(res.data)) {
+    return _parseReadingListRecord(res.data);
+  }
+  throw new ReadingListRecordTypeError();
+};
+
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
   return {
     id: record.id,
@@ -55,13 +64,4 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     updatedAt: new Date(record.updated_at),
     readAt: record.read_at ? new Date(record.read_at) : null,
   };
-};
-
-export const fetchFeelingReadingListRecord = async (): Promise<ReadingListRecord> => {
-  const res = await axios.get('/api/reading-list/feeling');
-
-  if (isValidReadingListRecordResponse(res.data)) {
-    return _parseReadingListRecord(res.data);
-  }
-  throw new ReadingListRecordTypeError();
 };
