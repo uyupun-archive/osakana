@@ -20,7 +20,7 @@ export const Home = (): JSX.Element => {
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
     try {
-      const res = await searchReadingList({keyword: keyword});
+      const res = await searchReadingList(keyword);
       setReadingListErrorMessage(null);
       setReadingList(res);
     } catch (e: unknown) {

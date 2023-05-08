@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-import type { ReadingList, ReadingListRecord, ReadingListRecordResponse, ReadingListSearchParams } from '../types';
-import { isValidReadingListRecordResponse } from '../types';
+import type { ReadingListRecordResponse } from './types';
+import type { ReadingList, ReadingListRecord } from '../types';
+import { isValidReadingListRecordResponse } from './types';
 
-export const searchReadingList = async (params: ReadingListSearchParams): Promise<ReadingList> => {
+export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
   const res = await axios.get('/api/reading-list', {
-    params: params
+    params: {
+      keyword
+    }
   });
 
   if (Array.isArray(res.data) && res.data.every(isValidReadingListRecordResponse)) {

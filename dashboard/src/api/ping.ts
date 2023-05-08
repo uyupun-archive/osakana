@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import type { PingResponse } from '../types/ping';
-import { isValidPingResponse } from '../types';
+import type { PingResponse } from './types';
+import { isValidPingResponse } from './types';
 
 export const ping = async (): Promise<PingResponse> => {
   const res = await axios.get('/api/ping');
