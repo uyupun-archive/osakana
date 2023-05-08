@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
 import type { HttpUrl, ReadingList, ReadingListRecord } from '../types';
 import type { ReadingListRecordResponse } from './types';
@@ -44,10 +45,10 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
     });
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
-      if (e.response?.status === 404) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new UrlNotFoundError();
       }
-      if (e.response?.status === 409) {
+      if (e.response?.status === StatusCodes.CONFLICT) {
         throw new UrlAlreadyExistsError();
       }
       throw new UnknownError();
