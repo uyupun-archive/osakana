@@ -4,6 +4,7 @@ import { useState } from 'preact/hooks';
 import { searchReadingList } from '../../api/readingList';
 import { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
 import LogoWithText from '../../assets/logo-with-text.svg';
+import NoImage from '../../assets/no-image.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
@@ -39,6 +40,7 @@ export const Home = (): JSX.Element => {
           <table border="1">
             <thead>
               <tr>
+                <th>Icon</th>
                 <th>Title</th>
                 <th>Created at</th>
                 <th>Read at</th>
@@ -67,6 +69,10 @@ export const Home = (): JSX.Element => {
 const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) => {
   return (
     <tr>
+      <td>
+        {!props.thumb && <img src={NoImage} alt="No image" width="30" />}
+        {props.thumb && <img src={props.thumb} alt={`${props.title} icon`} width="30" />}
+      </td>
       <td>
         <a href={props.url} target="_blank" rel="noreferrer noopener">{props.title}</a>
       </td>
