@@ -1,7 +1,7 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { addReadingListRecord, searchReadingList } from '../../api/readingList';
+import { addReadingListRecord, searchReadingList, fetchFeelingReadingListRecord } from '../../api/readingList';
 import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../../api/errors';
@@ -66,6 +66,20 @@ export const Home = (): JSX.Element => {
     }
   };
 
+  const handleFeelingReadingListRecord = async (): Promise<void> => {
+    try {
+      const res = await fetchFeelingReadingListRecord();
+      setInputSearchErrorMessage(null);
+      setReadingList([res]);
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordTypeError) {
+        setInputSearchErrorMessage(e.message);
+        return;
+      }
+      setInputSearchErrorMessage('Unknown error');
+    }
+  };
+
   return (
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
@@ -77,7 +91,7 @@ export const Home = (): JSX.Element => {
       <div>
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
 				<button type="button" onClick={handleSearchReadingList}>Search</button>
-				<button type="button">Feeling</button>
+				<button type="button" onClick={handleFeelingReadingListRecord}>Feeling</button>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
       {readingList.length <= 0 && <p>No records</p>}
