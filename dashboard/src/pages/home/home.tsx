@@ -2,12 +2,13 @@ import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
 import { searchReadingList } from '../../api/readingList';
-import { ReadingListRecord as ReadingListRecordProps } from '../../types/index';
+import { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types/index';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
   const [inputSearchForm, setInputSearchForm] = useState('');
+  const [readingList, setReadingList] = useState<ReadingList>([]);
 
   const handleInputSearchForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -17,7 +18,7 @@ export const Home = (): JSX.Element => {
   const searchReadingListRecord = async (): Promise<void> => {
     const keyword = inputSearchForm;
     const res = await searchReadingList(keyword);
-    console.log(res);
+    setReadingList(res);
   };
 
   return (
@@ -32,28 +33,33 @@ export const Home = (): JSX.Element => {
 				<button type="button" onClick={searchReadingListRecord}>Search</button>
 				<button type="button">Feeling</button>
 			</div>
-      <table border="1">
-        <thead>
-					<tr>
-						<th>Title</th>
-            <th>Created at</th>
-            <th>Read at</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-        <tbody>
-          <ReadingListRecord
-            id="b1562c9b-d21e-49de-91d1-aa766922fa51"
-            url="https://github.com/uyupun"
-            title="TestTestTestTestTest"
-            is_read={false}
-            thumb="https://github.githubassets.com/favicons/favicon.png"
-            created_at={new Date()}
-            updated_at={new Date()}
-            read_at={new Date()}
-          />
-				</tbody>
-			</table>
+      {readingList.length <= 0 && <p>No records</p>}
+      {readingList.length > 0 && readingList.map((readingListRecord: ReadingListRecordProps) => {
+        return (
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Created at</th>
+                <th>Read at</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ReadingListRecord
+                id={readingListRecord.id}
+                url={readingListRecord.url}
+                title={readingListRecord.title}
+                is_read={readingListRecord.is_read}
+                thumb={readingListRecord.thumb}
+                created_at={readingListRecord.created_at}
+                updated_at={readingListRecord.updated_at}
+                read_at={readingListRecord.read_at}
+              />
+            </tbody>
+          </table>
+        );
+      })}
     </>
   );
 };
