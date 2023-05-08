@@ -1,21 +1,24 @@
-import { FunctionalComponent } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { FunctionalComponent, JSX } from 'preact';
+import { useState } from 'preact/hooks';
 
 import { searchReadingList } from '../../api/readingList';
 import { ReadingListRecord as ReadingListRecordProps } from '../../types/index';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import './home.css';
 
-export function Home() {
-  // const [count, setCount] = useState(0)
+export const Home = (): JSX.Element => {
+  const [inputSearchForm, setInputSearchForm] = useState('');
 
-  useEffect(() => {
-    (async () => {
-      const keyword = "GitHub";
-      const res = await searchReadingList(keyword);
-      console.log(res);
-    })();
-  }, []);
+  const handleInputSearchForm = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    setInputSearchForm(target.value);
+  };
+
+  const searchReadingListRecord = async (): Promise<void> => {
+    const keyword = inputSearchForm;
+    const res = await searchReadingList(keyword);
+    console.log(res);
+  };
 
   return (
     <>
@@ -25,8 +28,8 @@ export function Home() {
 				<button type="button">Add</button>
 			</div>
       <div>
-				<input type="text" placeholder="Keyword" />
-				<button type="button">Search</button>
+				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
+				<button type="button" onClick={searchReadingListRecord}>Search</button>
 				<button type="button">Feeling</button>
 			</div>
       <table border="1">
