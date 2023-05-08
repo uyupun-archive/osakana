@@ -16,6 +16,8 @@ export const isUuid4 = (value: any): value is Uuid => {
   return typeof value === 'string' && uuid4Pattern.test(value);
 };
 
+export type Iso8601 = string;
+
 export const isIso8601 = (value: string): boolean => {
   const iso8601Pattern = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.\d+)?(([+-]\d{2}:\d{2})|Z)?$/;
   return iso8601Pattern.test(value);
