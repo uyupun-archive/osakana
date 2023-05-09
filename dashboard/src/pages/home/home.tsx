@@ -6,14 +6,16 @@ import {
   searchReadingList,
   fetchFeelingReadingListRecord,
   readReadingListRecord,
-  unreadReadingListRecord
+  unreadReadingListRecord,
+  deleteReadingListRecord
 } from '../../api/endpoints/readingList';
 import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import {
-  ReadingListRecordTypeError,
   UrlNotFoundError,
   UrlAlreadyExistsError,
+  ReadingListRecordTypeError,
+  ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError
 } from '../../api/errors';
@@ -130,7 +132,7 @@ export const Home = (): JSX.Element => {
                 createdAt={readingListRecord.createdAt}
                 updatedAt={readingListRecord.updatedAt}
                 readAt={readingListRecord.readAt}
-                onIsReadUpdated={handleSearchReadingList}
+                onReadingListRecordUpdated={handleSearchReadingList}
               />
             ))}
           </tbody>
@@ -140,18 +142,17 @@ export const Home = (): JSX.Element => {
   );
 };
 
-const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadUpdated: () => Promise<void>}> = (props) => {
+const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReadingListRecordUpdated: () => Promise<void>}> = (props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleReadReadingListRecord = async (id: Uuid4): Promise<void> => {
     setIsLoading(true);
     try {
       await readReadingListRecord(id);
-      await props.onIsReadUpdated();
+      await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
-      if (e instanceof ReadingListRecordAlreadyReadError) {
+      if ((e instanceof ReadingListRecordAlreadyReadError) || (e instanceof ReadingListRecordNotFoundError)) {
         console.log(e.message);
-        return;
       }
       console.log('Unknown error');
     }
@@ -162,16 +163,29 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadU
     setIsLoading(true);
     try {
       await unreadReadingListRecord(id);
-      await props.onIsReadUpdated();
+      await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
-      if (e instanceof ReadingListRecordNotYetReadError) {
+      if ((e instanceof ReadingListRecordNotYetReadError) || (e instanceof ReadingListRecordNotFoundError)) {
         console.log(e.message);
-        return;
       }
       console.log('Unknown error');
     }
     setIsLoading(false);
   };
+
+  const handleDeleteReadingListRecord = async (id: Uuid4): Promise<void> => {
+    setIsLoading(true);
+    try {
+      await deleteReadingListRecord(id);
+      await props.onReadingListRecordUpdated();
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordNotFoundError) {
+        console.log(e.message);
+      }
+      console.log('Unknown error');
+    }
+    setIsLoading(false);
+  }
 
   return (
     <tr>
@@ -190,7 +204,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadU
       <td>
         {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
         {props.isRead && <button type="button" onClick={() => handleUnreadReadingListRecord(props.id)} disabled={isLoading}>Unread</button>}
-        <button type="button" onClick={() => console.log("Delete")}>Delete</button>
+        <button type="button" onClick={() => handleDeleteReadingListRecord(props.id)} disabled={isLoading}>Delete</button>
       </td>
     </tr>
   );

@@ -35,9 +35,5 @@ class ReadingListUnreadResponse(BaseModel):
     pass
 
 
-class ReadingListDeleteRequest(BaseModel):
-    id: UUID
-
-
 class ReadingListDeleteResponse(BaseModel):
     pass

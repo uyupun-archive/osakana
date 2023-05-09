@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends
 
 from api.schemas.reading_list import (
@@ -9,7 +11,6 @@ from api.schemas.reading_list import (
     ReadingListReadResponse,
     ReadingListUnreadRequest,
     ReadingListUnreadResponse,
-    ReadingListDeleteRequest,
     ReadingListDeleteResponse
 )
 from db.models.reading_list import ReadingListRecord
@@ -82,8 +83,7 @@ def read(
     """
     既読にする
     """
-    reading_list_record = repo.find(id=req.id)
-    repo.read(reading_list_record=reading_list_record)
+    repo.read(id=req.id)
     return ReadingListReadResponse()
 
 
@@ -95,18 +95,17 @@ def unread(
     """
     未読にする
     """
-    reading_list_record = repo.find(id=req.id)
-    repo.unread(reading_list_record=reading_list_record)
+    repo.unread(id=req.id)
     return ReadingListUnreadResponse()
 
 
 @router.delete("", response_model=ReadingListDeleteResponse)
 def delete(
-    req: ReadingListDeleteRequest,
+    id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListDeleteResponse:
     """
     リーディングリストから削除
     """
-    repo.delete(id=req.id)
+    repo.delete(id=id)
     return ReadingListDeleteResponse()

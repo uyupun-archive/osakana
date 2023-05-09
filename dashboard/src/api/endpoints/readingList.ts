@@ -8,9 +8,10 @@ import { isUuid4, isHttpUrl } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import {
-  ReadingListRecordTypeError,
   UrlNotFoundError,
   UrlAlreadyExistsError,
+  ReadingListRecordTypeError,
+  ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError
 } from '../errors';
@@ -61,6 +62,9 @@ export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.patch('/api/reading-list/read', {id});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
+      }
       if (e.response?.status === StatusCodes.FORBIDDEN) {
         throw new ReadingListRecordAlreadyReadError();
       }
@@ -78,8 +82,28 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.patch('/api/reading-list/unread', {id});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
+      }
       if (e.response?.status === StatusCodes.FORBIDDEN) {
         throw new ReadingListRecordNotYetReadError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
+export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  try {
+    await axios.delete('/api/reading-list', {params: {id}});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
       }
       throw new UnknownError();
     }
