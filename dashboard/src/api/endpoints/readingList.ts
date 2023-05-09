@@ -59,7 +59,7 @@ export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.patch('/api/reading-list/read', {id});
+    await axios.patch(`/api/reading-list/read/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -79,7 +79,7 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.patch('/api/reading-list/unread', {id});
+    await axios.patch(`/api/reading-list/unread/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -99,7 +99,7 @@ export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.delete('/api/reading-list', {params: {id}});
+    await axios.delete(`/api/reading-list/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
