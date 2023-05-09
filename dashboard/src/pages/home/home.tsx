@@ -134,9 +134,13 @@ export const Home = (): JSX.Element => {
 };
 
 const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: () => Promise<void>}> = (props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const handleReadReadingListRecord = async (id: Uuid4): Promise<void> => {
+    setIsLoading(true);
     try {
       await readReadingListRecord(id);
+      await props.onRead();
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordAlreadyReadError) {
         console.log(e.message);
@@ -144,6 +148,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: (
       }
       console.log('Unknown error');
     }
+    setIsLoading(false);
   };
 
   return (
@@ -161,10 +166,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: (
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
-        {!props.isRead && <button type="button" onClick={async () => {
-          await handleReadReadingListRecord(props.id);
-          await props.onRead();
-        }}>Read</button>}
+        {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
         {props.isRead && <button type="button" onClick={() => console.log("Unread")}>Unread</button>}
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
       </td>
