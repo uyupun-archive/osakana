@@ -41,8 +41,11 @@ class ReadingListRecord(OsakanaBaseModel):
 
     def bookmark(self, timezone: ZoneInfo=get_timezone()):
         self._update_timestamp()
-        self.is_bookmark = True
-        self.bookmarked_at = datetime.now(tz=timezone)
+        self.is_bookmark = not self.is_bookmark
+        if self.is_bookmark:
+            self.bookmarked_at = datetime.now(tz=timezone)
+        else:
+            self.bookmarked_at = None
 
     @classmethod
     def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:

@@ -106,7 +106,6 @@ def delete(
     """
     リーディングリストから削除
     """
-    print(id)
     repo.delete(id=id)
     return ReadingListDeleteResponse()
 
