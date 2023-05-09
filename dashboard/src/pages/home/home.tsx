@@ -7,7 +7,8 @@ import {
   fetchFeelingReadingListRecord,
   readReadingListRecord,
   unreadReadingListRecord,
-  deleteReadingListRecord
+  deleteReadingListRecord,
+  bookmarkReadingListRecord
 } from '../../api/endpoints/readingList';
 import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
@@ -117,6 +118,7 @@ export const Home = (): JSX.Element => {
               <th>Title</th>
               <th>Created at</th>
               <th>Is read</th>
+              <th>Is bookmarked</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -128,10 +130,12 @@ export const Home = (): JSX.Element => {
                 url={readingListRecord.url}
                 title={readingListRecord.title}
                 isRead={readingListRecord.isRead}
+                isBookmarked={readingListRecord.isBookmarked}
                 thumb={readingListRecord.thumb}
                 createdAt={readingListRecord.createdAt}
                 updatedAt={readingListRecord.updatedAt}
                 readAt={readingListRecord.readAt}
+                bookmarkedAt={readingListRecord.bookmarkedAt}
                 onReadingListRecordUpdated={handleSearchReadingList}
               />
             ))}
@@ -185,10 +189,31 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       console.log('Unknown error');
     }
     setIsLoading(false);
-  }
+  };
+
+  const handleBookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
+    setIsLoading(true);
+    try {
+      await bookmarkReadingListRecord(id);
+      await props.onReadingListRecordUpdated();
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordNotFoundError) {
+        console.log(e.message);
+      }
+      console.log('Unknown error');
+    }
+    setIsLoading(false);
+  };
 
   return (
-    <tr>
+    <tr style={{
+      backgroundColor:
+        props.isBookmarked
+          ? '#ffd6d6'
+        :!props.isRead
+          ? '#d6eaff'
+          : ''
+    }}>
       <td>
         {!props.thumb && <img src={NoImage} alt="No image" width="30" />}
         {props.thumb && <img src={props.thumb} alt={`${props.title} icon`} width="30" />}
@@ -202,9 +227,14 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
+        {props.isBookmarked && <span>Bookmarked ({props.bookmarkedAt?.toLocaleString()})</span>}
+        {!props.isBookmarked && <span>-</span>}
+      </td>
+      <td>
         {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
         {props.isRead && <button type="button" onClick={() => handleUnreadReadingListRecord(props.id)} disabled={isLoading}>Unread</button>}
         <button type="button" onClick={() => handleDeleteReadingListRecord(props.id)} disabled={isLoading}>Delete</button>
+        <button type="button" onClick={() => handleBookmarkReadingListRecord(props.id)} disabled={isLoading}>Toggle bookmark</button>
       </td>
     </tr>
   );

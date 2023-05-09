@@ -5,10 +5,12 @@ export interface ReadingListRecord {
   url: HttpUrl;
   title: string;
   isRead: boolean;
+  isBookmarked: boolean;
   thumb: HttpUrl | null;
   createdAt: Date;
   updatedAt: Date;
   readAt: Date | null;
+  bookmarkedAt: Date | null;
 };
 
 export type ReadingList = Array<ReadingListRecord>;

@@ -7,11 +7,10 @@ from api.schemas.reading_list import (
     ReadingListAddResponse,
     ReadingListSearchResponse,
     ReadingListFeelingResponse,
-    ReadingListReadRequest,
     ReadingListReadResponse,
-    ReadingListUnreadRequest,
     ReadingListUnreadResponse,
-    ReadingListDeleteResponse
+    ReadingListDeleteResponse,
+    ReadingListBookmarkResponse
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
@@ -75,31 +74,31 @@ def random(
     return reading_list_record
 
 
-@router.patch("/read", response_model=ReadingListReadResponse)
+@router.patch("/read/{id}", response_model=ReadingListReadResponse)
 def read(
-    req: ReadingListReadRequest,
+    id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListReadResponse:
     """
     既読にする
     """
-    repo.read(id=req.id)
+    repo.read(id=id)
     return ReadingListReadResponse()
 
 
-@router.patch("/unread", response_model=ReadingListUnreadResponse)
+@router.patch("/unread/{id}", response_model=ReadingListUnreadResponse)
 def unread(
-    req: ReadingListUnreadRequest,
+    id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListUnreadResponse:
     """
     未読にする
     """
-    repo.unread(id=req.id)
+    repo.unread(id=id)
     return ReadingListUnreadResponse()
 
 
-@router.delete("", response_model=ReadingListDeleteResponse)
+@router.delete("/{id}", response_model=ReadingListDeleteResponse)
 def delete(
     id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
@@ -109,3 +108,15 @@ def delete(
     """
     repo.delete(id=id)
     return ReadingListDeleteResponse()
+
+
+@router.patch("/bookmark/{id}", response_model=ReadingListBookmarkResponse)
+def bookmark(
+    id: UUID,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListBookmarkResponse:
+    """
+    ブックマークする
+    """
+    repo.bookmark(id=id)
+    return ReadingListBookmarkResponse()

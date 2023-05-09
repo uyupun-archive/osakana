@@ -59,7 +59,7 @@ export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.patch('/api/reading-list/read', {id});
+    await axios.patch(`/api/reading-list/read/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -79,7 +79,7 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.patch('/api/reading-list/unread', {id});
+    await axios.patch(`/api/reading-list/unread/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -99,7 +99,24 @@ export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
     throw new InvalidUuid4Error();
   }
   try {
-    await axios.delete('/api/reading-list', {params: {id}});
+    await axios.delete(`/api/reading-list/${id}`);
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
+export const bookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  try {
+    await axios.patch(`/api/reading-list/bookmark/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -117,9 +134,11 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     url: record.url,
     title: record.title,
     isRead: record.is_read,
+    isBookmarked: record.is_bookmarked,
     thumb: record.thumb,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
     readAt: record.read_at ? new Date(record.read_at) : null,
+    bookmarkedAt: record.bookmarked_at ? new Date(record.bookmarked_at) : null,
   };
 };

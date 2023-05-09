@@ -19,16 +19,8 @@ ReadingListSearchResponse = list[ReadingListRecord]
 ReadingListFeelingResponse = ReadingListRecord
 
 
-class ReadingListReadRequest(BaseModel):
-    id: UUID
-
-
 class ReadingListReadResponse(BaseModel):
     pass
-
-
-class ReadingListUnreadRequest(BaseModel):
-    id: UUID
 
 
 class ReadingListUnreadResponse(BaseModel):
@@ -36,4 +28,8 @@ class ReadingListUnreadResponse(BaseModel):
 
 
 class ReadingListDeleteResponse(BaseModel):
+    pass
+
+
+class ReadingListBookmarkResponse(BaseModel):
     pass
