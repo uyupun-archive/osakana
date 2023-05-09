@@ -11,9 +11,10 @@ import {
 import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import {
-  ReadingListRecordTypeError,
   UrlNotFoundError,
   UrlAlreadyExistsError,
+  ReadingListRecordTypeError,
+  ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError
 } from '../../api/errors';
@@ -149,9 +150,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadU
       await readReadingListRecord(id);
       await props.onIsReadUpdated();
     } catch (e: unknown) {
-      if (e instanceof ReadingListRecordAlreadyReadError) {
+      if ((e instanceof ReadingListRecordAlreadyReadError) || (e instanceof ReadingListRecordNotFoundError)) {
         console.log(e.message);
-        return;
       }
       console.log('Unknown error');
     }
@@ -164,9 +164,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadU
       await unreadReadingListRecord(id);
       await props.onIsReadUpdated();
     } catch (e: unknown) {
-      if (e instanceof ReadingListRecordNotYetReadError) {
+      if ((e instanceof ReadingListRecordNotYetReadError) || (e instanceof ReadingListRecordNotFoundError)) {
         console.log(e.message);
-        return;
       }
       console.log('Unknown error');
     }

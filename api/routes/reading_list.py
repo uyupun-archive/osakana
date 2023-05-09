@@ -84,8 +84,7 @@ def read(
     """
     既読にする
     """
-    reading_list_record = repo.find(id=req.id)
-    repo.read(reading_list_record=reading_list_record)
+    repo.read(id=req.id)
     return ReadingListReadResponse()
 
 
@@ -97,8 +96,7 @@ def unread(
     """
     未読にする
     """
-    reading_list_record = repo.find(id=req.id)
-    repo.unread(reading_list_record=reading_list_record)
+    repo.unread(id=req.id)
     return ReadingListUnreadResponse()
 
 

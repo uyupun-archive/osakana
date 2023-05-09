@@ -58,9 +58,14 @@ class ReadingListRepository(BaseRepository):
         )[0]
         return document
 
-    def read(self, reading_list_record: ReadingListRecord) -> None:
+    def read(self, id: UUID) -> None:
+        try:
+            reading_list_record = self.find(id=id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
         if reading_list_record.is_read:
             raise ReadingListRecordAlreadyReadError()
+
         reading_list_record.read()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
@@ -68,9 +73,14 @@ class ReadingListRepository(BaseRepository):
             document=document
         )
 
-    def unread(self, reading_list_record: ReadingListRecord) -> None:
+    def unread(self, id: UUID) -> None:
+        try:
+            reading_list_record = self.find(id=id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
         if not reading_list_record.is_read:
             raise ReadingListRecordNotYetReadError()
+
         reading_list_record.unread()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
