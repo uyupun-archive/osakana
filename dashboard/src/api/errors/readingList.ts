@@ -33,3 +33,12 @@ export class ReadingListRecordAlreadyReadError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };
+
+export class ReadingListRecordAlreadyUnreadError extends Error {
+  constructor() {
+    const message = 'ReadingListRecord already unread error';
+    super(message);
+    this.name = 'ReadingListRecordAlreadyUnreadError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};

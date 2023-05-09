@@ -20,7 +20,7 @@ async def reading_list_record_already_read_error_handler(req: Request, e: Readin
 
 
 async def reading_list_record_already_unread_error_handler(req: Request, e: ReadingListRecordAlreadyUnreadError):
-    return APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
+    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
 
 
 async def document_not_found_error_handler(req: Request, e: DocumentNotFoundError):

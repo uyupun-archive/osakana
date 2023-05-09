@@ -5,11 +5,18 @@ import {
   addReadingListRecord,
   searchReadingList,
   fetchFeelingReadingListRecord,
-  readReadingListRecord
+  readReadingListRecord,
+  unreadReadingListRecord
 } from '../../api/endpoints/readingList';
 import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
-import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError, ReadingListRecordAlreadyReadError } from '../../api/errors';
+import {
+  ReadingListRecordTypeError,
+  UrlNotFoundError,
+  UrlAlreadyExistsError,
+  ReadingListRecordAlreadyReadError,
+  ReadingListRecordAlreadyUnreadError
+} from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';
@@ -151,6 +158,21 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: (
     setIsLoading(false);
   };
 
+  const handleUnreadReadingListRecord = async (id: Uuid4): Promise<void> => {
+    setIsLoading(true);
+    try {
+      await unreadReadingListRecord(id);
+      await props.onRead();
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordAlreadyUnreadError) {
+        console.log(e.message);
+        return;
+      }
+      console.log('Unknown error');
+    }
+    setIsLoading(false);
+  };
+
   return (
     <tr>
       <td>
@@ -167,7 +189,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: (
       </td>
       <td>
         {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
-        {props.isRead && <button type="button" onClick={() => console.log("Unread")}>Unread</button>}
+        {props.isRead && <button type="button" onClick={() => handleUnreadReadingListRecord(props.id)} disabled={isLoading}>Unread</button>}
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
       </td>
     </tr>
