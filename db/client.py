@@ -68,7 +68,8 @@ class DBClient:
         return documents["hits"]
 
     def update_document(self, index_name: str, document: Document) -> None:
-        self._client.index(uid=index_name).update_documents(documents=[document])
+        task = self._client.index(uid=index_name).update_documents(documents=[document])
+        self._check_task_status(index_name=index_name, task=task)
 
     def delete_document(self, index_name: str, id: UUID) -> None:
         self.get_document(index_name=index_name, id=id)
