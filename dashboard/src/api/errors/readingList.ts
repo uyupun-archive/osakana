@@ -34,11 +34,11 @@ export class ReadingListRecordAlreadyReadError extends Error {
   };
 };
 
-export class ReadingListRecordAlreadyUnreadError extends Error {
+export class ReadingListRecordNotYetReadError extends Error {
   constructor() {
-    const message = 'ReadingListRecord already unread error';
+    const message = 'ReadingListRecord not yet read error';
     super(message);
-    this.name = 'ReadingListRecordAlreadyUnreadError';
+    this.name = 'ReadingListRecordNotYetReadError';
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };

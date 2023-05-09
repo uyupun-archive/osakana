@@ -12,7 +12,7 @@ import {
   UrlNotFoundError,
   UrlAlreadyExistsError,
   ReadingListRecordAlreadyReadError,
-  ReadingListRecordAlreadyUnreadError
+  ReadingListRecordNotYetReadError
 } from '../errors';
 
 export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
@@ -79,7 +79,7 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.FORBIDDEN) {
-        throw new ReadingListRecordAlreadyUnreadError();
+        throw new ReadingListRecordNotYetReadError();
       }
       throw new UnknownError();
     }

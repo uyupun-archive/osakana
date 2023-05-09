@@ -15,7 +15,7 @@ import {
   UrlNotFoundError,
   UrlAlreadyExistsError,
   ReadingListRecordAlreadyReadError,
-  ReadingListRecordAlreadyUnreadError
+  ReadingListRecordNotYetReadError
 } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
@@ -164,7 +164,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onIsReadU
       await unreadReadingListRecord(id);
       await props.onIsReadUpdated();
     } catch (e: unknown) {
-      if (e instanceof ReadingListRecordAlreadyUnreadError) {
+      if (e instanceof ReadingListRecordNotYetReadError) {
         console.log(e.message);
         return;
       }
