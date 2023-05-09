@@ -160,7 +160,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
-        <button type="button" onClick={() => handleReadReadingListRecord(props.id)}>Read</button>
+        {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)}>Read</button>}
+        {props.isRead && <button type="button" onClick={() => console.log("Unread")}>Unread</button>}
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
       </td>
     </tr>
