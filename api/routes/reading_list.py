@@ -11,7 +11,8 @@ from api.schemas.reading_list import (
     ReadingListReadResponse,
     ReadingListUnreadRequest,
     ReadingListUnreadResponse,
-    ReadingListDeleteResponse
+    ReadingListDeleteResponse,
+    ReadingListBookmarkResponse
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
@@ -109,3 +110,15 @@ def delete(
     """
     repo.delete(id=id)
     return ReadingListDeleteResponse()
+
+
+@router.patch("/bookmark/{id}", response_model=ReadingListBookmarkResponse)
+def bookmark(
+    id: UUID,
+    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+) -> ReadingListBookmarkResponse:
+    """
+    ブックマークする
+    """
+    repo.bookmark(id=id)
+    return ReadingListBookmarkResponse()

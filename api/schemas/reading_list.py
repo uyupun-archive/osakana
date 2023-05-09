@@ -37,3 +37,7 @@ class ReadingListUnreadResponse(BaseModel):
 
 class ReadingListDeleteResponse(BaseModel):
     pass
+
+
+class ReadingListBookmarkResponse(BaseModel):
+    pass

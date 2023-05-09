@@ -102,6 +102,19 @@ class ReadingListRepository(BaseRepository):
             id=id
         )
 
+    def bookmark(self, id: UUID) -> None:
+        try:
+            reading_list_record = self.find(id=id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
+
+        reading_list_record.bookmark()
+        document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
+        self._db_client.update_document(
+            index_name=self._index_name,
+            document=document
+        )
+
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
@@ -111,6 +124,12 @@ class UrlAlreadyExistsError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "URL already exists"
+
+
+class ReadingListRecordNotFoundError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Reading list record not found"
 
 
 class ReadingListRecordAlreadyReadError(Exception):
@@ -123,9 +142,3 @@ class ReadingListRecordNotYetReadError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Reading list record already unread"
-
-
-class ReadingListRecordNotFoundError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
-        self.message = "Reading list record not found"
