@@ -1,10 +1,15 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { addReadingListRecord, searchReadingList, fetchFeelingReadingListRecord } from '../../api/endpoints/readingList';
-import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
+import {
+  addReadingListRecord,
+  searchReadingList,
+  fetchFeelingReadingListRecord,
+  readReadingListRecord
+} from '../../api/endpoints/readingList';
+import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
-import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../../api/errors';
+import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError, ReadingListRecordAlreadyReadError } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
 import './home.css';
@@ -118,6 +123,7 @@ export const Home = (): JSX.Element => {
                 createdAt={readingListRecord.createdAt}
                 updatedAt={readingListRecord.updatedAt}
                 readAt={readingListRecord.readAt}
+                onRead={handleSearchReadingList}
               />
             ))}
           </tbody>
@@ -127,7 +133,24 @@ export const Home = (): JSX.Element => {
   );
 };
 
-const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) => {
+const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onRead: () => Promise<void>}> = (props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleReadReadingListRecord = async (id: Uuid4): Promise<void> => {
+    setIsLoading(true);
+    try {
+      await readReadingListRecord(id);
+      await props.onRead();
+    } catch (e: unknown) {
+      if (e instanceof ReadingListRecordAlreadyReadError) {
+        console.log(e.message);
+        return;
+      }
+      console.log('Unknown error');
+    }
+    setIsLoading(false);
+  };
+
   return (
     <tr>
       <td>
@@ -143,7 +166,8 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
-        <button type="button" onClick={() => console.log("Read")}>Read</button>
+        {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
+        {props.isRead && <button type="button" onClick={() => console.log("Unread")}>Unread</button>}
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
       </td>
     </tr>

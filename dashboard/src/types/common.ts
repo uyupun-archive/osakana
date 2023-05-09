@@ -9,9 +9,9 @@ export const isHttpUrl = (value: any): value is HttpUrl => {
   }
 };
 
-export type Uuid = string;
+export type Uuid4 = string;
 
-export const isUuid4 = (value: any): value is Uuid => {
+export const isUuid4 = (value: any): value is Uuid4 => {
   const uuid4Pattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
   return typeof value === 'string' && uuid4Pattern.test(value);
 };

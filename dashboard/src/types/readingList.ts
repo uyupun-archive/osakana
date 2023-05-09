@@ -1,7 +1,7 @@
-import type { Uuid, HttpUrl } from './common';
+import type { Uuid4, HttpUrl } from './common';
 
 export interface ReadingListRecord {
-  id: Uuid;
+  id: Uuid4;
   url: HttpUrl;
   title: string;
   isRead: boolean;

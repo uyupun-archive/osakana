@@ -14,7 +14,7 @@ export class UrlNotFoundError extends Error {
     this.name = 'UrlNotFoundError';
     Object.setPrototypeOf(this, new.target.prototype);
   };
-}
+};
 
 export class UrlAlreadyExistsError extends Error {
   constructor() {
@@ -23,4 +23,13 @@ export class UrlAlreadyExistsError extends Error {
     this.name = 'UrlAlreadyExistsError';
     Object.setPrototypeOf(this, new.target.prototype);
   };
-}
+};
+
+export class ReadingListRecordAlreadyReadError extends Error {
+  constructor() {
+    const message = 'ReadingListRecord already read error';
+    super(message);
+    this.name = 'ReadingListRecordAlreadyReadError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};

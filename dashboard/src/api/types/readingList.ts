@@ -1,8 +1,8 @@
-import type { Uuid, HttpUrl, Iso8601 } from '../../types';
+import type { Uuid4, HttpUrl, Iso8601 } from '../../types';
 import { isUuid4, isHttpUrl, isIso8601 } from '../../types';
 
 export interface ReadingListRecordResponse {
-	id: Uuid;
+	id: Uuid4;
 	url: HttpUrl;
 	title: string;
 	is_read: boolean;
