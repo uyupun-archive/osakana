@@ -134,7 +134,7 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     url: record.url,
     title: record.title,
     isRead: record.is_read,
-    isBookmark: record.is_bookmark,
+    isBookmarked: record.is_bookmarked,
     thumb: record.thumb,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),

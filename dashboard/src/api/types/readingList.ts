@@ -6,7 +6,7 @@ export interface ReadingListRecordResponse {
 	url: HttpUrl;
 	title: string;
 	is_read: boolean;
-  is_bookmark: boolean;
+  is_bookmarked: boolean;
 	thumb: HttpUrl | null;
 	created_at: Iso8601;
 	updated_at: Iso8601;
@@ -20,7 +20,7 @@ export const isValidReadingListRecordResponse = (record: any): record is Reading
     isHttpUrl(record.url) &&
     typeof record.title === 'string' &&
     typeof record.is_read === 'boolean' &&
-    typeof record.is_bookmark === 'boolean' &&
+    typeof record.is_bookmarked === 'boolean' &&
     (record.thumb === null || isHttpUrl(record.thumb)) &&
     isIso8601(record.created_at) &&
     isIso8601(record.updated_at) &&

@@ -118,7 +118,7 @@ export const Home = (): JSX.Element => {
               <th>Title</th>
               <th>Created at</th>
               <th>Is read</th>
-              <th>Is bookmark</th>
+              <th>Is bookmarked</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -130,7 +130,7 @@ export const Home = (): JSX.Element => {
                 url={readingListRecord.url}
                 title={readingListRecord.title}
                 isRead={readingListRecord.isRead}
-                isBookmark={readingListRecord.isBookmark}
+                isBookmarked={readingListRecord.isBookmarked}
                 thumb={readingListRecord.thumb}
                 createdAt={readingListRecord.createdAt}
                 updatedAt={readingListRecord.updatedAt}
@@ -208,7 +208,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
   return (
     <tr style={{
       backgroundColor:
-        props.isBookmark
+        props.isBookmarked
           ? '#ffd6d6'
         :!props.isRead
           ? '#d6eaff'
@@ -227,14 +227,14 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
-        {props.isBookmark && <span>Bookmarked ({props.bookmarkedAt?.toLocaleString()})</span>}
-        {!props.isBookmark && <span>-</span>}
+        {props.isBookmarked && <span>Bookmarked ({props.bookmarkedAt?.toLocaleString()})</span>}
+        {!props.isBookmarked && <span>-</span>}
       </td>
       <td>
         {!props.isRead && <button type="button" onClick={() => handleReadReadingListRecord(props.id)} disabled={isLoading}>Read</button>}
         {props.isRead && <button type="button" onClick={() => handleUnreadReadingListRecord(props.id)} disabled={isLoading}>Unread</button>}
         <button type="button" onClick={() => handleDeleteReadingListRecord(props.id)} disabled={isLoading}>Delete</button>
-        <button type="button" onClick={() => handleBookmarkReadingListRecord(props.id)} disabled={isLoading}>Bookmark</button>
+        <button type="button" onClick={() => handleBookmarkReadingListRecord(props.id)} disabled={isLoading}>Toggle bookmark</button>
       </td>
     </tr>
   );

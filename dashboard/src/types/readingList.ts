@@ -5,7 +5,7 @@ export interface ReadingListRecord {
   url: HttpUrl;
   title: string;
   isRead: boolean;
-  isBookmark: boolean;
+  isBookmarked: boolean;
   thumb: HttpUrl | null;
   createdAt: Date;
   updatedAt: Date;

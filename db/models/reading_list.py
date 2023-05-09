@@ -15,7 +15,7 @@ class ReadingListRecord(OsakanaBaseModel):
     url: HttpUrl
     title: str
     is_read: bool = False
-    is_bookmark: bool = False
+    is_bookmarked: bool = False
     thumb: HttpUrl | None = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
@@ -41,8 +41,8 @@ class ReadingListRecord(OsakanaBaseModel):
 
     def bookmark(self, timezone: ZoneInfo=get_timezone()):
         self._update_timestamp()
-        self.is_bookmark = not self.is_bookmark
-        if self.is_bookmark:
+        self.is_bookmarked = not self.is_bookmarked
+        if self.is_bookmarked:
             self.bookmarked_at = datetime.now(tz=timezone)
         else:
             self.bookmarked_at = None
@@ -54,7 +54,7 @@ class ReadingListRecord(OsakanaBaseModel):
             "url": reading_list_record.url,
             "title": reading_list_record.title,
             "is_read": reading_list_record.is_read,
-            "is_bookmark": reading_list_record.is_bookmark,
+            "is_bookmarked": reading_list_record.is_bookmarked,
             "thumb": reading_list_record.thumb,
             "created_at": reading_list_record.created_at.isoformat(),
             "updated_at": reading_list_record.updated_at.isoformat(),
@@ -70,7 +70,7 @@ class ReadingListRecord(OsakanaBaseModel):
             url=document["url"],
             title=document["title"],
             is_read=document["is_read"],
-            is_bookmark=document["is_bookmark"],
+            is_bookmarked=document["is_bookmarked"],
             thumb=document["thumb"],
             created_at=document["created_at"],
             updated_at=document["updated_at"],
