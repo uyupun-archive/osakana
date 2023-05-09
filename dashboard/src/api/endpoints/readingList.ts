@@ -94,6 +94,23 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
   }
 };
 
+export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  try {
+    await axios.delete('/api/reading-list', {params: {id}});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
   return {
     id: record.id,
