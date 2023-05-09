@@ -1,4 +1,4 @@
-import type { Uuid, HttpUrl } from '../../types';
+import type { Uuid, HttpUrl, Iso8601 } from '../../types';
 import { isUuid4, isHttpUrl, isIso8601 } from '../../types';
 
 export interface ReadingListRecordResponse {
@@ -7,9 +7,9 @@ export interface ReadingListRecordResponse {
 	title: string;
 	is_read: boolean;
 	thumb: HttpUrl | null;
-	created_at: string;
-	updated_at: string;
-	read_at: string | null;
+	created_at: Iso8601;
+	updated_at: Iso8601;
+	read_at: Iso8601 | null;
 };
 
 export const isValidReadingListRecordResponse = (record: any): record is ReadingListRecordResponse => {
