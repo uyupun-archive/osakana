@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 from uuid import UUID
 
-from db.client import Document
+from db.client import Document, DocumentNotFoundError
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
@@ -23,8 +23,8 @@ class ReadingListRepository(BaseRepository):
             index_name=self._index_name,
             id=id
         )
-        reading_list = ReadingListRecord.convert_instance(document=document)
-        return reading_list
+        reading_list_record = ReadingListRecord.convert_instance(document=document)
+        return reading_list_record
 
     def search(self, keyword: str) -> list[ReadingListRecord]:
         documents = self._db_client.search_documents(
@@ -79,6 +79,11 @@ class ReadingListRepository(BaseRepository):
         )
 
     def delete(self, id: UUID) -> None:
+        try:
+            self.find(id=id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
+
         self._db_client.delete_document(
             index_name=self._index_name,
             id=id
@@ -99,3 +104,9 @@ class ReadingListRecordNotYetReadError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Reading list record already unread"
+
+
+class ReadingListRecordNotFoundError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Reading list record not found"
