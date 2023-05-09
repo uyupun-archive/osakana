@@ -51,7 +51,7 @@ class DBClient:
             keyword=f'"{document[key]}"'
         )
         if documents:
-            raise URLAlreadyExistsError()
+            raise DocumentAlreadyExistsError()
 
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
@@ -105,16 +105,12 @@ class IndexDoesNotExistsError(Exception):
         self.message = "Index not exists"
 
 
-class URLAlreadyExistsError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
-        self.message = "URL already exists"
+class DocumentAlreadyExistsError(Exception):
+    pass
 
 
 class DocumentNotFoundError(Exception):
-    def __init__(self, e: MeilisearchApiError) -> None:
-        super().__init__()
-        self.message = e.message
+    pass
 
 
 class InvalidDocumentError(Exception):

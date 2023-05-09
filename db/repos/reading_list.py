@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 from uuid import UUID
 
-from db.client import Document, DocumentNotFoundError
+from db.client import Document, DocumentNotFoundError, DocumentAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
@@ -12,11 +12,14 @@ class ReadingListRepository(BaseRepository):
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
-        self._db_client.add_document(
-            index_name=self._index_name,
-            key="url",
-            document=document
-        )
+        try:
+            self._db_client.add_document(
+                index_name=self._index_name,
+                key="url",
+                document=document
+            )
+        except DocumentAlreadyExistsError:
+            raise UrlAlreadyExistsError()
 
     def find(self, id: UUID) -> ReadingListRecord:
         document = self._db_client.get_document(
@@ -102,6 +105,12 @@ class ReadingListRepository(BaseRepository):
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
+
+
+class UrlAlreadyExistsError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "URL already exists"
 
 
 class ReadingListRecordAlreadyReadError(Exception):
