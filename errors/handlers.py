@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_409_CONFLICT
 
 from errors.responses import APIError
 from db.client import URLAlreadyExistsError, DocumentNotFoundError
@@ -16,7 +16,7 @@ async def web_page_access_error_handler(req: Request, e: WebPageAccessError):
 
 
 async def reading_list_record_already_read_error_handler(req: Request, e: ReadingListRecordAlreadyReadError):
-    return APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
+    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
 
 
 async def reading_list_record_already_unread_error_handler(req: Request, e: ReadingListRecordAlreadyUnreadError):
