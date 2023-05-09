@@ -111,15 +111,34 @@ export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
   }
 };
 
+export const bookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  try {
+    await axios.patch(`/api/reading-list/bookmark/${id}`);
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.NOT_FOUND) {
+        throw new ReadingListRecordNotFoundError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
   return {
     id: record.id,
     url: record.url,
     title: record.title,
     isRead: record.is_read,
+    isBookmark: record.is_bookmark,
     thumb: record.thumb,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
     readAt: record.read_at ? new Date(record.read_at) : null,
+    bookmarkedAt: record.bookmarked_at ? new Date(record.bookmarked_at) : null,
   };
 };
