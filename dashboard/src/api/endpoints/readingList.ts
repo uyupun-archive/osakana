@@ -7,7 +7,13 @@ import type { ReadingListRecordResponse } from '../types';
 import { isUuid4, isHttpUrl } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
-import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError, ReadingListRecordAlreadyReadError } from '../errors';
+import {
+  ReadingListRecordTypeError,
+  UrlNotFoundError,
+  UrlAlreadyExistsError,
+  ReadingListRecordAlreadyReadError,
+  ReadingListRecordNotYetReadError
+} from '../errors';
 
 export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
   if (!isHttpUrl(url)) {
@@ -57,6 +63,23 @@ export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.FORBIDDEN) {
         throw new ReadingListRecordAlreadyReadError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
+export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  try {
+    await axios.patch('/api/reading-list/unread', {id});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.FORBIDDEN) {
+        throw new ReadingListRecordNotYetReadError();
       }
       throw new UnknownError();
     }

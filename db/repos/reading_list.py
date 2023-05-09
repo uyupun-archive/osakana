@@ -70,7 +70,7 @@ class ReadingListRepository(BaseRepository):
 
     def unread(self, reading_list_record: ReadingListRecord) -> None:
         if not reading_list_record.is_read:
-            raise ReadingListRecordAlreadyUnreadError()
+            raise ReadingListRecordNotYetReadError()
         reading_list_record.unread()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         self._db_client.update_document(
@@ -95,7 +95,7 @@ class ReadingListRecordAlreadyReadError(Exception):
         self.message = "Reading list record already read"
 
 
-class ReadingListRecordAlreadyUnreadError(Exception):
+class ReadingListRecordNotYetReadError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Reading list record already unread"

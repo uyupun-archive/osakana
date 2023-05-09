@@ -3,7 +3,7 @@ from starlette.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_409_
 
 from errors.responses import APIError
 from db.client import URLAlreadyExistsError, DocumentNotFoundError
-from db.repos.reading_list import ReadingListRecordAlreadyReadError, ReadingListRecordAlreadyUnreadError
+from db.repos.reading_list import ReadingListRecordAlreadyReadError, ReadingListRecordNotYetReadError
 from lib.scraper import WebPageAccessError
 
 
@@ -19,8 +19,8 @@ async def reading_list_record_already_read_error_handler(req: Request, e: Readin
     return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
 
 
-async def reading_list_record_already_unread_error_handler(req: Request, e: ReadingListRecordAlreadyUnreadError):
-    return APIError(status_code=HTTP_400_BAD_REQUEST, message=e.message)
+async def reading_list_record_not_yet_read_error_handler(req: Request, e: ReadingListRecordNotYetReadError):
+    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
 
 
 async def document_not_found_error_handler(req: Request, e: DocumentNotFoundError):
@@ -31,5 +31,5 @@ def register_error_handlers(app: FastAPI):
     app.add_exception_handler(URLAlreadyExistsError, url_already_exists_error_handler)
     app.add_exception_handler(WebPageAccessError, web_page_access_error_handler)
     app.add_exception_handler(ReadingListRecordAlreadyReadError, reading_list_record_already_read_error_handler)
-    app.add_exception_handler(ReadingListRecordAlreadyUnreadError, reading_list_record_already_unread_error_handler)
+    app.add_exception_handler(ReadingListRecordNotYetReadError, reading_list_record_not_yet_read_error_handler)
     app.add_exception_handler(DocumentNotFoundError, document_not_found_error_handler)
