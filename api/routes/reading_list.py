@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends
 
 from api.schemas.reading_list import (
@@ -102,11 +104,11 @@ def unread(
 
 @router.delete("", response_model=ReadingListDeleteResponse)
 def delete(
-    req: ReadingListDeleteRequest,
+    id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListDeleteResponse:
     """
     リーディングリストから削除
     """
-    repo.delete(id=req.id)
+    repo.delete(id=id)
     return ReadingListDeleteResponse()
