@@ -11,7 +11,6 @@ from api.schemas.reading_list import (
     ReadingListReadResponse,
     ReadingListUnreadRequest,
     ReadingListUnreadResponse,
-    ReadingListDeleteRequest,
     ReadingListDeleteResponse
 )
 from db.models.reading_list import ReadingListRecord
