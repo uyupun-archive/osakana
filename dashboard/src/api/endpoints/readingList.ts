@@ -2,11 +2,11 @@ import axios from 'axios';
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
-import type { HttpUrl, ReadingList, ReadingListRecord } from '../../types';
+import type { Uuid4, HttpUrl, ReadingList, ReadingListRecord } from '../../types';
 import type { ReadingListRecordResponse } from '../types';
-import { isHttpUrl } from '../../types';
+import { isUuid4, isHttpUrl } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
-import { UnknownError, InvalidHttpUrlError } from '../../errors';
+import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../errors';
 
 export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
@@ -14,9 +14,7 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
     throw new InvalidHttpUrlError();
   }
   try {
-    await axios.post('/api/reading-list', {
-      url
-    });
+    await axios.post('/api/reading-list', {url});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.NOT_FOUND) {
@@ -32,11 +30,7 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
 };
 
 export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
-  const res = await axios.get('/api/reading-list', {
-    params: {
-      keyword
-    }
-  });
+  const res = await axios.get('/api/reading-list', {params: {keyword}});
 
   if (Array.isArray(res.data) && res.data.every(isValidReadingListRecordResponse)) {
     return res.data.map(_parseReadingListRecord);
@@ -51,6 +45,13 @@ export const fetchFeelingReadingListRecord = async (): Promise<ReadingListRecord
     return _parseReadingListRecord(res.data);
   }
   throw new ReadingListRecordTypeError();
+};
+
+export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
+  if (!isUuid4(id)) {
+    throw new InvalidUuid4Error();
+  }
+  await axios.patch('/api/reading-list/read', {id});
 };
 
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {

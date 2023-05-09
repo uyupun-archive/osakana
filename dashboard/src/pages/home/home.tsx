@@ -1,8 +1,13 @@
 import { FunctionalComponent, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { addReadingListRecord, searchReadingList, fetchFeelingReadingListRecord } from '../../api/endpoints/readingList';
-import type { ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
+import {
+  addReadingListRecord,
+  searchReadingList,
+  fetchFeelingReadingListRecord,
+  readReadingListRecord
+} from '../../api/endpoints/readingList';
+import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import { ReadingListRecordTypeError, UrlNotFoundError, UrlAlreadyExistsError } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
@@ -128,6 +133,10 @@ export const Home = (): JSX.Element => {
 };
 
 const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) => {
+  const handleReadReadingListRecord = async (id: Uuid4): Promise<void> => {
+    await readReadingListRecord(id);
+  };
+
   return (
     <tr>
       <td>
@@ -143,7 +152,7 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps> = (props) =
         {!props.isRead && <span>Unread</span>}
       </td>
       <td>
-        <button type="button" onClick={() => console.log("Read")}>Read</button>
+        <button type="button" onClick={() => handleReadReadingListRecord(props.id)}>Read</button>
         <button type="button" onClick={() => console.log("Delete")}>Delete</button>
       </td>
     </tr>
