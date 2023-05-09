@@ -33,7 +33,7 @@ class ReadingListRepository(BaseRepository):
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             keyword=keyword,
-            options={"sort": ["updated_at:desc"]}
+            options={"sort": ["created_at:desc"]}
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list
