@@ -6,23 +6,14 @@
 
 ## 環境構築
 
+- 全文検索エンジン(Meilisearch)
+
 ```bash
-$ cp .env.example .env
-$ pipenv install
-# cchardetのインストールに失敗する場合は以下を実行
-$ pip install --upgrade Cython
-$ pipenv shell
 # MeiliSearchの起動
 $ docker compose up -d
-# FastAPIの起動
-$ python main.py
-# DBマイグレーションの実行
-$ python -m db.migrations.run 01 up
-$ python -m db.migrations.run 01 down
-# ReDocを開く
-$ open http://localhost:8000/redoc
 # MeiliSearchを開く
 $ open http://localhost:7700/
-# タイトルを取得するスクレイピングの実行(検証用途)
-$ python -m lib.scraper <url>
 ```
+
+- [サーバ](./server/README.md)
+- [ダッシュボード](./dashboard/README.md)
