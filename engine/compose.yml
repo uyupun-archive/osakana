@@ -8,5 +8,5 @@ services:
       MEILI_ENV: development
       MEILI_HTTP_ADDR: 0.0.0.0:${MS_PORT}
     volumes:
-      - ./docker/meilisearch/data:/meili_data
+      - ./data:/meili_data
     restart: always

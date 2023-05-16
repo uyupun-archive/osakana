@@ -6,14 +6,6 @@
 
 ## 環境構築
 
-- 全文検索エンジン(Meilisearch)
-
-```bash
-# MeiliSearchの起動
-$ docker compose up -d
-# MeiliSearchを開く
-$ open http://localhost:7700/
-```
-
+- [全文検索エンジン](./engine/README.md)
 - [サーバ](./server/README.md)
 - [ダッシュボード](./dashboard/README.md)
