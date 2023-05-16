@@ -10,9 +10,10 @@ class Settings(BaseSettings):
     DESCRIPTION: str = "「あとで読む」記事を管理できるWebアプリ"
     VERSION: str = "v0.1.0"
 
-    ADDRESS: str = Field("localhost", env="APP_ADDRESS")
-    PORT: int = Field("8000", env="APP_PORT")
+    ADDRESS: str = Field("localhost", env="API_ADDRESS")
+    PORT: int = Field("8000", env="API_PORT")
     TIMEZONE: str = Field("Asia/Tokyo", env="TIMEZONE")
+    ALLOWED_ORIGIN: str = Field("*", env="ALLOWED_ORIGIN")
 
     class Config:
         env_file: str = ".env"
