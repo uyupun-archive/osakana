@@ -1,5 +1,9 @@
 # ダッシュボード
 
+- ダッシュボードはViteとpreact-tsで構築されており、主にUIを提供する
+
+## 環境構築
+
 ```bash
 $ cp .env.example .env
 $ npm install
