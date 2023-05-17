@@ -1,12 +1,18 @@
 services:
-  meilisearch:
+  engine:
     image: getmeili/meilisearch:v1.1
-    container_name: meilisearch
+    container_name: engine
     ports:
-      - ${MS_PORT}:${MS_PORT}
+      - ${PORT}:${PORT}
     environment:
       MEILI_ENV: development
-      MEILI_HTTP_ADDR: 0.0.0.0:${MS_PORT}
+      MEILI_HTTP_ADDR: 0.0.0.0:${PORT}
     volumes:
       - ./data:/meili_data
     restart: always
+    networks:
+      - osakana_network
+
+networks:
+  osakana_network:
+    external: true

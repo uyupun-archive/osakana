@@ -111,7 +111,7 @@ export const Home = (): JSX.Element => {
 			</div>
       {readingList.length <= 0 && <p>No records</p>}
       {readingList.length > 0 && (
-        <table border="1">
+        <table style={{ border: '1px solid black' }}>
           <thead>
             <tr>
               <th>Icon</th>

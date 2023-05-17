@@ -1,0 +1,17 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: ${VITE_PORT}
+    container_name: dashboard
+    ports:
+      - ${VITE_PORT}:${VITE_PORT}
+    restart: always
+    networks:
+      - osakana_network
+
+networks:
+  osakana_network:
+    external: true

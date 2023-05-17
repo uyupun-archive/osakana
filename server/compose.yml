@@ -1,0 +1,17 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: ${API_PORT}
+    container_name: server
+    ports:
+      - ${API_PORT}:${API_PORT}
+    restart: always
+    networks:
+      - osakana_network
+
+networks:
+  osakana_network:
+    external: true
