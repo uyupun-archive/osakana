@@ -2,8 +2,7 @@ FROM python:3.11.3-slim
 
 WORKDIR /app
 
-COPY ./ ./
-RUN ls -la
+COPY . .
 
 RUN apt-get update
 RUN apt-get install build-essential -y

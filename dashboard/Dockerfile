@@ -15,8 +15,10 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 ARG PORT=3000
 ENV PORT=$PORT
-COPY default.conf.template /etc/nginx/conf.d/default.conf.template
-RUN envsubst "${PORT}" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 EXPOSE $PORT
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY default.conf.template /etc/nginx/conf.d/default.conf.template
+
+CMD /bin/bash -c "\
+    envsubst '\${PORT}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && \
+    nginx -g 'daemon off;'"
