@@ -5,6 +5,8 @@
 ## 環境構築
 
 ```bash
+$ cd engine
+
 $ cp .env.example .env
 
 # MeiliSearchの起動
