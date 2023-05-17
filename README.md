@@ -4,6 +4,10 @@
 
 「あとで読む」記事を管理できるWebアプリ
 
+## アーキテクチャ
+
+<img src="./images/architecture.png" width="500">
+
 ## ユーザガイド
 
 ユーザとして利用する場合、DockerとDocker Composeによる構築を推奨します。
