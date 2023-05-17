@@ -42,7 +42,7 @@ $ make down
 
 ## アーキテクチャ
 
-<img src="./images/architecture.png" width="500">
+<img src="./images/architecture.png" width="800">
 
 ## ディレクトリ構造
 
