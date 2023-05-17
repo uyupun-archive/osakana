@@ -9,3 +9,9 @@ services:
     ports:
       - ${API_PORT}:${API_PORT}
     restart: always
+    networks:
+      - osakana_network
+
+networks:
+  osakana_network:
+    external: true

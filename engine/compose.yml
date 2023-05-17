@@ -10,3 +10,9 @@ services:
     volumes:
       - ./data:/meili_data
     restart: always
+    networks:
+      - osakana_network
+
+networks:
+  osakana_network:
+    external: true
