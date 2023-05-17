@@ -44,9 +44,7 @@ $ make down
 
 <img src="./images/architecture.png" width="800">
 
-## ディレクトリ構造
-
-ディレクトリ構造の抜粋
+## ディレクトリ構成
 
 ```bash
 .
