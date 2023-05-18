@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
+from fastapi.exceptions import RequestValidationError
+from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
 
 from errors.responses import APIError
 from db.repos.reading_list import (
@@ -9,6 +10,11 @@ from db.repos.reading_list import (
     ReadingListRecordNotFoundError
 )
 from lib.scraper import WebPageAccessError
+
+
+async def validation_error_handler(req: Request, e: RequestValidationError):
+    messages = ", ".join(error["msg"] for error in e.errors())
+    return APIError(status_code=HTTP_422_UNPROCESSABLE_ENTITY, message=messages)
 
 
 async def url_already_exists_error_handler(req: Request, e: UrlAlreadyExistsError):
@@ -32,6 +38,7 @@ async def document_not_found_error_handler(req: Request, e: ReadingListRecordNot
 
 
 def register_error_handlers(app: FastAPI):
+    app.add_exception_handler(RequestValidationError, validation_error_handler)
     app.add_exception_handler(UrlAlreadyExistsError, url_already_exists_error_handler)
     app.add_exception_handler(WebPageAccessError, web_page_access_error_handler)
     app.add_exception_handler(ReadingListRecordAlreadyReadError, reading_list_record_already_read_error_handler)

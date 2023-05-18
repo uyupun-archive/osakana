@@ -64,7 +64,7 @@ def search(
 
 
 @router.get("/feeling", response_model=ReadingListFeelingResponse)
-def random(
+def feeling(
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListFeelingResponse:
     """
