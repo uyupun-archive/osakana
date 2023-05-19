@@ -1,8 +1,9 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
+from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
 
-from api.errors.responses import http_422_response_doc
+from api.errors.responses import http_409_error_res_doc, http_422_error_res_doc
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
@@ -26,7 +27,10 @@ from lib.scraper import (
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddRequest, responses=http_422_response_doc)
+@router.post("", response_model=ReadingListAddRequest, responses={
+    HTTP_409_CONFLICT: http_409_error_res_doc,
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def add(
     req: ReadingListAddRequest,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),

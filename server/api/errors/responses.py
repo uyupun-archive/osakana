@@ -13,15 +13,30 @@ class APIError(BaseModel):
         return JSONResponse(status_code=self.status_code, content=self.dict())
 
 
-http_422_response_doc: dict[int | str, dict[str, Any]] = {HTTP_422_UNPROCESSABLE_ENTITY: {
-    "description": "Validation error",
-    "model": APIError,
-    "content": {
-        "application/json": {
-            "example": {
-                "status_code": HTTP_422_UNPROCESSABLE_ENTITY,
-                "message": "field required"
+def _create_error_res_doc(desc: str, status_code: int, message: str) -> dict[str, Any]:
+    return {
+        "description": desc,
+        "model": APIError,
+        "content": {
+            "application/json": {
+                "example": {
+                    "status_code": status_code,
+                    "message": message
+                }
             }
         }
     }
-}}
+
+
+http_409_error_res_doc = _create_error_res_doc(
+    desc="URL already exists",
+    status_code=HTTP_409_CONFLICT,
+    message="URL already exists"
+)
+
+
+http_422_error_res_doc = _create_error_res_doc(
+    desc="Validation error",
+    status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+    message="field required"
+)
