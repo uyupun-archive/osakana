@@ -29,11 +29,17 @@ class ReadingListRepository(BaseRepository):
         reading_list_record = ReadingListRecord.convert_instance(document=document)
         return reading_list_record
 
-    def search(self, keyword: str) -> list[ReadingListRecord]:
+    def search(self, keyword: str, is_bookmarked: bool=False) -> list[ReadingListRecord]:
+        options = {"sort": ["created_at:desc"]}
+
+        if is_bookmarked:
+            bookmark_filter = {"filter": "is_bookmarked = true"}
+            options = {**options, **bookmark_filter}
+
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             keyword=keyword,
-            options={"sort": ["created_at:desc"]}
+            options=options,
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list

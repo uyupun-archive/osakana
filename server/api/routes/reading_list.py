@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
+from starlette.status import (
+    HTTP_403_FORBIDDEN,
+    HTTP_404_NOT_FOUND,
+    HTTP_409_CONFLICT,
+    HTTP_422_UNPROCESSABLE_ENTITY
+)
 
 from api.errors.responses import (
     http_403_error_res_doc,
@@ -67,12 +72,13 @@ def add(
 })
 def search(
     keyword: str,
+    is_bookmarked: bool=False,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
-    reading_list = repo.search(keyword=keyword)
+    reading_list = repo.search(keyword=keyword, is_bookmarked=is_bookmarked)
     return reading_list
 
 
