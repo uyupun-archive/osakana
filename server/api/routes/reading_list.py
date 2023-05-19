@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-# from api.errors.responses import http_422_response_doc
+from api.errors.responses import http_422_response_doc
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
@@ -26,7 +26,7 @@ from lib.scraper import (
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddRequest)
+@router.post("", response_model=ReadingListAddRequest, responses=http_422_response_doc)
 def add(
     req: ReadingListAddRequest,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
