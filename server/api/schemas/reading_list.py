@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from pydantic import BaseModel, HttpUrl
 
 from db.models.reading_list import ReadingListRecord

@@ -25,7 +25,6 @@ from lib.scraper import (
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddResponse)
 def add(
     req: ReadingListAddRequest,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
