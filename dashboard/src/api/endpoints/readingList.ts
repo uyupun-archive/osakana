@@ -62,8 +62,8 @@ export const searchReadingList = async (keyword: string): Promise<ReadingList> =
   throw new ReadingListRecordTypeError();
 };
 
-export const feelingReadingListRecord = async (): Promise<ReadingListRecord> => {
-  const res = await axios.get(`${apiUrl}/api/reading-list/feeling`);
+export const fishingReadingListRecord = async (): Promise<ReadingListRecord> => {
+  const res = await axios.get(`${apiUrl}/api/reading-list/fishing`);
 
   if (isValidReadingListRecordResponse(res.data)) {
     return _parseReadingListRecord(res.data);

@@ -4,7 +4,7 @@ import { useState } from 'preact/hooks';
 import {
   addReadingListRecord,
   searchReadingList,
-  feelingReadingListRecord,
+  fishingReadingListRecord,
   readReadingListRecord,
   unreadReadingListRecord,
   deleteReadingListRecord,
@@ -81,9 +81,9 @@ export const Home = (): JSX.Element => {
     }
   };
 
-  const handleFeelingReadingListRecord = async (): Promise<void> => {
+  const handleFishingReadingListRecord = async (): Promise<void> => {
     try {
-      const res = await feelingReadingListRecord();
+      const res = await fishingReadingListRecord();
       setInputSearchErrorMessage(null);
       setReadingList([res]);
     } catch (e: unknown) {
@@ -106,7 +106,7 @@ export const Home = (): JSX.Element => {
       <div>
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
 				<button type="button" onClick={handleSearchReadingList}>Search</button>
-				<button type="button" onClick={handleFeelingReadingListRecord}>Feeling</button>
+				<button type="button" onClick={handleFishingReadingListRecord}>Fishing</button>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
       {readingList.length <= 0 && <p>No records</p>}

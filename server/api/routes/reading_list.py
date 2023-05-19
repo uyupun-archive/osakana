@@ -13,7 +13,7 @@ from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
     ReadingListSearchResponse,
-    ReadingListFeelingResponse,
+    ReadingListFishingResponse,
     ReadingListReadResponse,
     ReadingListUnreadResponse,
     ReadingListDeleteResponse,
@@ -76,10 +76,10 @@ def search(
     return reading_list
 
 
-@router.get("/feeling", response_model=ReadingListFeelingResponse)
-def feeling(
+@router.get("/fishing", response_model=ReadingListFishingResponse)
+def fishing(
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
-) -> ReadingListFeelingResponse:
+) -> ReadingListFishingResponse:
     """
     リーディングリストからランダムに１件取得
     """

@@ -14,7 +14,7 @@ class ReadingListAddResponse(BaseModel):
 ReadingListSearchResponse = list[ReadingListRecord]
 
 
-ReadingListFeelingResponse = ReadingListRecord
+ReadingListFishingResponse = ReadingListRecord
 
 
 class ReadingListReadResponse(BaseModel):
