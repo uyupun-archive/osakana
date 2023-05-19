@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
 
 
-class APIError(BaseModel):
+class ApiError(BaseModel):
     status_code: int
     message: str
 
@@ -16,7 +16,7 @@ class APIError(BaseModel):
 def _create_error_res_doc(desc: str, status_code: int, message: str) -> dict[str, Any]:
     return {
         "description": desc,
-        "model": APIError,
+        "model": ApiError,
         "content": {
             "application/json": {
                 "example": {
