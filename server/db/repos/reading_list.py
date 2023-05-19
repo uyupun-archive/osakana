@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 from uuid import UUID
 
-from db.client import Document, DocumentNotFoundError, DocumentAlreadyExistsError
+from db.client import DocumentNotFoundError, DocumentAlreadyExistsError
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
@@ -41,25 +41,20 @@ class ReadingListRepository(BaseRepository):
     def random(self) -> ReadingListRecord:
         document_ids = self._get_oldest_document_ids()
         random_id = random.choice(document_ids)
-        document = self._get_random_document(random_id=random_id)
 
-        reading_list_record = ReadingListRecord.convert_instance(document=document)
+        try:
+            reading_list_record = self.find(id=random_id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
         return reading_list_record
 
-    def _get_oldest_document_ids(self) -> list[str]:
+    def _get_oldest_document_ids(self) -> list[UUID]:
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
         return document_ids
-
-    def _get_random_document(self, random_id: str) -> Document:
-        document = self._db_client.search_documents(
-            index_name=self._index_name,
-            keyword=random_id
-        )[0]
-        return document
 
     def read(self, id: UUID) -> None:
         try:
