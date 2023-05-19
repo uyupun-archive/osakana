@@ -1,3 +1,12 @@
+export class ValidationError extends Error {
+  constructor() {
+    const message = 'Validation error';
+    super(message);
+    this.name = 'ValidationError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
 export class UrlNotFoundError extends Error {
   constructor() {
     const message = 'URL not found error';

@@ -3,7 +3,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import ping, reading_list
-from errors.handlers import register_error_handlers
+from api.errors.handlers import register_error_handlers
 from settings import Settings
 
 

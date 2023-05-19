@@ -4,7 +4,7 @@ import { useState } from 'preact/hooks';
 import {
   addReadingListRecord,
   searchReadingList,
-  fetchFeelingReadingListRecord,
+  feelingReadingListRecord,
   readReadingListRecord,
   unreadReadingListRecord,
   deleteReadingListRecord,
@@ -83,7 +83,7 @@ export const Home = (): JSX.Element => {
 
   const handleFeelingReadingListRecord = async (): Promise<void> => {
     try {
-      const res = await fetchFeelingReadingListRecord();
+      const res = await feelingReadingListRecord();
       setInputSearchErrorMessage(null);
       setReadingList([res]);
     } catch (e: unknown) {

@@ -8,6 +8,7 @@ import { isUuid4, isHttpUrl } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import {
+  ValidationError,
   UrlNotFoundError,
   UrlAlreadyExistsError,
   ReadingListRecordTypeError,
@@ -26,6 +27,9 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
     await axios.post(`${apiUrl}/api/reading-list`, {url});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
       if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new UrlNotFoundError();
       }
@@ -39,7 +43,18 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
 };
 
 export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
-  const res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword}});
+  let res;
+  try {
+    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword}});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
 
   if (Array.isArray(res.data) && res.data.every(isValidReadingListRecordResponse)) {
     return res.data.map(_parseReadingListRecord);
@@ -47,7 +62,7 @@ export const searchReadingList = async (keyword: string): Promise<ReadingList> =
   throw new ReadingListRecordTypeError();
 };
 
-export const fetchFeelingReadingListRecord = async (): Promise<ReadingListRecord> => {
+export const feelingReadingListRecord = async (): Promise<ReadingListRecord> => {
   const res = await axios.get(`${apiUrl}/api/reading-list/feeling`);
 
   if (isValidReadingListRecordResponse(res.data)) {
@@ -64,6 +79,9 @@ export const readReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.patch(`${apiUrl}/api/reading-list/read/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
       if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new ReadingListRecordNotFoundError();
       }
@@ -84,6 +102,9 @@ export const unreadReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.patch(`${apiUrl}/api/reading-list/unread/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
       if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new ReadingListRecordNotFoundError();
       }
@@ -104,6 +125,9 @@ export const deleteReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.delete(`${apiUrl}/api/reading-list/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
       if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new ReadingListRecordNotFoundError();
       }
@@ -121,6 +145,9 @@ export const bookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
     await axios.patch(`${apiUrl}/api/reading-list/bookmark/${id}`);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ValidationError();
+      }
       if (e.response?.status === StatusCodes.NOT_FOUND) {
         throw new ReadingListRecordNotFoundError();
       }
