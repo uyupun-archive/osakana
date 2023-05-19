@@ -14,27 +14,27 @@ from lib.scraper import WebPageAccessError
 
 async def validation_error_handler(req: Request, e: RequestValidationError):
     messages = ", ".join(error["msg"] for error in e.errors())
-    return APIError(status_code=HTTP_422_UNPROCESSABLE_ENTITY, message=messages)
+    return APIError(status_code=HTTP_422_UNPROCESSABLE_ENTITY, message=messages).response()
 
 
 async def url_already_exists_error_handler(req: Request, e: UrlAlreadyExistsError):
-    return APIError(status_code=HTTP_409_CONFLICT, message=e.message)
+    return APIError(status_code=HTTP_409_CONFLICT, message=e.message).response()
 
 
 async def web_page_access_error_handler(req: Request, e: WebPageAccessError):
-    return APIError(status_code=e.status_code, message=e.message)
+    return APIError(status_code=e.status_code, message=e.message).response()
 
 
 async def reading_list_record_already_read_error_handler(req: Request, e: ReadingListRecordAlreadyReadError):
-    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
+    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message).response()
 
 
 async def reading_list_record_not_yet_read_error_handler(req: Request, e: ReadingListRecordNotYetReadError):
-    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message)
+    return APIError(status_code=HTTP_403_FORBIDDEN, message=e.message).response()
 
 
 async def document_not_found_error_handler(req: Request, e: ReadingListRecordNotFoundError):
-    return APIError(status_code=HTTP_404_NOT_FOUND, message=e.message)
+    return APIError(status_code=HTTP_404_NOT_FOUND, message=e.message).response()
 
 
 def register_error_handlers(app: FastAPI):
