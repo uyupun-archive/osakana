@@ -1,6 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
+from starlette.status import (
+    HTTP_403_FORBIDDEN,
+    HTTP_404_NOT_FOUND,
+    HTTP_409_CONFLICT,
+    HTTP_422_UNPROCESSABLE_ENTITY
+)
 
 from api.errors.responses import ApiError
 from db.repos.reading_list import (

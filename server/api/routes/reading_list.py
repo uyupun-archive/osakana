@@ -76,7 +76,9 @@ def search(
     return reading_list
 
 
-@router.get("/fishing", response_model=ReadingListFishingResponse)
+@router.get("/fishing", response_model=ReadingListFishingResponse, responses={
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
+})
 def fishing(
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListFishingResponse:
