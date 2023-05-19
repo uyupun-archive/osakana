@@ -3,7 +3,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
 
-from api.errors.responses import http_409_error_res_doc, http_422_error_res_doc
+from api.errors.responses import (
+    http_403_error_res_doc,
+    http_404_error_res_doc,
+    http_409_error_res_doc,
+    http_422_error_res_doc
+)
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
@@ -28,6 +33,7 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
 @router.post("", response_model=ReadingListAddRequest, responses={
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
     HTTP_409_CONFLICT: http_409_error_res_doc,
     HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
 })
@@ -56,7 +62,9 @@ def add(
     return ReadingListAddResponse()
 
 
-@router.get("", response_model=ReadingListSearchResponse)
+@router.get("", response_model=ReadingListSearchResponse, responses={
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def search(
     keyword: str,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
@@ -79,7 +87,11 @@ def feeling(
     return reading_list_record
 
 
-@router.patch("/read/{id}", response_model=ReadingListReadResponse)
+@router.patch("/read/{id}", response_model=ReadingListReadResponse, responses={
+    HTTP_403_FORBIDDEN: http_403_error_res_doc,
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def read(
     id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
@@ -91,7 +103,11 @@ def read(
     return ReadingListReadResponse()
 
 
-@router.patch("/unread/{id}", response_model=ReadingListUnreadResponse)
+@router.patch("/unread/{id}", response_model=ReadingListUnreadResponse, responses={
+    HTTP_403_FORBIDDEN: http_403_error_res_doc,
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def unread(
     id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
@@ -103,7 +119,10 @@ def unread(
     return ReadingListUnreadResponse()
 
 
-@router.delete("/{id}", response_model=ReadingListDeleteResponse)
+@router.delete("/{id}", response_model=ReadingListDeleteResponse, responses={
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def delete(
     id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
@@ -115,7 +134,10 @@ def delete(
     return ReadingListDeleteResponse()
 
 
-@router.patch("/bookmark/{id}", response_model=ReadingListBookmarkResponse)
+@router.patch("/bookmark/{id}", response_model=ReadingListBookmarkResponse, responses={
+    HTTP_404_NOT_FOUND: http_404_error_res_doc,
+    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+})
 def bookmark(
     id: UUID,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)

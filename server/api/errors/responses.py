@@ -28,10 +28,24 @@ def _create_error_res_doc(desc: str, status_code: int, message: str) -> dict[str
     }
 
 
+http_403_error_res_doc = _create_error_res_doc(
+    desc="Web page access error",
+    status_code=HTTP_403_FORBIDDEN,
+    message="Reading list record already read"
+)
+
+
+http_404_error_res_doc = _create_error_res_doc(
+    desc="Web page access error",
+    status_code=HTTP_404_NOT_FOUND,
+    message="404 Client Error: Not Found for url: https://example.com"
+)
+
+
 http_409_error_res_doc = _create_error_res_doc(
     desc="URL already exists",
     status_code=HTTP_409_CONFLICT,
-    message="URL already exists"
+    message="URL already exists error"
 )
 
 
