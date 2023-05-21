@@ -42,10 +42,10 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
   }
 };
 
-export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
+export const searchReadingList = async (keyword: string, is_bookmarked: boolean): Promise<ReadingList> => {
   let res;
   try {
-    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword}});
+    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword, is_bookmarked}});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {

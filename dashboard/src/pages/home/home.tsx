@@ -28,6 +28,7 @@ export const Home = (): JSX.Element => {
   const [inputAddForm, setInputAddForm] = useState<string>('');
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
+  const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
   const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
 
@@ -68,8 +69,9 @@ export const Home = (): JSX.Element => {
 
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
+    const is_bookmarked = bookmarkedFilter;
     try {
-      const res = await searchReadingList(keyword);
+      const res = await searchReadingList(keyword, is_bookmarked);
       setInputSearchErrorMessage(null);
       setReadingList(res);
     } catch (e: unknown) {
@@ -95,6 +97,11 @@ export const Home = (): JSX.Element => {
     }
   };
 
+  const handleBookmarkedFilter = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    setBookmarkedFilter(target.checked);
+  };
+
   return (
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
@@ -107,6 +114,10 @@ export const Home = (): JSX.Element => {
 				<input type="text" placeholder="Keyword" value={inputSearchForm} onChange={handleInputSearchForm} />
 				<button type="button" onClick={handleSearchReadingList}>Search</button>
 				<button type="button" onClick={handleFishingReadingListRecord}>Fishing</button>
+        <div>
+          <input type="checkbox" checked={bookmarkedFilter} onChange={handleBookmarkedFilter} />
+          <label>Bookmarked</label>
+        </div>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
       {readingList.length <= 0 && <p>No records</p>}
