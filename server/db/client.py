@@ -43,6 +43,9 @@ class DBClient:
     def sortable(self, index_name: str, attributes: list[str]) -> None:
         self._client.index(uid=index_name).update_settings({"sortableAttributes": attributes})
 
+    def filterable(self, index_name: str, attributes: list[str]) -> None:
+        self._client.index(uid=index_name).update_settings({"filterableAttributes": attributes})
+
     def add_document(self, index_name: str, key: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
 

@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT, HTTP_422_UNPROCESSABLE_ENTITY
+from starlette.status import (
+    HTTP_403_FORBIDDEN,
+    HTTP_404_NOT_FOUND,
+    HTTP_409_CONFLICT,
+    HTTP_422_UNPROCESSABLE_ENTITY
+)
 
 from api.errors.responses import (
     http_403_error_res_doc,
@@ -32,7 +37,7 @@ from lib.scraper import (
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddRequest, responses={
+@router.post("", response_model=ReadingListAddResponse, responses={
     HTTP_404_NOT_FOUND: http_404_error_res_doc,
     HTTP_409_CONFLICT: http_409_error_res_doc,
     HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
@@ -67,12 +72,20 @@ def add(
 })
 def search(
     keyword: str,
+    is_bookmarked: bool=False,
+    is_read: bool=False,
+    is_unread: bool=False,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
-    reading_list = repo.search(keyword=keyword)
+    reading_list = repo.search(
+        keyword=keyword,
+        is_bookmarked=is_bookmarked,
+        is_read=is_read,
+        is_unread=is_unread
+    )
     return reading_list
 
 

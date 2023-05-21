@@ -29,32 +29,56 @@ class ReadingListRepository(BaseRepository):
         reading_list_record = ReadingListRecord.convert_instance(document=document)
         return reading_list_record
 
-    def search(self, keyword: str) -> list[ReadingListRecord]:
+    def search(
+        self,
+        keyword: str,
+        is_bookmarked: bool=False,
+        is_read: bool=False,
+        is_unread: bool=False,
+    ) -> list[ReadingListRecord]:
+        filters = self._create_filters(is_bookmarked=is_bookmarked, is_read=is_read, is_unread=is_unread)
+        options = {"sort": ["created_at:desc"], "filter": filters}
+
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             keyword=keyword,
-            options={"sort": ["created_at:desc"]}
+            options=options,
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list
 
-    def random(self) -> ReadingListRecord:
-        document_ids = self._get_oldest_document_ids()
-        random_id = random.choice(document_ids)
+    def _create_filters(self, is_bookmarked: bool, is_read: bool, is_unread: bool) -> str:
+        filters = []
 
-        try:
-            reading_list_record = self.find(id=random_id)
-        except DocumentNotFoundError:
-            raise ReadingListRecordNotFoundError()
+        if is_bookmarked:
+            filters.append("is_bookmarked = true")
+        if is_read:
+            filters.append("is_read = true")
+        if is_unread:
+            filters.append("is_read = false")
+
+        return " AND ".join(filters)
+
+    def random(self) -> ReadingListRecord:
+        document_ids = self._get_document_ids()
+        reading_list_record = self._get_random_record(document_ids=document_ids)
         return reading_list_record
 
-    def _get_oldest_document_ids(self) -> list[UUID]:
+    def _get_document_ids(self) -> list[UUID]:
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
         return document_ids
+
+    def _get_random_record(self, document_ids: list[UUID]) -> ReadingListRecord:
+        random_id = random.choice(document_ids)
+        try:
+            reading_list_record = self.find(id=random_id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
+        return reading_list_record
 
     def read(self, id: UUID) -> None:
         try:

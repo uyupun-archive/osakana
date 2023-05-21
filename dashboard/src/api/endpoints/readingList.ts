@@ -2,7 +2,13 @@ import axios from 'axios';
 import { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
-import type { Uuid4, HttpUrl, ReadingList, ReadingListRecord } from '../../types';
+import type {
+  Uuid4,
+  HttpUrl,
+  ReadingList,
+  ReadingListRecord,
+  ReadingListSearchFilters
+} from '../../types';
 import type { ReadingListRecordResponse } from '../types';
 import { isUuid4, isHttpUrl } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
@@ -42,10 +48,10 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
   }
 };
 
-export const searchReadingList = async (keyword: string): Promise<ReadingList> => {
+export const searchReadingList = async (keyword: string, filters: ReadingListSearchFilters): Promise<ReadingList> => {
   let res;
   try {
-    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword}});
+    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
