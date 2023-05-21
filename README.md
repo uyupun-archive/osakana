@@ -49,7 +49,7 @@ $ make down
 ```bash
 .
 ├── Makefile                    # Docker Compose関連のスクリプト
-├── README.md       
+├── README.md
 ├── dashboard
 │   ├── .env                    # 環境変数
 │   ├── .env.example            # 環境変数の例
@@ -95,6 +95,9 @@ $ make down
     ├── Pipfile.lock
     ├── README.md
     ├── api
+    │   │   ├── errors
+    │   │   ├── handlers.py     # エラーハンドラ
+    │   │   └── responses.py    # エラーのレスポンスとそのドキュメントの定義
     │   ├── routes              # APIのルーティング
     │   └── schemas             # APIのスキーマ
     ├── compose.yml
@@ -105,9 +108,6 @@ $ make down
     │   ├── models              # データモデル
     │   ├── repos               # リポジトリ
     │   └── settings.py         # Meilisearchの設定
-    ├── errors
-    │   ├── handlers.py         # エラーハンドラ
-    │   └── responses.py        # エラーのレスポンスの定義
     ├── lib
     │   ├── scraper.py          # Webスクレイピング関連の処理
     │   └── timezone.py         # タイムゾーン関連の処理
