@@ -60,22 +60,25 @@ class ReadingListRepository(BaseRepository):
         return " AND ".join(filters)
 
     def random(self) -> ReadingListRecord:
-        document_ids = self._get_oldest_document_ids()
-        random_id = random.choice(document_ids)
-
-        try:
-            reading_list_record = self.find(id=random_id)
-        except DocumentNotFoundError:
-            raise ReadingListRecordNotFoundError()
+        document_ids = self._get_document_ids()
+        reading_list_record = self._get_random_record(document_ids=document_ids)
         return reading_list_record
 
-    def _get_oldest_document_ids(self) -> list[UUID]:
+    def _get_document_ids(self) -> list[UUID]:
         documents = self._db_client.search_documents(
             index_name=self._index_name,
             options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
         )
         document_ids = [document["id"] for document in documents]
         return document_ids
+
+    def _get_random_record(self, document_ids: list[UUID]) -> ReadingListRecord:
+        random_id = random.choice(document_ids)
+        try:
+            reading_list_record = self.find(id=random_id)
+        except DocumentNotFoundError:
+            raise ReadingListRecordNotFoundError()
+        return reading_list_record
 
     def read(self, id: UUID) -> None:
         try:
