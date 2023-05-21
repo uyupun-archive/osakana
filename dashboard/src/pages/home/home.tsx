@@ -25,11 +25,30 @@ import NoImage from '../../assets/no-image.svg';
 import './home.css';
 
 export const Home = (): JSX.Element => {
+  enum ReadFilter {
+    ALL = 'all',
+    READ = 'read',
+    UNREAD = 'unread',
+  };
+
+  const parseReadFilter = (value: string): ReadFilter => {
+    switch (value) {
+      case ReadFilter.ALL:
+        return ReadFilter.ALL;
+      case ReadFilter.READ:
+        return ReadFilter.READ;
+      case ReadFilter.UNREAD:
+        return ReadFilter.UNREAD;
+      default:
+        throw new Error();
+    }
+  };
+
   const [inputAddForm, setInputAddForm] = useState<string>('');
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
-  const [readFilter, setReadFilter] = useState<string>('all');
+  const [readFilter, setReadFilter] = useState<ReadFilter>(ReadFilter.ALL);
   const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
 
@@ -114,7 +133,7 @@ export const Home = (): JSX.Element => {
 
   const handleReadFilter = (e: Event): void => {
     const target = e.target as HTMLInputElement;
-    setReadFilter(target.value);
+    setReadFilter(parseReadFilter(target.value));
   };
 
   return (
@@ -134,11 +153,26 @@ export const Home = (): JSX.Element => {
           <label>Bookmarked</label>
         </div>
         <div>
-          <input type="radio" value="all" checked={readFilter === 'all'} onChange={handleReadFilter} />
+          <input
+            type="radio"
+            value={ReadFilter.ALL}
+            checked={readFilter === ReadFilter.ALL}
+            onChange={handleReadFilter}
+          />
           <label>All</label>
-          <input type="radio" value="read" checked={readFilter === 'read'} onChange={handleReadFilter} />
+          <input
+            type="radio"
+            value={ReadFilter.READ}
+            checked={readFilter === ReadFilter.READ}
+            onChange={handleReadFilter}
+          />
           <label>Read</label>
-          <input type="radio" value="unread" checked={readFilter === 'unread'} onChange={handleReadFilter} />
+          <input
+            type="radio"
+            value={ReadFilter.UNREAD}
+            checked={readFilter === ReadFilter.UNREAD}
+            onChange={handleReadFilter}
+          />
           <label>Unread</label>
         </div>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
