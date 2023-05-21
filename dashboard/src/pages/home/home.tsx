@@ -10,7 +10,12 @@ import {
   deleteReadingListRecord,
   bookmarkReadingListRecord
 } from '../../api/endpoints/readingList';
-import type { Uuid4, ReadingList, ReadingListRecord as ReadingListRecordProps } from '../../types';
+import type {
+  Uuid4,
+  ReadingList,
+  ReadingListRecord as ReadingListRecordProps,
+  ReadingListSearchFilters
+} from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import {
   UrlNotFoundError,
@@ -40,9 +45,18 @@ export const Home = (): JSX.Element => {
       case ReadFilter.UNREAD:
         return ReadFilter.UNREAD;
       default:
-        throw new Error();
+        throw new InvalidReadFilterError();
     }
   };
+
+  class InvalidReadFilterError extends Error {
+    constructor() {
+      const message = 'Invalid read filter error';
+      super(message);
+      this.name = 'InvalidReadFilterError';
+      Object.setPrototypeOf(this, new.target.prototype);
+    };
+  }
 
   const [inputAddForm, setInputAddForm] = useState<string>('');
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
@@ -89,7 +103,7 @@ export const Home = (): JSX.Element => {
 
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
-    const filters: {[key: string]: boolean} = {};
+    const filters: ReadingListSearchFilters = {};
     if (bookmarkedFilter) {
       filters.is_bookmarked = true;
     }

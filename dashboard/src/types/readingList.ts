@@ -14,3 +14,9 @@ export interface ReadingListRecord {
 };
 
 export type ReadingList = Array<ReadingListRecord>;
+
+export interface ReadingListSearchFilters {
+  is_bookmarked?: boolean;
+  is_read?: boolean;
+  is_unread?: boolean;
+};
