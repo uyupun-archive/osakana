@@ -37,7 +37,7 @@ from lib.scraper import (
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddRequest, responses={
+@router.post("", response_model=ReadingListAddResponse, responses={
     HTTP_404_NOT_FOUND: http_404_error_res_doc,
     HTTP_409_CONFLICT: http_409_error_res_doc,
     HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
