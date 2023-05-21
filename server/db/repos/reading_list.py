@@ -36,15 +36,8 @@ class ReadingListRepository(BaseRepository):
         is_read: bool=False,
         is_unread: bool=False,
     ) -> list[ReadingListRecord]:
-        filters = []
-        if is_bookmarked:
-            filters.append("is_bookmarked = true")
-        if is_read:
-            filters.append("is_read = true")
-        if is_unread:
-            filters.append("is_read = false")
-
-        options = {"sort": ["created_at:desc"], "filter": " AND ".join(filters)}
+        filters = self._create_filters(is_bookmarked=is_bookmarked, is_read=is_read, is_unread=is_unread)
+        options = {"sort": ["created_at:desc"], "filter": filters}
 
         documents = self._db_client.search_documents(
             index_name=self._index_name,
@@ -53,6 +46,18 @@ class ReadingListRepository(BaseRepository):
         )
         reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
         return reading_list
+
+    def _create_filters(self, is_bookmarked: bool, is_read: bool, is_unread: bool) -> str:
+        filters = []
+
+        if is_bookmarked:
+            filters.append("is_bookmarked = true")
+        if is_read:
+            filters.append("is_read = true")
+        if is_unread:
+            filters.append("is_read = false")
+
+        return " AND ".join(filters)
 
     def random(self) -> ReadingListRecord:
         document_ids = self._get_oldest_document_ids()
