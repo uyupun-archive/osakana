@@ -73,12 +73,19 @@ def add(
 def search(
     keyword: str,
     is_bookmarked: bool=False,
+    is_read: bool=False,
+    is_unread: bool=False,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
 ) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
     """
-    reading_list = repo.search(keyword=keyword, is_bookmarked=is_bookmarked)
+    reading_list = repo.search(
+        keyword=keyword,
+        is_bookmarked=is_bookmarked,
+        is_read=is_read,
+        is_unread=is_unread
+    )
     return reading_list
 
 

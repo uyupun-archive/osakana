@@ -22,7 +22,8 @@ class CreateReadingListCollectionMigrator(BaseMigrator):
         self._db_client.sortable(index_name=self._index_name, attributes=[created_at, updated_at])
 
         is_bookmarked = self._reading_list_record.has_field(field="is_bookmarked")
-        self._db_client.filterable(index_name=self._index_name, attributes=[is_bookmarked])
+        is_read = self._reading_list_record.has_field(field="is_read")
+        self._db_client.filterable(index_name=self._index_name, attributes=[is_bookmarked, is_read])
 
     def down(self) -> None:
         self._db_client.delete_index(index_name=self._index_name)

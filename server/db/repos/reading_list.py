@@ -29,12 +29,22 @@ class ReadingListRepository(BaseRepository):
         reading_list_record = ReadingListRecord.convert_instance(document=document)
         return reading_list_record
 
-    def search(self, keyword: str, is_bookmarked: bool=False) -> list[ReadingListRecord]:
-        options = {"sort": ["created_at:desc"]}
-
+    def search(
+        self,
+        keyword: str,
+        is_bookmarked: bool=False,
+        is_read: bool=False,
+        is_unread: bool=False,
+    ) -> list[ReadingListRecord]:
+        filters = []
         if is_bookmarked:
-            bookmark_filter = {"filter": "is_bookmarked = true"}
-            options = {**options, **bookmark_filter}
+            filters.append("is_bookmarked = true")
+        if is_read:
+            filters.append("is_read = true")
+        if is_unread:
+            filters.append("is_read = false")
+
+        options = {"sort": ["created_at:desc"], "filter": " AND ".join(filters)}
 
         documents = self._db_client.search_documents(
             index_name=self._index_name,
