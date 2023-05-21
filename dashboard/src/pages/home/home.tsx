@@ -29,6 +29,7 @@ export const Home = (): JSX.Element => {
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
+  const [readFilter, setReadFilter] = useState<string>('all');
   const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
 
@@ -69,9 +70,18 @@ export const Home = (): JSX.Element => {
 
   const handleSearchReadingList = async (): Promise<void> => {
     const keyword = inputSearchForm;
-    const is_bookmarked = bookmarkedFilter;
+    const filters: {[key: string]: boolean} = {};
+    if (bookmarkedFilter) {
+      filters.is_bookmarked = true;
+    }
+    if (readFilter == 'read') {
+      filters.is_read = true;
+    }
+    if (readFilter == 'unread') {
+      filters.is_unread = true;
+    }
     try {
-      const res = await searchReadingList(keyword, is_bookmarked);
+      const res = await searchReadingList(keyword, filters);
       setInputSearchErrorMessage(null);
       setReadingList(res);
     } catch (e: unknown) {
@@ -102,6 +112,11 @@ export const Home = (): JSX.Element => {
     setBookmarkedFilter(target.checked);
   };
 
+  const handleReadFilter = (e: Event): void => {
+    const target = e.target as HTMLInputElement;
+    setReadFilter(target.value);
+  };
+
   return (
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
@@ -117,6 +132,14 @@ export const Home = (): JSX.Element => {
         <div>
           <input type="checkbox" checked={bookmarkedFilter} onChange={handleBookmarkedFilter} />
           <label>Bookmarked</label>
+        </div>
+        <div>
+          <input type="radio" value="all" checked={readFilter === 'all'} onChange={handleReadFilter} />
+          <label>All</label>
+          <input type="radio" value="read" checked={readFilter === 'read'} onChange={handleReadFilter} />
+          <label>Read</label>
+          <input type="radio" value="unread" checked={readFilter === 'unread'} onChange={handleReadFilter} />
+          <label>Unread</label>
         </div>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
