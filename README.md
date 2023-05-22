@@ -42,6 +42,8 @@ $ make down
 
 ## アーキテクチャ
 
+- データ追加時の動作
+
 <img src="./images/architecture.png" width="800">
 
 ## ディレクトリ構成
