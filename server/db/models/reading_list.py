@@ -3,10 +3,11 @@ from datetime import datetime
 from uuid import uuid4, UUID
 from zoneinfo import ZoneInfo
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, HttpUrl, PrivateAttr
 
 from db.client import Document
 from db.models.base import OsakanaBaseModel
+from lib.ngrams import NgramService
 from lib.timezone import get_timezone
 
 
@@ -22,9 +23,16 @@ class ReadingListRecord(OsakanaBaseModel):
     read_at: datetime | None = None
     bookmarked_at: datetime | None = None
 
+    _title_bigram: list[str] = PrivateAttr(default=[])
+    _title_trigram: list[str] = PrivateAttr(default=[])
+
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
+
+    def set_title_ngrams(self, ngram_service: NgramService = NgramService()):
+        self._title_bigram = ngram_service.generate(text=self.title, n=2)
+        self._title_trigram = ngram_service.generate(text=self.title, n=3)
 
     def _update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)
@@ -53,6 +61,8 @@ class ReadingListRecord(OsakanaBaseModel):
             "id": str(reading_list_record.id),
             "url": reading_list_record.url,
             "title": reading_list_record.title,
+            "_title_bigram": reading_list_record._title_bigram,
+            "_title_trigram": reading_list_record._title_trigram,
             "is_read": reading_list_record.is_read,
             "is_bookmarked": reading_list_record.is_bookmarked,
             "thumb": reading_list_record.thumb,
