@@ -23,16 +23,16 @@ class ReadingListRecord(OsakanaBaseModel):
     read_at: datetime | None = None
     bookmarked_at: datetime | None = None
 
-    _title_bigram: list[str] = PrivateAttr(default=[])
-    _title_trigram: list[str] = PrivateAttr(default=[])
+    _title_bigrams: list[str] = PrivateAttr(default=[])
+    _title_trigrams: list[str] = PrivateAttr(default=[])
 
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
 
     def set_title_ngrams(self, ngram_service: NgramService = NgramService()):
-        self._title_bigram = ngram_service.generate(text=self.title, n=2)
-        self._title_trigram = ngram_service.generate(text=self.title, n=3)
+        self._title_bigrams = ngram_service.generate(text=self.title, n=2)
+        self._title_trigrams = ngram_service.generate(text=self.title, n=3)
 
     def _update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)
@@ -61,8 +61,8 @@ class ReadingListRecord(OsakanaBaseModel):
             "id": str(reading_list_record.id),
             "url": reading_list_record.url,
             "title": reading_list_record.title,
-            "_title_bigram": reading_list_record._title_bigram,
-            "_title_trigram": reading_list_record._title_trigram,
+            "_title_bigrams": reading_list_record._title_bigrams,
+            "_title_trigrams": reading_list_record._title_trigrams,
             "is_read": reading_list_record.is_read,
             "is_bookmarked": reading_list_record.is_bookmarked,
             "thumb": reading_list_record.thumb,

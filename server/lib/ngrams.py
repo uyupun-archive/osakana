@@ -14,7 +14,7 @@ class NgramService:
 
 if __name__ == "__main__":
     text = sys.argv[1]
-    bigram = NgramService.generate(text=text, n=2)
-    trigram = NgramService.generate(text=text, n=3)
-    print("Bigram: ", bigram)
-    print("Trigram: ", trigram)
+    bigrams = NgramService.generate(text=text, n=2)
+    trigrams = NgramService.generate(text=text, n=3)
+    print("Bigrams: ", bigrams)
+    print("Trigrams: ", trigrams)
