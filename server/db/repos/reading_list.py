@@ -12,6 +12,7 @@ class ReadingListRepository(BaseRepository):
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.set_title_ngrams()
+        reading_list_record.set_title_morphemes()
         document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
         try:
             self._db_client.add_document(

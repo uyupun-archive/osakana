@@ -8,6 +8,7 @@ from pydantic import Field, HttpUrl, PrivateAttr
 from db.client import Document
 from db.models.base import OsakanaBaseModel
 from lib.ngrams import NgramService
+from lib.morphological_analysis import MorphologicalAnalysisService
 from lib.timezone import get_timezone
 
 
@@ -25,14 +26,18 @@ class ReadingListRecord(OsakanaBaseModel):
 
     _title_bigrams: list[str] = PrivateAttr(default=[])
     _title_trigrams: list[str] = PrivateAttr(default=[])
+    _title_morphemes: list[str] = PrivateAttr(default=[])
 
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
 
-    def set_title_ngrams(self, ngram_service: NgramService = NgramService()):
-        self._title_bigrams = ngram_service.generate(text=self.title, n=2)
-        self._title_trigrams = ngram_service.generate(text=self.title, n=3)
+    def set_title_ngrams(self, service: NgramService = NgramService()):
+        self._title_bigrams = service.generate(text=self.title, n=2)
+        self._title_trigrams = service.generate(text=self.title, n=3)
+
+    def set_title_morphemes(self, service: MorphologicalAnalysisService = MorphologicalAnalysisService()):
+        self._title_morphemes = service.generate(text=self.title)
 
     def _update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)
@@ -63,6 +68,7 @@ class ReadingListRecord(OsakanaBaseModel):
             "title": reading_list_record.title,
             "_title_bigrams": reading_list_record._title_bigrams,
             "_title_trigrams": reading_list_record._title_trigrams,
+            "_title_morphemes": reading_list_record._title_morphemes,
             "is_read": reading_list_record.is_read,
             "is_bookmarked": reading_list_record.is_bookmarked,
             "thumb": reading_list_record.thumb,
