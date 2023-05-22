@@ -11,7 +11,7 @@ from requests.exceptions import HTTPError
 from typing import Type
 
 
-class WebPageScraper:
+class WebScrapingService:
     def __init__(self):
         self._url = None
         self._res = None
@@ -72,7 +72,7 @@ class WebPageScraper:
         return icon_link
 
     @classmethod
-    def create_scraper(cls) -> WebPageScraper:
+    def create_service(cls) -> WebScrapingService:
         return cls()
 
 
@@ -102,11 +102,11 @@ class FaviconNotFoundError(Exception):
 
 if __name__ == "__main__":
     url = sys.argv[1]
-    scraper = WebPageScraper()
-    scraper.fetch(url=parse_obj_as(HttpUrl, url))
+    service = WebScrapingService()
+    service.fetch(url=parse_obj_as(HttpUrl, url))
 
-    title = scraper.get_title()
+    title = service.get_title()
     print("Title:", title)
 
-    favicon_link = scraper.get_favicon_link()
+    favicon_link = service.get_favicon_link()
     print("Favicon link:", favicon_link)

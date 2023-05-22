@@ -14,7 +14,7 @@ from db.repos.reading_list import (
     ReadingListRecordNotYetReadError,
     ReadingListRecordNotFoundError
 )
-from lib.scraper import WebPageAccessError
+from lib.web_scraping import WebPageAccessError
 
 
 async def validation_error_handler(req: Request, e: RequestValidationError):

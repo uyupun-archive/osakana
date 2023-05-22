@@ -11,6 +11,8 @@ requests = "*"
 beautifulsoup4 = "*"
 meilisearch = "*"
 cchardet = "*"
+sudachipy = "*"
+sudachidict-core = "*"
 
 [dev-packages]
 

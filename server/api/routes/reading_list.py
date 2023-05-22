@@ -26,8 +26,8 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
-from lib.scraper import (
-    WebPageScraper,
+from lib.web_scraping import (
+    WebScrapingService,
     TitleNotFoundError,
     IconNotFoundError,
     FaviconNotFoundError
@@ -45,20 +45,20 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 def add(
     req: ReadingListAddRequest,
     repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
-    scraper: WebPageScraper=Depends(WebPageScraper.create_scraper)
+    service: WebScrapingService=Depends(WebScrapingService.create_service)
 ) -> ReadingListAddResponse:
     """
     リーディングリストに追加
     """
-    scraper.fetch(url=req.url)
+    service.fetch(url=req.url)
 
     try:
-        title = scraper.get_title()
+        title = service.get_title()
     except TitleNotFoundError:
         title = "No title"
 
     try:
-        thumb = scraper.get_favicon_link()
+        thumb = service.get_favicon_link()
     except (IconNotFoundError, FaviconNotFoundError):
         thumb = None
 
