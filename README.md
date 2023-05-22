@@ -50,6 +50,7 @@ $ make down
 
 ```bash
 .
+├── LICENSE                             # ライセンス(AGPLv3)
 ├── Makefile                            # Docker Compose関連のスクリプト
 ├── README.md
 ├── dashboard
