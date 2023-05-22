@@ -9,7 +9,7 @@ $ cd server
 
 $ cp .env.example .env
 
-$ pipenv install
+$ pipenv install --dev
 
 # cchardetのインストールに失敗する場合は以下を実行し、再度 `pipenv install` を実行する
 $ pip install --upgrade Cython
