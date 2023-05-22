@@ -17,22 +17,21 @@ from api.errors.responses import (
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
-    ReadingListSearchResponse,
+    ReadingListBookmarkResponse,
+    ReadingListDeleteResponse,
     ReadingListFishingResponse,
     ReadingListReadResponse,
+    ReadingListSearchResponse,
     ReadingListUnreadResponse,
-    ReadingListDeleteResponse,
-    ReadingListBookmarkResponse,
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from lib.web_scraping import (
-    WebScrapingService,
-    TitleNotFoundError,
-    IconNotFoundError,
     FaviconNotFoundError,
+    IconNotFoundError,
+    TitleNotFoundError,
+    WebScrapingService,
 )
-
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 

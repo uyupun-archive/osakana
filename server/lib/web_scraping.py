@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import sys
+from typing import Type
 from urllib.parse import urljoin
 
 import cchardet
@@ -8,7 +10,6 @@ from bs4 import BeautifulSoup, Tag
 from pydantic import HttpUrl, ValidationError, parse_obj_as
 from requests import Response
 from requests.exceptions import HTTPError
-from typing import Type
 
 
 class WebScrapingService:

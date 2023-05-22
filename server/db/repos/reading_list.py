@@ -1,8 +1,9 @@
 from __future__ import annotations
+
 import random
 from uuid import UUID
 
-from db.client import DocumentNotFoundError, DocumentAlreadyExistsError
+from db.client import DocumentAlreadyExistsError, DocumentNotFoundError
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 

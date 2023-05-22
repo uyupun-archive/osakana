@@ -1,14 +1,15 @@
 from __future__ import annotations
+
 from datetime import datetime
-from uuid import uuid4, UUID
+from uuid import UUID, uuid4
 from zoneinfo import ZoneInfo
 
 from pydantic import Field, HttpUrl, PrivateAttr
 
 from db.client import Document
 from db.models.base import OsakanaBaseModel
-from lib.ngrams import NgramService
 from lib.morphological_analysis import MorphologicalAnalysisService
+from lib.ngrams import NgramService
 from lib.timezone import get_timezone
 
 

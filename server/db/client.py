@@ -4,11 +4,10 @@ from typing import Any
 from uuid import UUID
 
 import meilisearch
-from meilisearch.models.task import TaskInfo
 from meilisearch.errors import MeilisearchApiError
+from meilisearch.models.task import TaskInfo
 
 from db.settings import Settings
-
 
 Document = dict[str, Any]
 

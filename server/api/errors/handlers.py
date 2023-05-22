@@ -9,10 +9,10 @@ from starlette.status import (
 
 from api.errors.responses import ApiError
 from db.repos.reading_list import (
-    UrlAlreadyExistsError,
     ReadingListRecordAlreadyReadError,
-    ReadingListRecordNotYetReadError,
     ReadingListRecordNotFoundError,
+    ReadingListRecordNotYetReadError,
+    UrlAlreadyExistsError,
 )
 from lib.web_scraping import WebPageAccessError
 

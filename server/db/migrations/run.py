@@ -1,9 +1,9 @@
 import sys
 
-from db.migrations.base import BaseMigrator
 from db.migrations._01_create_reading_list_collection import (
     CreateReadingListCollectionMigrator,
 )
+from db.migrations.base import BaseMigrator
 
 
 class MigratorExecutor:
