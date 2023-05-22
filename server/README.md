@@ -29,5 +29,5 @@ $ python -m db.migrations.run 01 down
 $ open http://localhost:8000/redoc
 
 # タイトルを取得するスクレイピングの実行(検証用途)
-$ python -m lib.scraper <url>
+$ python -m lib.web_scraping <url>
 ```
