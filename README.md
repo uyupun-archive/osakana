@@ -48,47 +48,47 @@ $ make down
 
 ```bash
 .
-├── Makefile                    # Docker Compose関連のスクリプト
+├── Makefile                            # Docker Compose関連のスクリプト
 ├── README.md
 ├── dashboard
-│   ├── .env                    # 環境変数
-│   ├── .env.example            # 環境変数の例
+│   ├── .env                            # 環境変数
+│   ├── .env.example                    # 環境変数の例
 │   ├── .gitignore
-│   ├── .node-version           # nodenvが求めるNode.jsのバージョン
+│   ├── .node-version                   # nodenvが求めるNode.jsのバージョン
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── compose.yml
-│   ├── default.conf.template   # Dockerfileから使用されるnginxの設定
+│   ├── default.conf.template           # Dockerfileから使用されるnginxの設定
 │   ├── index.html
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── public
 │   ├── src
 │   │   ├── api
-│   │   │   ├── endpoints       # APIとの通信処理
-│   │   │   ├── errors          # APIとの通信で固有に発生するエラーの定義
-│   │   │   └── types           # APIとの通信で固有に使用する型定義
+│   │   │   ├── endpoints               # APIとの通信処理
+│   │   │   ├── errors                  # APIとの通信で固有に発生するエラーの定義
+│   │   │   └── types                   # APIとの通信で固有に使用する型定義
 │   │   ├── assets
-│   │   ├── errors              # ダッシュボード全体で使用されるエラーの定義
+│   │   ├── errors                      # ダッシュボード全体で使用されるエラーの定義
 │   │   ├── index.css
 │   │   ├── main.tsx
-│   │   ├── pages               # 各ページの定義
-│   │   ├── types               # ダッシュボード全体で使用される型定義
+│   │   ├── pages                       # 各ページの定義
+│   │   ├── types                       # ダッシュボード全体で使用される型定義
 │   │   └── vite-env.d.ts
 │   ├── tsconfig.json
 │   ├── tsconfig.node.json
-│   └── vite.config.ts          # ダッシュボード全体の設定
+│   └── vite.config.ts                  # ダッシュボード全体の設定
 ├── engine
-│   ├── .env                    # 環境変数
-│   ├── .env.example            # 環境変数の例
+│   ├── .env                            # 環境変数
+│   ├── .env.example                    # 環境変数の例
 │   ├── .gitignore
 │   ├── README.md
 │   ├── compose.yml
-│   └── data                    # Meilisearchが保持するデータ
-├── images                      # ドキュメントで利用する画像
+│   └── data                            # Meilisearchが保持するデータ
+├── images                              # ドキュメントで利用する画像
 └── server
-    ├── .env                    # 環境変数
-    ├── .env.example            # 環境変数の例
+    ├── .env                            # 環境変数
+    ├── .env.example                    # 環境変数の例
     ├── .gitignore
     ├── Dockerfile
     ├── Pipfile
@@ -96,21 +96,23 @@ $ make down
     ├── README.md
     ├── api
     │   │   ├── errors
-    │   │   ├── handlers.py     # エラーハンドラ
-    │   │   └── responses.py    # エラーのレスポンスとそのドキュメントの定義
-    │   ├── routes              # APIのルーティング
-    │   └── schemas             # APIのスキーマ
+    │   │   ├── handlers.py             # エラーハンドラ
+    │   │   └── responses.py            # エラーのレスポンスとそのドキュメントの定義
+    │   ├── routes                      # APIのルーティング
+    │   └── schemas                     # APIのスキーマ
     ├── compose.yml
     ├── db
     │   ├── __init__.py
-    │   ├── client.py           # Meilisearchのクライアント
-    │   ├── migrations          # DBマイグレーション
-    │   ├── models              # データモデル
-    │   ├── repos               # リポジトリ
-    │   └── settings.py         # Meilisearchの設定
+    │   ├── client.py                   # Meilisearchのクライアント
+    │   ├── migrations                  # DBマイグレーション
+    │   ├── models                      # データモデル
+    │   ├── repos                       # リポジトリ
+    │   └── settings.py                 # Meilisearchの設定
     ├── lib
-    │   ├── scraper.py          # Webスクレイピング関連の処理
-    │   └── timezone.py         # タイムゾーン関連の処理
-    ├── main.py                 # APIのエントリポイント
-    └── settings.py             # API全体の設定
+    │   ├── morphological_analysis.py   # 形態素解析を行うサービス
+    │   ├── ngrams.py                   # n-gramを行うサービス
+    │   ├── timezone.py                 # タイムゾーン関連の処理
+    │   └── web_scraping.py             # Webスクレイピングを行うサービス
+    ├── main.py                         # APIのエントリポイント
+    └── settings.py                     # API全体の設定
 ```
