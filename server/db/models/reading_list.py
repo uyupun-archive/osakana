@@ -36,13 +36,15 @@ class ReadingListRecord(OsakanaBaseModel):
         self._title_bigrams = service.generate(text=self.title, n=2)
         self._title_trigrams = service.generate(text=self.title, n=3)
 
-    def set_title_morphemes(self, service: MorphologicalAnalysisService = MorphologicalAnalysisService()):
+    def set_title_morphemes(
+        self, service: MorphologicalAnalysisService = MorphologicalAnalysisService()
+    ):
         self._title_morphemes = service.generate(text=self.title)
 
-    def _update_timestamp(self, timezone: ZoneInfo=get_timezone()) -> None:
+    def _update_timestamp(self, timezone: ZoneInfo = get_timezone()) -> None:
         self.updated_at = datetime.now(tz=timezone)
 
-    def read(self, timezone: ZoneInfo=get_timezone()):
+    def read(self, timezone: ZoneInfo = get_timezone()):
         self._update_timestamp()
         self.is_read = True
         self.read_at = datetime.now(tz=timezone)
@@ -52,7 +54,7 @@ class ReadingListRecord(OsakanaBaseModel):
         self.is_read = False
         self.read_at = None
 
-    def bookmark(self, timezone: ZoneInfo=get_timezone()):
+    def bookmark(self, timezone: ZoneInfo = get_timezone()):
         self._update_timestamp()
         self.is_bookmarked = not self.is_bookmarked
         if self.is_bookmarked:
@@ -74,8 +76,12 @@ class ReadingListRecord(OsakanaBaseModel):
             "thumb": reading_list_record.thumb,
             "created_at": reading_list_record.created_at.isoformat(),
             "updated_at": reading_list_record.updated_at.isoformat(),
-            "read_at": reading_list_record.read_at.isoformat() if reading_list_record.read_at else None,
-            "bookmarked_at": reading_list_record.bookmarked_at.isoformat() if reading_list_record.bookmarked_at else None
+            "read_at": reading_list_record.read_at.isoformat()
+            if reading_list_record.read_at
+            else None,
+            "bookmarked_at": reading_list_record.bookmarked_at.isoformat()
+            if reading_list_record.bookmarked_at
+            else None,
         }
         return document
 
@@ -91,6 +97,6 @@ class ReadingListRecord(OsakanaBaseModel):
             created_at=document["created_at"],
             updated_at=document["updated_at"],
             read_at=document["read_at"],
-            bookmarked_at=document["bookmarked_at"]
+            bookmarked_at=document["bookmarked_at"],
         )
         return reading_list_record

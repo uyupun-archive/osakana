@@ -17,7 +17,7 @@ Documents = list[Document]
 
 
 class DBClient:
-    def __init__(self, settings: Settings=Settings.get_settings()) -> None:
+    def __init__(self, settings: Settings = Settings.get_settings()) -> None:
         address = settings.ADDRESS
         port = settings.PORT
 
@@ -41,17 +41,20 @@ class DBClient:
         return False
 
     def sortable(self, index_name: str, attributes: list[str]) -> None:
-        self._client.index(uid=index_name).update_settings({"sortableAttributes": attributes})
+        self._client.index(uid=index_name).update_settings(
+            {"sortableAttributes": attributes}
+        )
 
     def filterable(self, index_name: str, attributes: list[str]) -> None:
-        self._client.index(uid=index_name).update_settings({"filterableAttributes": attributes})
+        self._client.index(uid=index_name).update_settings(
+            {"filterableAttributes": attributes}
+        )
 
     def add_document(self, index_name: str, key: str, document: Document) -> None:
         index = self._client.index(uid=index_name)
 
         documents = self.search_documents(
-            index_name=index_name,
-            keyword=f'"{document[key]}"'
+            index_name=index_name, keyword=f'"{document[key]}"'
         )
         if documents:
             raise DocumentAlreadyExistsError()
@@ -61,13 +64,19 @@ class DBClient:
 
     def get_document(self, index_name: str, id: UUID) -> Document:
         try:
-            document = self._client.index(uid=index_name).get_document(document_id=str(id))
+            document = self._client.index(uid=index_name).get_document(
+                document_id=str(id)
+            )
         except MeilisearchApiError as e:
             raise DocumentNotFoundError(e)
         return dict(document)["_Document__doc"]
 
-    def search_documents(self, index_name: str, options: dict={}, keyword: str="") -> Documents:
-        documents = self._client.index(uid=index_name).search(query=keyword, opt_params=options)
+    def search_documents(
+        self, index_name: str, options: dict = {}, keyword: str = ""
+    ) -> Documents:
+        documents = self._client.index(uid=index_name).search(
+            query=keyword, opt_params=options
+        )
         return documents["hits"]
 
     def update_document(self, index_name: str, document: Document) -> None:
@@ -85,7 +94,9 @@ class DBClient:
         task_status = None
         while task_status != TaskStatus.Succeeded:
             sleep(1)
-            task_status = self._client.index(uid=index_name).get_task(uid=task.task_uid).status
+            task_status = (
+                self._client.index(uid=index_name).get_task(uid=task.task_uid).status
+            )
 
             if task_status == TaskStatus.Failed:
                 raise InvalidDocumentError()

@@ -67,7 +67,11 @@ class WebScrapingService:
             raise FetchMethodNotCalledError()
 
         icon_link = self._soup.find("link", rel=["icon", "shortcut icon"])
-        if (not icon_link) or (not isinstance(icon_link, Tag)) or (not icon_link.has_attr("href")):
+        if (
+            (not icon_link)
+            or (not isinstance(icon_link, Tag))
+            or (not icon_link.has_attr("href"))
+        ):
             raise IconNotFoundError("Icon not found error")
         return icon_link
 

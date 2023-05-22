@@ -1,20 +1,25 @@
 import sys
 
 from db.migrations.base import BaseMigrator
-from db.migrations._01_create_reading_list_collection import CreateReadingListCollectionMigrator
+from db.migrations._01_create_reading_list_collection import (
+    CreateReadingListCollectionMigrator,
+)
 
 
 class MigratorExecutor:
     def __init__(self) -> None:
         create_reading_list_collection_migrator = CreateReadingListCollectionMigrator()
-        self._migrators = [{
-            "name": create_reading_list_collection_migrator.get_name(),
-            "instance": create_reading_list_collection_migrator,
-        }]
+        self._migrators = [
+            {
+                "name": create_reading_list_collection_migrator.get_name(),
+                "instance": create_reading_list_collection_migrator,
+            }
+        ]
 
     def _find_migrator(self, migration_id: str) -> BaseMigrator:
         migrator = [
-            migrator["instance"] for migrator in self._migrators
+            migrator["instance"]
+            for migrator in self._migrators
             if migrator["name"].startswith(f"{migration_id}_")
         ]
 

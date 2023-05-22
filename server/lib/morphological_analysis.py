@@ -9,7 +9,10 @@ class MorphologicalAnalysisService:
     def generate(cls, text: str) -> list[str]:
         preprocessed_text = cls._cleansing(text=text)
         sudachi = Dictionary().create()
-        morphemes = [m.surface() for m in sudachi.tokenize(text=preprocessed_text, mode=SplitMode.C)]
+        morphemes = [
+            m.surface()
+            for m in sudachi.tokenize(text=preprocessed_text, mode=SplitMode.C)
+        ]
         return morphemes
 
     @classmethod
