@@ -30,4 +30,9 @@ $ open http://localhost:8000/redoc
 
 # タイトルを取得するスクレイピングの実行(検証用途)
 $ python -m lib.web_scraping <url>
+
+# リンター、フォーマッタの実行
+$ pipenv run flake8 .
+$ pipenv run black .
+$ pipenv run isort .
 ```
