@@ -88,11 +88,17 @@ $ make down
 │   ├── README.md
 │   ├── compose.yml
 │   └── data                            # Meilisearchが保持するデータ
+├── hooks
+│   ├── pre-commit.sh                   # pre-commitの設定(リンター、フォーマッタの実行)
+│   ├── README.md
+│   └── setup.sh                        # Gitフックの設定
 ├── images                              # ドキュメントで利用する画像
 └── server
     ├── .env                            # 環境変数
     ├── .env.example                    # 環境変数の例
+    ├── .flake8                         # Flake8の設定
     ├── .gitignore
+    ├── .isort.cfg                      # isortの設定
     ├── Dockerfile
     ├── Pipfile
     ├── Pipfile.lock
