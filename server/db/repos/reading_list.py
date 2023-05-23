@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from enum import Enum
 from uuid import UUID
 
 from db.client import DocumentAlreadyExistsError, DocumentNotFoundError
@@ -139,14 +140,10 @@ class ReadingListRepository(BaseRepository):
         )
         self._db_client.update_document(index_name=self._index_name, document=document)
 
-    def count(self, key: str = "") -> int:
-        options = {}
-        if key == "is_read":
-            options = {"filter": "is_read = true"}
-        if key == "is_unread":
-            options = {"filter": "is_read = false"}
-        if key == "is_bookmarked":
-            options = {"filter": "is_bookmarked = true"}
+    def count(self, type: ReadingListCountType) -> int:
+        options = {"filter": type.value}
+        if type == ReadingListCountType.IS_ALL:
+            options = {}
 
         count = self._db_client.count_documents(
             index_name=self._index_name, options=options
@@ -156,6 +153,13 @@ class ReadingListRepository(BaseRepository):
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
+
+
+class ReadingListCountType(Enum):
+    IS_ALL = ""
+    IS_READ = "is_read = true"
+    IS_UNREAD = "is_read = false"
+    IS_BOOKMARKED = "is_bookmarked = true"
 
 
 class UrlAlreadyExistsError(Exception):
