@@ -36,6 +36,7 @@ $ make down
 
 開発者として利用する場合、設定変更の容易であることやホットリロードを利用できる等の理由から、以下のドキュメントに従ってホストマシン上に直接構築することを推奨します。
 
+- [Gitフック](./hooks/README.md)
 - [全文検索エンジン(Meilisearch)](./engine/README.md)
 - [サーバ(FastAPI)](./server/README.md)
 - [ダッシュボード(Vite + preact-ts)](./dashboard/README.md)
@@ -88,11 +89,17 @@ $ make down
 │   ├── README.md
 │   ├── compose.yml
 │   └── data                            # Meilisearchが保持するデータ
+├── hooks
+│   ├── pre-commit.sh                   # pre-commitの設定(リンター、フォーマッタの実行)
+│   ├── README.md
+│   └── setup.sh                        # Gitフックの設定
 ├── images                              # ドキュメントで利用する画像
 └── server
     ├── .env                            # 環境変数
     ├── .env.example                    # 環境変数の例
+    ├── .flake8                         # Flake8の設定
     ├── .gitignore
+    ├── .isort.cfg                      # isortの設定
     ├── Dockerfile
     ├── Pipfile
     ├── Pipfile.lock

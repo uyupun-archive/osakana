@@ -1,5 +1,6 @@
 from __future__ import annotations
-from abc import abstractmethod, abstractclassmethod
+
+from abc import abstractclassmethod, abstractmethod
 
 from pydantic import BaseModel
 

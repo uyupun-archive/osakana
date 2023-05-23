@@ -5,47 +5,50 @@ from starlette.status import (
     HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     HTTP_409_CONFLICT,
-    HTTP_422_UNPROCESSABLE_ENTITY
+    HTTP_422_UNPROCESSABLE_ENTITY,
 )
 
 from api.errors.responses import (
     http_403_error_res_doc,
     http_404_error_res_doc,
     http_409_error_res_doc,
-    http_422_error_res_doc
+    http_422_error_res_doc,
 )
 from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
-    ReadingListSearchResponse,
+    ReadingListBookmarkResponse,
+    ReadingListDeleteResponse,
     ReadingListFishingResponse,
     ReadingListReadResponse,
+    ReadingListSearchResponse,
     ReadingListUnreadResponse,
-    ReadingListDeleteResponse,
-    ReadingListBookmarkResponse
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListRepository
 from lib.web_scraping import (
-    WebScrapingService,
-    TitleNotFoundError,
+    FaviconNotFoundError,
     IconNotFoundError,
-    FaviconNotFoundError
+    TitleNotFoundError,
+    WebScrapingService,
 )
-
 
 router = APIRouter(prefix="/reading-list", tags=["reading-list"])
 
 
-@router.post("", response_model=ReadingListAddResponse, responses={
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    HTTP_409_CONFLICT: http_409_error_res_doc,
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.post(
+    "",
+    response_model=ReadingListAddResponse,
+    responses={
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+        HTTP_409_CONFLICT: http_409_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def add(
     req: ReadingListAddRequest,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository),
-    service: WebScrapingService=Depends(WebScrapingService.create_service)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
+    service: WebScrapingService = Depends(WebScrapingService.create_service),
 ) -> ReadingListAddResponse:
     """
     リーディングリストに追加
@@ -67,15 +70,19 @@ def add(
     return ReadingListAddResponse()
 
 
-@router.get("", response_model=ReadingListSearchResponse, responses={
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.get(
+    "",
+    response_model=ReadingListSearchResponse,
+    responses={
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def search(
     keyword: str,
-    is_bookmarked: bool=False,
-    is_read: bool=False,
-    is_unread: bool=False,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    is_bookmarked: bool = False,
+    is_read: bool = False,
+    is_unread: bool = False,
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListSearchResponse:
     """
     リーディングリストの検索
@@ -84,16 +91,20 @@ def search(
         keyword=keyword,
         is_bookmarked=is_bookmarked,
         is_read=is_read,
-        is_unread=is_unread
+        is_unread=is_unread,
     )
     return reading_list
 
 
-@router.get("/fishing", response_model=ReadingListFishingResponse, responses={
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-})
+@router.get(
+    "/fishing",
+    response_model=ReadingListFishingResponse,
+    responses={
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+    },
+)
 def fishing(
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListFishingResponse:
     """
     リーディングリストからランダムに１件取得
@@ -102,14 +113,18 @@ def fishing(
     return reading_list_record
 
 
-@router.patch("/read/{id}", response_model=ReadingListReadResponse, responses={
-    HTTP_403_FORBIDDEN: http_403_error_res_doc,
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.patch(
+    "/read/{id}",
+    response_model=ReadingListReadResponse,
+    responses={
+        HTTP_403_FORBIDDEN: http_403_error_res_doc,
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def read(
     id: UUID,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListReadResponse:
     """
     既読にする
@@ -118,14 +133,18 @@ def read(
     return ReadingListReadResponse()
 
 
-@router.patch("/unread/{id}", response_model=ReadingListUnreadResponse, responses={
-    HTTP_403_FORBIDDEN: http_403_error_res_doc,
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.patch(
+    "/unread/{id}",
+    response_model=ReadingListUnreadResponse,
+    responses={
+        HTTP_403_FORBIDDEN: http_403_error_res_doc,
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def unread(
     id: UUID,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListUnreadResponse:
     """
     未読にする
@@ -134,13 +153,17 @@ def unread(
     return ReadingListUnreadResponse()
 
 
-@router.delete("/{id}", response_model=ReadingListDeleteResponse, responses={
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.delete(
+    "/{id}",
+    response_model=ReadingListDeleteResponse,
+    responses={
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def delete(
     id: UUID,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListDeleteResponse:
     """
     リーディングリストから削除
@@ -149,13 +172,17 @@ def delete(
     return ReadingListDeleteResponse()
 
 
-@router.patch("/bookmark/{id}", response_model=ReadingListBookmarkResponse, responses={
-    HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
-})
+@router.patch(
+    "/bookmark/{id}",
+    response_model=ReadingListBookmarkResponse,
+    responses={
+        HTTP_404_NOT_FOUND: http_404_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
 def bookmark(
     id: UUID,
-    repo: ReadingListRepository=Depends(ReadingListRepository.get_repository)
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListBookmarkResponse:
     """
     ブックマークする

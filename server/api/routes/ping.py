@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from api.schemas.ping import PingResponse
 
-
 router = APIRouter(prefix="/ping", tags=["other"])
 
 

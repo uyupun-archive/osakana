@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import sys
+from typing import Type
 from urllib.parse import urljoin
 
 import cchardet
@@ -8,7 +10,6 @@ from bs4 import BeautifulSoup, Tag
 from pydantic import HttpUrl, ValidationError, parse_obj_as
 from requests import Response
 from requests.exceptions import HTTPError
-from typing import Type
 
 
 class WebScrapingService:
@@ -67,7 +68,11 @@ class WebScrapingService:
             raise FetchMethodNotCalledError()
 
         icon_link = self._soup.find("link", rel=["icon", "shortcut icon"])
-        if (not icon_link) or (not isinstance(icon_link, Tag)) or (not icon_link.has_attr("href")):
+        if (
+            (not icon_link)
+            or (not isinstance(icon_link, Tag))
+            or (not icon_link.has_attr("href"))
+        ):
             raise IconNotFoundError("Icon not found error")
         return icon_link
 

@@ -1,8 +1,9 @@
 from __future__ import annotations
+
 import random
 from uuid import UUID
 
-from db.client import DocumentNotFoundError, DocumentAlreadyExistsError
+from db.client import DocumentAlreadyExistsError, DocumentNotFoundError
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
@@ -13,32 +14,31 @@ class ReadingListRepository(BaseRepository):
     def add(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.set_title_ngrams()
         reading_list_record.set_title_morphemes()
-        document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
+        document = ReadingListRecord.convert_dict(
+            reading_list_record=reading_list_record
+        )
         try:
             self._db_client.add_document(
-                index_name=self._index_name,
-                key="url",
-                document=document
+                index_name=self._index_name, key="url", document=document
             )
         except DocumentAlreadyExistsError:
             raise UrlAlreadyExistsError()
 
     def find(self, id: UUID) -> ReadingListRecord:
-        document = self._db_client.get_document(
-            index_name=self._index_name,
-            id=id
-        )
+        document = self._db_client.get_document(index_name=self._index_name, id=id)
         reading_list_record = ReadingListRecord.convert_instance(document=document)
         return reading_list_record
 
     def search(
         self,
         keyword: str,
-        is_bookmarked: bool=False,
-        is_read: bool=False,
-        is_unread: bool=False,
+        is_bookmarked: bool = False,
+        is_read: bool = False,
+        is_unread: bool = False,
     ) -> list[ReadingListRecord]:
-        filters = self._create_filters(is_bookmarked=is_bookmarked, is_read=is_read, is_unread=is_unread)
+        filters = self._create_filters(
+            is_bookmarked=is_bookmarked, is_read=is_read, is_unread=is_unread
+        )
         options = {"sort": ["created_at:desc"], "filter": filters}
 
         documents = self._db_client.search_documents(
@@ -46,10 +46,15 @@ class ReadingListRepository(BaseRepository):
             keyword=keyword,
             options=options,
         )
-        reading_list = [ReadingListRecord.convert_instance(document=document) for document in documents]
+        reading_list = [
+            ReadingListRecord.convert_instance(document=document)
+            for document in documents
+        ]
         return reading_list
 
-    def _create_filters(self, is_bookmarked: bool, is_read: bool, is_unread: bool) -> str:
+    def _create_filters(
+        self, is_bookmarked: bool, is_read: bool, is_unread: bool
+    ) -> str:
         filters = []
 
         if is_bookmarked:
@@ -69,7 +74,11 @@ class ReadingListRepository(BaseRepository):
     def _get_document_ids(self) -> list[UUID]:
         documents = self._db_client.search_documents(
             index_name=self._index_name,
-            options={"attributesToRetrieve": ["id"], "limit": 1000, "sort": ["updated_at:asc"]}
+            options={
+                "attributesToRetrieve": ["id"],
+                "limit": 1000,
+                "sort": ["updated_at:asc"],
+            },
         )
         document_ids = [document["id"] for document in documents]
         return document_ids
@@ -91,11 +100,10 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordAlreadyReadError()
 
         reading_list_record.read()
-        document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
-        self._db_client.update_document(
-            index_name=self._index_name,
-            document=document
+        document = ReadingListRecord.convert_dict(
+            reading_list_record=reading_list_record
         )
+        self._db_client.update_document(index_name=self._index_name, document=document)
 
     def unread(self, id: UUID) -> None:
         try:
@@ -106,11 +114,10 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordNotYetReadError()
 
         reading_list_record.unread()
-        document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
-        self._db_client.update_document(
-            index_name=self._index_name,
-            document=document
+        document = ReadingListRecord.convert_dict(
+            reading_list_record=reading_list_record
         )
+        self._db_client.update_document(index_name=self._index_name, document=document)
 
     def delete(self, id: UUID) -> None:
         try:
@@ -118,10 +125,7 @@ class ReadingListRepository(BaseRepository):
         except DocumentNotFoundError:
             raise ReadingListRecordNotFoundError()
 
-        self._db_client.delete_document(
-            index_name=self._index_name,
-            id=id
-        )
+        self._db_client.delete_document(index_name=self._index_name, id=id)
 
     def bookmark(self, id: UUID) -> None:
         try:
@@ -130,11 +134,10 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordNotFoundError()
 
         reading_list_record.bookmark()
-        document = ReadingListRecord.convert_dict(reading_list_record=reading_list_record)
-        self._db_client.update_document(
-            index_name=self._index_name,
-            document=document
+        document = ReadingListRecord.convert_dict(
+            reading_list_record=reading_list_record
         )
+        self._db_client.update_document(index_name=self._index_name, document=document)
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:

@@ -1,13 +1,13 @@
 import uvicorn
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routes import ping, reading_list
 from api.errors.handlers import register_error_handlers
+from api.routes import ping, reading_list
 from settings import Settings
 
 
-def init_app(settings: Settings=Settings.get_settings()) -> FastAPI:
+def init_app(settings: Settings = Settings.get_settings()) -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
         description=settings.DESCRIPTION,
@@ -16,7 +16,9 @@ def init_app(settings: Settings=Settings.get_settings()) -> FastAPI:
     return app
 
 
-def register_middleware(app: FastAPI, settings: Settings=Settings.get_settings()) -> None:
+def register_middleware(
+    app: FastAPI, settings: Settings = Settings.get_settings()
+) -> None:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[settings.ALLOWED_ORIGIN],
@@ -33,7 +35,7 @@ def register_routes(app: FastAPI) -> None:
     app.include_router(router=router)
 
 
-def run_app(app: FastAPI, settings: Settings=Settings.get_settings()) -> None:
+def run_app(app: FastAPI, settings: Settings = Settings.get_settings()) -> None:
     uvicorn.run(app="main:app", host=settings.ADDRESS, port=settings.PORT, reload=True)
 
 

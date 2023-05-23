@@ -10,7 +10,7 @@ class NgramService:
         ngrams = []
         for word in words:
             for i in range(len(word) - n + 1):
-                ngrams.append(word[i:i+n])
+                ngrams.append(word[i : i + n])
         return ngrams
 
     @classmethod
