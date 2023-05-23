@@ -60,3 +60,12 @@ export class ReadingListRecordNotYetReadError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };
+
+export class ReadingListCountsTypeError extends Error {
+  constructor() {
+    const message = 'ReadingListCounts type error';
+    super(message);
+    this.name = 'ReadingListCountsTypeError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};

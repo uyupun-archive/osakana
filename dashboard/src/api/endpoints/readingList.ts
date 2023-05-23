@@ -7,10 +7,11 @@ import type {
   HttpUrl,
   ReadingList,
   ReadingListRecord,
-  ReadingListSearchFilters
+  ReadingListSearchFilters,
+  ReadingListCounts,
 } from '../../types';
 import type { ReadingListRecordResponse } from '../types';
-import { isUuid4, isHttpUrl } from '../../types';
+import { isUuid4, isHttpUrl, isValidReadingListCounts } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import {
@@ -20,7 +21,8 @@ import {
   ReadingListRecordTypeError,
   ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
-  ReadingListRecordNotYetReadError
+  ReadingListRecordNotYetReadError,
+  ReadingListCountsTypeError,
 } from '../errors';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -161,6 +163,14 @@ export const bookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
     }
     throw new UnknownError();
   }
+};
+
+export const getReadingListCounts = async (): Promise<ReadingListCounts> => {
+  const res = await axios.get<ReadingListCounts>(`${apiUrl}/api/reading-list/counts`);
+  if (isValidReadingListCounts(res.data)) {
+    return res.data;
+  }
+  throw new ReadingListCountsTypeError();
 };
 
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {

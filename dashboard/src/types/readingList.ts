@@ -20,3 +20,19 @@ export interface ReadingListSearchFilters {
   is_read?: boolean;
   is_unread?: boolean;
 };
+
+export interface ReadingListCounts {
+  total: number;
+  reads: number;
+  unreads: number;
+  bookmarks: number;
+};
+
+export const isValidReadingListCounts = (counts: any): counts is ReadingListCounts => {
+  return (
+    typeof counts.total === 'number' &&
+    typeof counts.reads === 'number' &&
+    typeof counts.unreads === 'number' &&
+    typeof counts.bookmarks === 'number'
+  );
+};
