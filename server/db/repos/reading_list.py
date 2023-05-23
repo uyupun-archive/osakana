@@ -139,8 +139,11 @@ class ReadingListRepository(BaseRepository):
         )
         self._db_client.update_document(index_name=self._index_name, document=document)
 
-    def count(self) -> int:
-        count = self._db_client.count_documents(index_name=self._index_name)
+    def count(self, key: str) -> int:
+        options = {"filter": "is_read = true"}
+        count = self._db_client.count_documents(
+            index_name=self._index_name, options=options
+        )
         return count
 
     @classmethod

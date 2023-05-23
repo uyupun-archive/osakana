@@ -199,5 +199,5 @@ def counts(
     """
     リーディングリスト全体の数、既読の数、未読の数、ブックマーク数を返す
     """
-    count = repo.count()
+    count = repo.count(key="is_read")
     return ReadingListCountsResponse(reads=count, unreads=count, bookmarks=count)
