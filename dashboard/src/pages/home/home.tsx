@@ -160,10 +160,10 @@ export const Home = (): JSX.Element => {
       setReadingListCounts(res);
     } catch (e: unknown) {
       if (e instanceof ReadingListCountsTypeError) {
-        console.log(e.message);
+        console.error(e.message);
         return;
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
   };
 
@@ -266,9 +266,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if ((e instanceof ReadingListRecordAlreadyReadError) || (e instanceof ReadingListRecordNotFoundError)) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -280,9 +280,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if ((e instanceof ReadingListRecordNotYetReadError) || (e instanceof ReadingListRecordNotFoundError)) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -294,9 +294,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordNotFoundError) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -308,9 +308,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordNotFoundError) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
