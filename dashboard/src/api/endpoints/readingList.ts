@@ -7,10 +7,11 @@ import type {
   HttpUrl,
   ReadingList,
   ReadingListRecord,
-  ReadingListSearchFilters
+  ReadingListSearchFilters,
+  ReadingListCounts,
 } from '../../types';
 import type { ReadingListRecordResponse } from '../types';
-import { isUuid4, isHttpUrl } from '../../types';
+import { isUuid4, isHttpUrl, isValidReadingListCounts } from '../../types';
 import { isValidReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import {
@@ -20,7 +21,8 @@ import {
   ReadingListRecordTypeError,
   ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
-  ReadingListRecordNotYetReadError
+  ReadingListRecordNotYetReadError,
+  ReadingListCountsTypeError,
 } from '../errors';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -51,7 +53,7 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
 export const searchReadingList = async (keyword: string, filters: ReadingListSearchFilters): Promise<ReadingList> => {
   let res;
   try {
-    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
+    res = await axios.get<Array<ReadingListRecordResponse>>(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
@@ -69,7 +71,7 @@ export const searchReadingList = async (keyword: string, filters: ReadingListSea
 };
 
 export const fishingReadingListRecord = async (): Promise<ReadingListRecord> => {
-  const res = await axios.get(`${apiUrl}/api/reading-list/fishing`);
+  const res = await axios.get<ReadingListRecordResponse>(`${apiUrl}/api/reading-list/fishing`);
 
   if (isValidReadingListRecordResponse(res.data)) {
     return _parseReadingListRecord(res.data);
@@ -161,6 +163,14 @@ export const bookmarkReadingListRecord = async (id: Uuid4): Promise<void> => {
     }
     throw new UnknownError();
   }
+};
+
+export const getReadingListCounts = async (): Promise<ReadingListCounts> => {
+  const res = await axios.get<ReadingListCounts>(`${apiUrl}/api/reading-list/counts`);
+  if (isValidReadingListCounts(res.data)) {
+    return res.data;
+  }
+  throw new ReadingListCountsTypeError();
 };
 
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {

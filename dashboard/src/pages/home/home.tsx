@@ -1,5 +1,5 @@
 import { FunctionalComponent, JSX } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 
 import {
   addReadingListRecord,
@@ -8,13 +8,15 @@ import {
   readReadingListRecord,
   unreadReadingListRecord,
   deleteReadingListRecord,
-  bookmarkReadingListRecord
+  bookmarkReadingListRecord,
+  getReadingListCounts,
 } from '../../api/endpoints/readingList';
 import type {
   Uuid4,
   ReadingList,
   ReadingListRecord as ReadingListRecordProps,
-  ReadingListSearchFilters
+  ReadingListSearchFilters,
+  ReadingListCounts,
 } from '../../types';
 import { InvalidHttpUrlError } from '../../errors';
 import {
@@ -23,7 +25,8 @@ import {
   ReadingListRecordTypeError,
   ReadingListRecordNotFoundError,
   ReadingListRecordAlreadyReadError,
-  ReadingListRecordNotYetReadError
+  ReadingListRecordNotYetReadError,
+  ReadingListCountsTypeError,
 } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
@@ -65,6 +68,7 @@ export const Home = (): JSX.Element => {
   const [readFilter, setReadFilter] = useState<ReadFilter>(ReadFilter.ALL);
   const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
+  const [readingListCounts, setReadingListCounts] = useState<ReadingListCounts>({total: 0, reads: 0, unreads: 0, bookmarks: 0});
 
   const handleInputAddForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -150,6 +154,23 @@ export const Home = (): JSX.Element => {
     setReadFilter(parseReadFilter(target.value));
   };
 
+  const handleReadingListCounts = async (): Promise<void> => {
+    try {
+      const res = await getReadingListCounts();
+      setReadingListCounts(res);
+    } catch (e: unknown) {
+      if (e instanceof ReadingListCountsTypeError) {
+        console.error(e.message);
+        return;
+      }
+      console.error('Unknown error');
+    }
+  };
+
+  useEffect(() => {
+    handleReadingListCounts();
+  }, [readingList]);
+
   return (
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
@@ -191,6 +212,13 @@ export const Home = (): JSX.Element => {
         </div>
         {inputSearchErrorMessage && <div>{inputSearchErrorMessage}</div>}
 			</div>
+      <div>
+        Total: {readingListCounts.total} (
+          Reads: {readingListCounts.reads} /
+          Unreads: {readingListCounts.unreads} /
+          Bookmarks: {readingListCounts.bookmarks}
+        )
+      </div>
       {readingList.length <= 0 && <p>No records</p>}
       {readingList.length > 0 && (
         <table style={{ border: '1px solid black' }}>
@@ -238,9 +266,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if ((e instanceof ReadingListRecordAlreadyReadError) || (e instanceof ReadingListRecordNotFoundError)) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -252,9 +280,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if ((e instanceof ReadingListRecordNotYetReadError) || (e instanceof ReadingListRecordNotFoundError)) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -266,9 +294,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordNotFoundError) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
@@ -280,9 +308,9 @@ const ReadingListRecord: FunctionalComponent<ReadingListRecordProps & {onReading
       await props.onReadingListRecordUpdated();
     } catch (e: unknown) {
       if (e instanceof ReadingListRecordNotFoundError) {
-        console.log(e.message);
+        console.error(e.message);
       }
-      console.log('Unknown error');
+      console.error('Unknown error');
     }
     setIsLoading(false);
   };
