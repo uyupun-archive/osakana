@@ -1,4 +1,5 @@
-import type { Uuid4, HttpUrl } from './common';
+import type { Uuid4, HttpUrl, UnsignedInteger } from './common';
+import { isUnsignedInteger } from './common';
 
 export interface ReadingListRecord {
   id: Uuid4;
@@ -22,17 +23,17 @@ export interface ReadingListSearchFilters {
 };
 
 export interface ReadingListCounts {
-  total: number;
-  reads: number;
-  unreads: number;
-  bookmarks: number;
+  total: UnsignedInteger;
+  reads: UnsignedInteger;
+  unreads: UnsignedInteger;
+  bookmarks: UnsignedInteger;
 };
 
 export const isValidReadingListCounts = (counts: any): counts is ReadingListCounts => {
   return (
-    typeof counts.total === 'number' &&
-    typeof counts.reads === 'number' &&
-    typeof counts.unreads === 'number' &&
-    typeof counts.bookmarks === 'number'
+    isUnsignedInteger(counts.total) &&
+    isUnsignedInteger(counts.reads) &&
+    isUnsignedInteger(counts.unreads) &&
+    isUnsignedInteger(counts.bookmarks)
   );
 };

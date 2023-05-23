@@ -22,3 +22,9 @@ export const isIso8601 = (value: string): boolean => {
   const iso8601Pattern = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(\.\d+)?(([+-]\d{2}:\d{2})|Z)?$/;
   return iso8601Pattern.test(value);
 };
+
+export type UnsignedInteger = number;
+
+export const isUnsignedInteger = (value: any): value is UnsignedInteger => {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
+};
