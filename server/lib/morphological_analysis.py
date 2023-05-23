@@ -1,7 +1,7 @@
 import re
 import sys
 
-from sudachipy import Dictionary, SplitMode
+from sudachipy import Dictionary, MorphemeList, SplitMode
 
 
 class MorphologicalAnalysisService:
@@ -9,11 +9,18 @@ class MorphologicalAnalysisService:
     def generate(cls, text: str) -> list[str]:
         preprocessed_text = cls._cleansing(text=text)
         sudachi = Dictionary().create()
-        morphemes = [
-            m.surface()
-            for m in sudachi.tokenize(text=preprocessed_text, mode=SplitMode.C)
-        ]
-        return morphemes
+        morphemes = sudachi.tokenize(text=preprocessed_text, mode=SplitMode.C)
+        filtered_morphemes = cls._filter_morphemes(morphemes=morphemes)
+        return filtered_morphemes
+
+    @classmethod
+    def _filter_morphemes(cls, morphemes: MorphemeList) -> list[str]:
+        filtered_morphemes = []
+        for morpheme in morphemes:
+            pos = morpheme.part_of_speech()[0]
+            if pos not in ["助詞", "助動詞"]:
+                filtered_morphemes.append(morpheme.surface())
+        return filtered_morphemes
 
     @classmethod
     def _cleansing(cls, text: str) -> str:
