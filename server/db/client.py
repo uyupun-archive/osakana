@@ -89,6 +89,11 @@ class DBClient:
         task = index.delete_document(document_id=str(id))
         self._check_task_status(index_name=index_name, task=task)
 
+    def count_documents(self, index_name: str) -> int:
+        documents = self.search_documents(index_name=index_name)
+        count = len(documents)
+        return count
+
     def _check_task_status(self, index_name: str, task: TaskInfo) -> None:
         task_status = None
         while task_status != TaskStatus.Succeeded:

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, conint
 
 from db.models.reading_list import ReadingListRecord
 
@@ -31,3 +31,9 @@ class ReadingListDeleteResponse(BaseModel):
 
 class ReadingListBookmarkResponse(BaseModel):
     pass
+
+
+class ReadingListCountsResponse(BaseModel):
+    reads: conint(ge=0)
+    unreads: conint(ge=0)
+    bookmarks: conint(ge=0)

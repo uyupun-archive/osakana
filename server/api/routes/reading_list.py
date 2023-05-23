@@ -18,6 +18,7 @@ from api.schemas.reading_list import (
     ReadingListAddRequest,
     ReadingListAddResponse,
     ReadingListBookmarkResponse,
+    ReadingListCountsResponse,
     ReadingListDeleteResponse,
     ReadingListFishingResponse,
     ReadingListReadResponse,
@@ -189,3 +190,14 @@ def bookmark(
     """
     repo.bookmark(id=id)
     return ReadingListBookmarkResponse()
+
+
+@router.get("/counts", response_model=ReadingListCountsResponse)
+def counts(
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
+) -> ReadingListCountsResponse:
+    """
+    リーディングリスト全体の数、既読の数、未読の数、ブックマーク数を返す
+    """
+    count = repo.count()
+    return ReadingListCountsResponse(reads=count, unreads=count, bookmarks=count)
