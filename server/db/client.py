@@ -15,6 +15,9 @@ Document = dict[str, Any]
 Documents = list[Document]
 
 
+Options = dict[str, list[str] | str | int]
+
+
 class DBClient:
     def __init__(self, settings: Settings = Settings.get_settings()) -> None:
         address = settings.ADDRESS
@@ -71,7 +74,7 @@ class DBClient:
         return dict(document)["_Document__doc"]
 
     def search_documents(
-        self, index_name: str, options: dict = {}, keyword: str = ""
+        self, index_name: str, options: Options = {}, keyword: str = ""
     ) -> Documents:
         documents = self._client.index(uid=index_name).search(
             query=keyword, opt_params=options
@@ -89,7 +92,7 @@ class DBClient:
         task = index.delete_document(document_id=str(id))
         self._check_task_status(index_name=index_name, task=task)
 
-    def count_documents(self, index_name: str, options: dict = {}) -> int:
+    def count_documents(self, index_name: str, options: Options = {}) -> int:
         documents = self.search_documents(index_name=index_name, options=options)
         count = len(documents)
         return count
