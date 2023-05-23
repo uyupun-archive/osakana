@@ -31,6 +31,12 @@ $ open http://localhost:8000/redoc
 # タイトルを取得するスクレイピングの実行(検証用途)
 $ python -m lib.web_scraping <url>
 
+# n-gramの実行(検証用途)
+$ python -m lib.ngrams <title>
+
+# 形態素解析の実行(検証用途)
+$ python -m lib.morphological_analysis <title>
+
 # リンター、フォーマッタの実行
 $ pipenv run flake8 .
 $ pipenv run black .
