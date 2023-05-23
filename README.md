@@ -36,6 +36,7 @@ $ make down
 
 開発者として利用する場合、設定変更の容易であることやホットリロードを利用できる等の理由から、以下のドキュメントに従ってホストマシン上に直接構築することを推奨します。
 
+- [Gitフック](./hooks/README.md)
 - [全文検索エンジン(Meilisearch)](./engine/README.md)
 - [サーバ(FastAPI)](./server/README.md)
 - [ダッシュボード(Vite + preact-ts)](./dashboard/README.md)
