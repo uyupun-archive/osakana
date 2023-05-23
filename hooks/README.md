@@ -6,5 +6,6 @@
 ```bash
 $ cd hooks
 
+# Gitフックの初期設定
 $ sh setup.sh
 ```
