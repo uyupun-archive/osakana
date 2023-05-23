@@ -51,7 +51,7 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
 export const searchReadingList = async (keyword: string, filters: ReadingListSearchFilters): Promise<ReadingList> => {
   let res;
   try {
-    res = await axios.get(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
+    res = await axios.get<Array<ReadingListRecordResponse>>(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
@@ -69,7 +69,7 @@ export const searchReadingList = async (keyword: string, filters: ReadingListSea
 };
 
 export const fishingReadingListRecord = async (): Promise<ReadingListRecord> => {
-  const res = await axios.get(`${apiUrl}/api/reading-list/fishing`);
+  const res = await axios.get<ReadingListRecordResponse>(`${apiUrl}/api/reading-list/fishing`);
 
   if (isValidReadingListRecordResponse(res.data)) {
     return _parseReadingListRecord(res.data);
