@@ -34,6 +34,7 @@ class ReadingListBookmarkResponse(BaseModel):
 
 
 class ReadingListCountsResponse(BaseModel):
+    total: conint(ge=0)
     reads: conint(ge=0)
     unreads: conint(ge=0)
     bookmarks: conint(ge=0)

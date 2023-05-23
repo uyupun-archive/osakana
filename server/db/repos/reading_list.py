@@ -139,8 +139,15 @@ class ReadingListRepository(BaseRepository):
         )
         self._db_client.update_document(index_name=self._index_name, document=document)
 
-    def count(self, key: str) -> int:
-        options = {"filter": "is_read = true"}
+    def count(self, key: str = "") -> int:
+        options = {}
+        if key == "is_read":
+            options = {"filter": "is_read = true"}
+        if key == "is_unread":
+            options = {"filter": "is_read = false"}
+        if key == "is_bookmarked":
+            options = {"filter": "is_bookmarked = true"}
+
         count = self._db_client.count_documents(
             index_name=self._index_name, options=options
         )
