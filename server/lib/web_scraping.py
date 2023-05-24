@@ -4,7 +4,7 @@ import sys
 from typing import Type
 from urllib.parse import urljoin
 
-import cchardet
+import charset_normalizer
 import requests
 from bs4 import BeautifulSoup, Tag
 from pydantic import HttpUrl, ValidationError, parse_obj_as
@@ -33,7 +33,7 @@ class WebScrapingService:
         return res
 
     def _guess_encoding(self, res: Response) -> Response:
-        encoding = cchardet.detect(res.content)["encoding"]
+        encoding = charset_normalizer.detect(res.content)["encoding"]
         res.encoding = encoding
         return res
 
