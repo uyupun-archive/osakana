@@ -9,12 +9,9 @@ $ cd server
 
 $ cp .env.example .env
 
-$ pipenv install --dev
+$ poetry install
 
-# cchardetのインストールに失敗する場合は以下を実行し、再度 `pipenv install` を実行する
-$ pip install --upgrade Cython
-
-$ pipenv shell
+$ poetry shell
 
 # FastAPIの起動
 $ python main.py
@@ -38,7 +35,7 @@ $ python -m lib.ngrams <title>
 $ python -m lib.morphological_analysis <title>
 
 # リンター、フォーマッタの実行
-$ pipenv run flake8 .
-$ pipenv run black .
-$ pipenv run isort .
+$ poetry run flake8 .
+$ poetry run black .
+$ poetry run isort .
 ```
