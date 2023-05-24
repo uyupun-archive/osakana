@@ -9,7 +9,7 @@ $ cd server
 
 $ cp .env.example .env
 
-$ poetry install
+$ poetry install --sync
 
 $ poetry shell
 

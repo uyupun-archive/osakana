@@ -4,12 +4,13 @@ WORKDIR /app
 
 COPY . .
 
-RUN apt-get update
-RUN apt-get install build-essential -y
+RUN apt-get update && apt-get install curl -y
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
+RUN poetry --version
 
-RUN pip install --upgrade pip Cython
-RUN pip install pipenv
-RUN pipenv sync --system
+RUN poetry config virtualenvs.create false
+RUN poetry install --without dev --sync
 
 ARG PORT=8000
 ENV PORT=$PORT
