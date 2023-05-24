@@ -101,8 +101,6 @@ $ make down
     ├── .gitignore
     ├── .isort.cfg                      # isortの設定
     ├── Dockerfile
-    ├── Pipfile
-    ├── Pipfile.lock
     ├── README.md
     ├── api
     │   │   ├── errors
@@ -124,5 +122,7 @@ $ make down
     │   ├── timezone.py                 # タイムゾーン関連の処理
     │   └── web_scraping.py             # Webスクレイピングを行うサービス
     ├── main.py                         # APIのエントリポイント
+    ├── poetry.lock
+    ├── pyproject.toml
     └── settings.py                     # API全体の設定
 ```
