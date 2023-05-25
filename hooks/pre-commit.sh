@@ -9,7 +9,7 @@ if echo "$STAGED_FILES" | grep -q "\.py$"; then
     poetry run flake8 .
     poetry run black --check .
     poetry run isort --check-only .
-    npm run pyright .
+    npm run pyright
 fi
 
 exit 0
