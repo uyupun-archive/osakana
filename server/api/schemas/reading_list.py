@@ -33,8 +33,11 @@ class ReadingListBookmarkResponse(BaseModel):
     pass
 
 
+UnsignedInteger = conint(strict=True, ge=0)
+
+
 class ReadingListCountsResponse(BaseModel):
-    total: conint(ge=0)
-    reads: conint(ge=0)
-    unreads: conint(ge=0)
-    bookmarks: conint(ge=0)
+    total: UnsignedInteger  # type: ignore
+    reads: UnsignedInteger  # type: ignore
+    unreads: UnsignedInteger  # type: ignore
+    bookmarks: UnsignedInteger  # type: ignore

@@ -18,6 +18,9 @@ $ cat server/.env
 
 $ poetry install --sync
 
+# Pyrightのインストール
+$ npm install
+
 $ poetry shell
 
 # FastAPIの起動
@@ -45,4 +48,5 @@ $ python -m lib.morphological_analysis <title>
 $ poetry run flake8 .
 $ poetry run black .
 $ poetry run isort .
+$ npm run pyright
 ```
