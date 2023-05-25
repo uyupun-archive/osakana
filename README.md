@@ -9,16 +9,6 @@
 ユーザとして利用する場合、DockerとDocker Composeによる構築を推奨します。
 
 ```bash
-# `server/.env` の以下の項目を変更する
-$ cat server/.env
-...
-+ API_ADDRESS=0.0.0.0
-- API_ADDRESS=127.0.0.1
-...
-+ MS_ADDRESS=engine
-- MS_ADDRESS=localhost
-...
-
 # Dockerネットワークの作成
 $ make network
 
@@ -101,8 +91,6 @@ $ make down
     ├── .gitignore
     ├── .isort.cfg                      # isortの設定
     ├── Dockerfile
-    ├── Pipfile
-    ├── Pipfile.lock
     ├── README.md
     ├── api
     │   │   ├── errors
@@ -124,5 +112,7 @@ $ make down
     │   ├── timezone.py                 # タイムゾーン関連の処理
     │   └── web_scraping.py             # Webスクレイピングを行うサービス
     ├── main.py                         # APIのエントリポイント
+    ├── poetry.lock
+    ├── pyproject.toml
     └── settings.py                     # API全体の設定
 ```

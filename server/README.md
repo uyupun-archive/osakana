@@ -9,12 +9,16 @@ $ cd server
 
 $ cp .env.example .env
 
-$ pipenv install --dev
+# `server/.env` の以下の項目を変更する
+$ cat server/.env
+...
++ MS_ADDRESS=engine
+- MS_ADDRESS=localhost
+...
 
-# cchardetのインストールに失敗する場合は以下を実行し、再度 `pipenv install` を実行する
-$ pip install --upgrade Cython
+$ poetry install --sync
 
-$ pipenv shell
+$ poetry shell
 
 # FastAPIの起動
 $ python main.py
@@ -38,7 +42,7 @@ $ python -m lib.ngrams <title>
 $ python -m lib.morphological_analysis <title>
 
 # リンター、フォーマッタの実行
-$ pipenv run flake8 .
-$ pipenv run black .
-$ pipenv run isort .
+$ poetry run flake8 .
+$ poetry run black .
+$ poetry run isort .
 ```

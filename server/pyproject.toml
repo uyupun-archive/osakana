@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "osakana"
+version = "0.1.0"
+description = "「あとで読む」記事を管理できるWebアプリ"
+authors = ["Kazuki Tobita <kazukiti201@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.2"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+pydantic = "^1.10.8"
+requests = "^2.31.0"
+beautifulsoup4 = "^4.12.2"
+meilisearch = "^0.26.0"
+charset-normalizer = "^3.1.0"
+sudachipy = "^0.6.7"
+sudachidict-core = "^20230110"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+black = "^23.3.0"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

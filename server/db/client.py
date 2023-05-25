@@ -27,20 +27,10 @@ class DBClient:
         self._client = meilisearch.Client(url=self._uri)
 
     def create_index(self, index_name: str) -> None:
-        if self._exists_index(index_name=index_name):
-            raise IndexAlreadyExistsError()
         self._client.create_index(uid=index_name)
 
     def delete_index(self, index_name: str) -> None:
-        if not self._exists_index(index_name=index_name):
-            raise IndexDoesNotExistsError()
         self._client.delete_index(uid=index_name)
-
-    def _exists_index(self, index_name: str) -> bool:
-        indexes = self._client.get_indexes()["results"]
-        if index_name in [index.uid for index in indexes]:
-            return True
-        return False
 
     def sortable(self, index_name: str, attributes: list[str]) -> None:
         self._client.index(uid=index_name).update_settings(
@@ -112,18 +102,6 @@ class DBClient:
 class TaskStatus(str, Enum):
     Succeeded = "succeeded"
     Failed = "failed"
-
-
-class IndexAlreadyExistsError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
-        self.message = "Index already exists"
-
-
-class IndexDoesNotExistsError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
-        self.message = "Index not exists"
 
 
 class DocumentAlreadyExistsError(Exception):
