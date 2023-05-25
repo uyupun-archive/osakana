@@ -4,7 +4,7 @@ import random
 from enum import Enum
 from uuid import UUID
 
-from db.client import DocumentAlreadyExistsError, DocumentNotFoundError
+from db.client import DocumentAlreadyExistsError, DocumentNotFoundError, Options
 from db.models.reading_list import ReadingListRecord
 from db.repos.base import BaseRepository
 
@@ -141,9 +141,9 @@ class ReadingListRepository(BaseRepository):
         self._db_client.update_document(index_name=self._index_name, document=document)
 
     def count(self, type: ReadingListCountType) -> int:
-        options = {"filter": type.value}
-        if type == ReadingListCountType.IS_ALL:
-            options = {}
+        options: Options = {}
+        if type != ReadingListCountType.IS_ALL:
+            options = {"filter": type.value}
 
         count = self._db_client.count_documents(
             index_name=self._index_name, options=options
