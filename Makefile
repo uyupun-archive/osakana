@@ -8,6 +8,7 @@ build:
 up:
 	cd engine && docker compose -p osakana up -d
 	cd server && docker compose -p osakana up -d
+	cd server && docker compose -p osakana exec server python -m db.migrations.run 01 up
 	cd dashboard && docker compose -p osakana up -d
 
 down:
