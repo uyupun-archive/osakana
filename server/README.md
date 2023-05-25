@@ -9,6 +9,13 @@ $ cd server
 
 $ cp .env.example .env
 
+# `server/.env` の以下の項目を変更する
+$ cat server/.env
+...
++ MS_ADDRESS=engine
+- MS_ADDRESS=localhost
+...
+
 $ poetry install --sync
 
 $ poetry shell

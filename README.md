@@ -9,16 +9,6 @@
 ユーザとして利用する場合、DockerとDocker Composeによる構築を推奨します。
 
 ```bash
-# `server/.env` の以下の項目を変更する
-$ cat server/.env
-...
-+ API_ADDRESS=0.0.0.0
-- API_ADDRESS=127.0.0.1
-...
-+ MS_ADDRESS=engine
-- MS_ADDRESS=localhost
-...
-
 # Dockerネットワークの作成
 $ make network
 
