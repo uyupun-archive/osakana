@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "lint": "pyright ."
+  },
+  "devDependencies": {
+    "pyright": "^1.1.310"
+  }
+}
