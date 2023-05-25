@@ -5,6 +5,7 @@ from starlette.status import (
     HTTP_404_NOT_FOUND,
     HTTP_409_CONFLICT,
     HTTP_422_UNPROCESSABLE_ENTITY,
+    HTTP_500_INTERNAL_SERVER_ERROR,
 )
 
 from api.errors.responses import ApiError
@@ -50,6 +51,12 @@ async def reading_list_record_not_found_error_handler(
     return ApiError(status_code=HTTP_404_NOT_FOUND, message=e.message).response()
 
 
+async def internal_server_error_handler(req: Request, e: Exception):
+    return ApiError(
+        status_code=HTTP_500_INTERNAL_SERVER_ERROR, message="Internal server error"
+    ).response()
+
+
 def register_error_handlers(app: FastAPI):
     app.add_exception_handler(RequestValidationError, validation_error_handler)
     app.add_exception_handler(UrlAlreadyExistsError, url_already_exists_error_handler)
@@ -63,4 +70,7 @@ def register_error_handlers(app: FastAPI):
     )
     app.add_exception_handler(
         ReadingListRecordNotFoundError, reading_list_record_not_found_error_handler
+    )
+    app.add_exception_handler(
+        HTTP_500_INTERNAL_SERVER_ERROR, internal_server_error_handler
     )
