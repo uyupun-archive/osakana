@@ -34,7 +34,8 @@ class WebScrapingService:
 
     def _guess_encoding(self, res: Response) -> Response:
         encoding = charset_normalizer.detect(res.content)["encoding"]
-        res.encoding = encoding
+        if isinstance(encoding, str):
+            res.encoding = encoding
         return res
 
     def get_title(self) -> str:
