@@ -69,3 +69,12 @@ export class ReadingListCountsTypeError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };
+
+export class ExportReadingListRecordTypeError extends Error {
+  constructor() {
+    const message = 'ExportReadingListRecord type error';
+    super(message);
+    this.name = 'ExportReadingListRecordTypeError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};

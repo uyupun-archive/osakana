@@ -10,6 +10,7 @@ import {
   deleteReadingListRecord,
   bookmarkReadingListRecord,
   getReadingListCounts,
+  exportReadingList,
 } from '../../api/endpoints/readingList';
 import type {
   Uuid4,
@@ -167,6 +168,11 @@ export const Home = (): JSX.Element => {
     }
   };
 
+  const handleExportReadingList = async (): Promise<void> => {
+    const res = await exportReadingList();
+    console.log(res);
+  }
+
   useEffect(() => {
     handleReadingListCounts();
   }, [readingList]);
@@ -174,6 +180,9 @@ export const Home = (): JSX.Element => {
   return (
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
+      <div>
+        <button type="button" onClick={handleExportReadingList}>Export</button>
+      </div>
       <div>
 				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
 				<button type="button" onClick={handleAddReadingListRecord}>Add</button>

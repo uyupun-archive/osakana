@@ -28,3 +28,21 @@ export const isValidReadingListRecordResponse = (record: any): record is Reading
     (record.bookmarked_at === null || isIso8601(record.bookmarked_at))
   );
 };
+
+export interface ExportReadingListRecordResponse extends ReadingListRecordResponse {
+  title_bigrams: Array<string>;
+  title_trigrams: Array<string>;
+  title_morphemes: Array<string>;
+};
+
+export const isValidExportReadingListRecordResponse = (record: any): record is ExportReadingListRecordResponse => {
+  return (
+    isValidReadingListRecordResponse(record as ReadingListRecordResponse) &&
+    Array.isArray(record.title_bigrams) &&
+    record.title_bigrams.every((bigram: any) => typeof bigram === 'string') &&
+    Array.isArray(record.title_trigrams) &&
+    record.title_trigrams.every((trigram: any) => typeof trigram === 'string') &&
+    Array.isArray(record.title_morphemes) &&
+    record.title_morphemes.every((morpheme: any) => typeof morpheme === 'string')
+  );
+};

@@ -1,3 +1,4 @@
+import { type } from 'os';
 import type { Uuid4, HttpUrl, UnsignedInteger } from './common';
 import { isUnsignedInteger } from './common';
 
@@ -37,3 +38,11 @@ export const isValidReadingListCounts = (counts: any): counts is ReadingListCoun
     isUnsignedInteger(counts.bookmarks)
   );
 };
+
+export interface ExportReadingListRecord extends ReadingListRecord {
+  title_bigrams: Array<string>;
+  title_trigrams: Array<string>;
+  title_morphemes: Array<string>;
+};
+
+export type ExportReadingList = Array<ExportReadingListRecord>;
