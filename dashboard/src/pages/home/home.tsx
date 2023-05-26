@@ -28,6 +28,7 @@ import {
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError,
   ReadingListCountsTypeError,
+  ExportReadingListRecordTypeError,
 } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
@@ -169,8 +170,28 @@ export const Home = (): JSX.Element => {
   };
 
   const handleExportReadingList = async (): Promise<void> => {
-    const res = await exportReadingList();
-    console.log(res);
+    let res;
+    try {
+      res = await exportReadingList();
+    } catch (e: unknown) {
+      if (e instanceof ExportReadingListRecordTypeError) {
+        console.error(e.message);
+        return;
+      }
+      console.error('Unknown error');
+    }
+
+    const readingListJson = JSON.stringify(res);
+    const readingListBlob = new Blob([readingListJson], { type: "application/json" });
+    const exportUrl = URL.createObjectURL(readingListBlob);
+
+    const exportLink = document.createElement('a');
+    exportLink.href = exportUrl;
+    exportLink.download = 'reading-list.json';
+    exportLink.style.display = 'none';
+    document.body.appendChild(exportLink);
+    exportLink.click();
+    document.body.removeChild(exportLink);
   }
 
   useEffect(() => {
