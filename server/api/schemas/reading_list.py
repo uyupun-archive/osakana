@@ -41,3 +41,6 @@ class ReadingListCountsResponse(BaseModel):
     reads: UnsignedInteger  # type: ignore
     unreads: UnsignedInteger  # type: ignore
     bookmarks: UnsignedInteger  # type: ignore
+
+
+ReadingListExportResponse = list[ReadingListRecord]

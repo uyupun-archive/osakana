@@ -20,6 +20,7 @@ from api.schemas.reading_list import (
     ReadingListBookmarkResponse,
     ReadingListCountsResponse,
     ReadingListDeleteResponse,
+    ReadingListExportResponse,
     ReadingListFishingResponse,
     ReadingListReadResponse,
     ReadingListSearchResponse,
@@ -207,3 +208,14 @@ def counts(
     return ReadingListCountsResponse(
         total=total, reads=reads, unreads=unreads, bookmarks=bookmarks
     )
+
+
+@router.get("/export", response_model=ReadingListExportResponse)
+def read_counts(
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
+) -> ReadingListExportResponse:
+    """
+    全てのリーディングリストを取得する
+    """
+    reading_list = repo.all()
+    return reading_list

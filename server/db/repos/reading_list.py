@@ -150,6 +150,19 @@ class ReadingListRepository(BaseRepository):
         )
         return count
 
+    def all(self) -> list[ReadingListRecord]:
+        options: Options = {"sort": ["created_at:asc"]}
+        documents = self._db_client.search_documents(
+            index_name=self._index_name,
+            keyword="",
+            options=options,
+        )
+        reading_list = [
+            ReadingListRecord.convert_instance(document=document)
+            for document in documents
+        ]
+        return reading_list
+
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
