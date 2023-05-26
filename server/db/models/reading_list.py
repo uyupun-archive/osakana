@@ -88,16 +88,19 @@ class ReadingListRecord(OsakanaBaseModel):
 
     @classmethod
     def convert_instance(cls, document: Document) -> ReadingListRecord:
-        reading_list_record = ReadingListRecord(
-            id=document["id"],
-            url=document["url"],
-            title=document["title"],
-            is_read=document["is_read"],
-            is_bookmarked=document["is_bookmarked"],
-            thumb=document["thumb"],
-            created_at=document["created_at"],
-            updated_at=document["updated_at"],
-            read_at=document["read_at"],
-            bookmarked_at=document["bookmarked_at"],
+        return ReadingListRecord(**document)
+
+
+class PrivateReadingListRecord(ReadingListRecord):
+    title_bigrams: list[str] = Field(default=[])
+    title_trigrams: list[str] = Field(default=[])
+    title_morphemes: list[str] = Field(default=[])
+
+    @classmethod
+    def convert_instance(cls, document: Document) -> PrivateReadingListRecord:
+        return PrivateReadingListRecord(
+            **document,
+            title_bigrams=document["_title_bigrams"],
+            title_trigrams=document["_title_trigrams"],
+            title_morphemes=document["_title_morphemes"],
         )
-        return reading_list_record

@@ -5,7 +5,7 @@ from enum import Enum
 from uuid import UUID
 
 from db.client import DocumentAlreadyExistsError, DocumentNotFoundError, Options
-from db.models.reading_list import ReadingListRecord
+from db.models.reading_list import PrivateReadingListRecord, ReadingListRecord
 from db.repos.base import BaseRepository
 
 
@@ -150,7 +150,7 @@ class ReadingListRepository(BaseRepository):
         )
         return count
 
-    def all(self) -> list[ReadingListRecord]:
+    def all(self) -> list[PrivateReadingListRecord]:
         options: Options = {"sort": ["created_at:asc"]}
         documents = self._db_client.search_documents(
             index_name=self._index_name,
@@ -158,7 +158,7 @@ class ReadingListRepository(BaseRepository):
             options=options,
         )
         reading_list = [
-            ReadingListRecord.convert_instance(document=document)
+            PrivateReadingListRecord.convert_instance(document=document)
             for document in documents
         ]
         return reading_list
