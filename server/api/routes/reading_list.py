@@ -211,7 +211,7 @@ def counts(
 
 
 @router.get("/export", response_model=ReadingListExportResponse)
-def read_counts(
+def export(
     repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListExportResponse:
     """
