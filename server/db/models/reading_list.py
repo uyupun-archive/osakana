@@ -71,8 +71,8 @@ class ReadingListRecord(OsakanaBaseModel):
         document["_title_bigrams"] = reading_list_record._title_bigrams
         document["_title_trigrams"] = reading_list_record._title_trigrams
         document["_title_morphemes"] = reading_list_record._title_morphemes
-        document["created_at"] = (reading_list_record.created_at.isoformat(),)
-        document["updated_at"] = (reading_list_record.updated_at.isoformat(),)
+        document["created_at"] = reading_list_record.created_at.isoformat()
+        document["updated_at"] = reading_list_record.updated_at.isoformat()
 
         if reading_list_record.read_at:
             document["read_at"] = reading_list_record.read_at.isoformat()
