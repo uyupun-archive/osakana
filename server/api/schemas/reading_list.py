@@ -44,3 +44,7 @@ class ReadingListCountsResponse(BaseModel):
 
 
 ReadingListExportResponse = list[PrivateReadingListRecord]
+
+
+class ReadingListImportResponse(BaseModel):
+    pass

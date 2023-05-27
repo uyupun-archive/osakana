@@ -1,6 +1,7 @@
+import json
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from starlette.status import (
     HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
@@ -22,6 +23,7 @@ from api.schemas.reading_list import (
     ReadingListDeleteResponse,
     ReadingListExportResponse,
     ReadingListFishingResponse,
+    ReadingListImportResponse,
     ReadingListReadResponse,
     ReadingListSearchResponse,
     ReadingListUnreadResponse,
@@ -219,3 +221,19 @@ def export(
     """
     reading_list = repo.all()
     return reading_list
+
+
+@router.post(
+    "/import",
+    response_model=ReadingListImportResponse,
+    responses={
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+    },
+)
+async def import_(reading_list: UploadFile = File(...)) -> ReadingListImportResponse:
+    if reading_list.filename and reading_list.filename.endswith(".json"):
+        contents = await reading_list.read()
+        json_data = json.loads(contents)
+        print(json_data)
+
+    return ReadingListImportResponse()
