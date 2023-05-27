@@ -107,7 +107,7 @@ $ make down
     │   ├── models                      # データモデル
     │   ├── repos                       # リポジトリ
     │   └── settings.py                 # Meilisearchの設定
-    ├── lib
+    ├── services
     │   ├── morphological_analysis.py   # 形態素解析を行うサービス
     │   ├── ngrams.py                   # n-gramを行うサービス
     │   ├── timezone.py                 # タイムゾーン関連の処理

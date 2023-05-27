@@ -8,9 +8,9 @@ from pydantic import Field, HttpUrl, PrivateAttr
 
 from db.client import Document
 from db.models.base import OsakanaBaseModel
-from lib.morphological_analysis import MorphologicalAnalysisService
-from lib.ngrams import NgramService
-from lib.timezone import get_timezone
+from services.morphological_analysis import MorphologicalAnalysisService
+from services.ngrams import NgramService
+from services.timezone import get_timezone
 
 
 class ReadingListRecord(OsakanaBaseModel):

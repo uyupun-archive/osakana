@@ -30,7 +30,7 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListCountType, ReadingListRepository
-from lib.web_scraping import (
+from services.web_scraping import (
     FaviconNotFoundError,
     IconNotFoundError,
     TitleNotFoundError,

@@ -16,7 +16,7 @@ from db.repos.reading_list import (
     ReadingListRecordNotYetReadError,
     UrlAlreadyExistsError,
 )
-from lib.web_scraping import WebPageAccessError
+from services.web_scraping import WebPageAccessError
 
 
 async def validation_error_handler(
