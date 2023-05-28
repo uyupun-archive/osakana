@@ -52,15 +52,41 @@ class DBClient:
         except DocumentNotFoundError:
             pass
         else:
-            raise DocumentAlreadyExistsError()
+            raise DocumentAlreadyExistsError(key=document[key])
 
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
 
-    def add_documents(self, index_name: str, documents: Documents) -> None:
+    def add_documents(
+        self, index_name: str, documents: Documents, key: str = "id"
+    ) -> None:
         index = self._client.index(uid=index_name)
+
+        is_duplicated, duplicate_key = self._are_duplicates(
+            index_name=index_name, documents=documents, key=key
+        )
+        if is_duplicated and duplicate_key:
+            raise DocumentAlreadyExistsError(key=duplicate_key)
+
         task = index.add_documents(documents=documents)
         self._check_task_status(index_name=index_name, task=task)
+
+    def _are_duplicates(
+        self, index_name: str, documents: Documents, key: str = "id"
+    ) -> tuple[bool, str | None]:
+        existing_documents = self.search_documents(
+            index_name=index_name,
+            keyword="",
+            options={},
+        )
+        existing_keys = [document[key] for document in existing_documents]
+
+        keys = [document[key] for document in documents]
+
+        for key in keys:
+            if key in existing_keys:
+                return True, key
+        return False, None
 
     def get_document(self, index_name: str, id: UUID) -> Document:
         try:
@@ -113,7 +139,9 @@ class TaskStatus(str, Enum):
 
 
 class DocumentAlreadyExistsError(Exception):
-    pass
+    def __init__(self, key: str) -> None:
+        super().__init__()
+        self.key = key
 
 
 class DocumentNotFoundError(Exception):

@@ -23,7 +23,9 @@ class ReadingListRepository(BaseRepository):
             reading_list_record=reading_list_record
         )
         try:
-            self._db_client.add_document(index_name=self._index_name, document=document)
+            self._db_client.add_document(
+                index_name=self._index_name, document=document, key="url"
+            )
         except DocumentAlreadyExistsError:
             raise UrlAlreadyExistsError()
 
@@ -166,24 +168,16 @@ class ReadingListRepository(BaseRepository):
         return reading_list
 
     def bulk_add(self, private_reading_list: PrivateReadingList):
-        ids = [record.id for record in private_reading_list]
-        is_duplicated, duplicate_id = self._are_duplicates(ids=ids)
-        if is_duplicated and duplicate_id:
-            raise PrivateReadingListRecordIdDuplicateError(id=duplicate_id)
         documents = [
             PrivateReadingListRecord.convert_dict(private_reading_list_record=record)
             for record in private_reading_list
         ]
-        self._db_client.add_documents(index_name=self._index_name, documents=documents)
-
-    def _are_duplicates(self, ids: list[UUID]) -> tuple[bool, UUID | None]:
-        records = self.all()
-        existing_ids = [record.id for record in records]
-
-        for id in ids:
-            if id in existing_ids:
-                return True, id
-        return False, None
+        try:
+            self._db_client.add_documents(
+                index_name=self._index_name, documents=documents
+            )
+        except DocumentAlreadyExistsError as e:
+            raise ReadingListRecordDuplicateError(key=UUID(e.key))
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
@@ -221,7 +215,7 @@ class ReadingListRecordNotYetReadError(Exception):
         self.message = "Reading list record already unread"
 
 
-class PrivateReadingListRecordIdDuplicateError(Exception):
-    def __init__(self, id: UUID) -> None:
+class ReadingListRecordDuplicateError(Exception):
+    def __init__(self, key: UUID) -> None:
         super().__init__()
-        self.message = f"Reading list record id duplicate error: {id}"
+        self.message = f"Reading list record duplicate: {key}"
