@@ -5,7 +5,11 @@ from enum import Enum
 from uuid import UUID
 
 from db.client import DocumentAlreadyExistsError, DocumentNotFoundError, Options
-from db.models.reading_list import PrivateReadingListRecord, ReadingListRecord
+from db.models.reading_list import (
+    PrivateReadingList,
+    PrivateReadingListRecord,
+    ReadingListRecord,
+)
 from db.repos.base import BaseRepository
 
 
@@ -163,6 +167,22 @@ class ReadingListRepository(BaseRepository):
         ]
         return reading_list
 
+    def bulk_add(self, private_reading_list: PrivateReadingList):
+        ids = [record.id for record in private_reading_list]
+        is_duplicated, duplicate_id = self._are_duplicates(ids=ids)
+        if is_duplicated and duplicate_id:
+            raise PrivateReadingListRecordIdDuplicateError(id=duplicate_id)
+        # TODO: 一括で追加する
+
+    def _are_duplicates(self, ids: list[UUID]) -> tuple[bool, UUID | None]:
+        records = self.all()
+        existing_ids = [record.id for record in records]
+
+        for id in ids:
+            if id in existing_ids:
+                return True, id
+        return False, None
+
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
@@ -197,3 +217,9 @@ class ReadingListRecordNotYetReadError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Reading list record already unread"
+
+
+class PrivateReadingListRecordIdDuplicateError(Exception):
+    def __init__(self, id: UUID) -> None:
+        super().__init__()
+        self.message = f"Reading list record id duplicate error: {id}"

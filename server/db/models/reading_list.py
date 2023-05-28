@@ -92,6 +92,13 @@ class PrivateReadingListRecord(ReadingListRecord):
     title_morphemes: list[str] = Field(default=[])
 
     @classmethod
+    def convert_dict(
+        cls, private_reading_list_record: PrivateReadingListRecord
+    ) -> Document:
+        document = ReadingListRecord.convert_dict(private_reading_list_record)
+        return document
+
+    @classmethod
     def convert_instance(cls, document: Document) -> PrivateReadingListRecord:
         return PrivateReadingListRecord(
             **document,

@@ -233,12 +233,11 @@ def export(
 async def import_(
     file: UploadFile = File(...),
     service: JsonImportService = Depends(JsonImportService),
+    repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListImportResponse:
     service.create(file=file)
     await service.validate()
     private_reading_list = service.parse()
-    print(private_reading_list)
-    # await check_duplicate_ids(records)
-    # await save_to_db(records)
+    repo.bulk_add(private_reading_list=private_reading_list)
 
     return ReadingListImportResponse()
