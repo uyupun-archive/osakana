@@ -96,6 +96,15 @@ class PrivateReadingListRecord(ReadingListRecord):
         cls, private_reading_list_record: PrivateReadingListRecord
     ) -> Document:
         document = ReadingListRecord.convert_dict(private_reading_list_record)
+
+        del document["title_bigrams"]
+        del document["title_trigrams"]
+        del document["title_morphemes"]
+
+        document["_title_bigrams"] = private_reading_list_record.title_bigrams
+        document["_title_trigrams"] = private_reading_list_record.title_trigrams
+        document["_title_morphemes"] = private_reading_list_record.title_morphemes
+
         return document
 
     @classmethod
