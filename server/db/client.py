@@ -42,51 +42,42 @@ class DBClient:
             {"filterableAttributes": attributes}
         )
 
-    def add_document(
-        self, index_name: str, document: Document, key: str = "id"
-    ) -> None:
+    def add_document(self, index_name: str, document: Document, key: str) -> None:
         index = self._client.index(uid=index_name)
 
-        try:
-            document = self.get_document(index_name=index_name, id=document[key])
-        except DocumentNotFoundError:
-            pass
-        else:
-            raise DocumentAlreadyExistsError(key=document[key])
+        documents = self.search_documents(
+            index_name=index_name, keyword=f'"{document[key]}"'
+        )
+        if documents:
+            raise DocumentAlreadyExistsError()
 
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
 
-    def add_documents(
-        self, index_name: str, documents: Documents, key: str = "id"
-    ) -> None:
+    def add_documents(self, index_name: str, documents: Documents) -> None:
         index = self._client.index(uid=index_name)
 
-        is_duplicated, duplicate_key = self._are_duplicates(
-            index_name=index_name, documents=documents, key=key
-        )
-        if is_duplicated and duplicate_key:
-            raise DocumentAlreadyExistsError(key=duplicate_key)
+        duplicate_id = self._are_duplicates(index_name=index_name, documents=documents)
+        if duplicate_id:
+            raise DocumentIdDuplicateError(id=duplicate_id)
 
         task = index.add_documents(documents=documents)
         self._check_task_status(index_name=index_name, task=task)
 
-    def _are_duplicates(
-        self, index_name: str, documents: Documents, key: str = "id"
-    ) -> tuple[bool, str | None]:
+    def _are_duplicates(self, index_name: str, documents: Documents) -> UUID | None:
         existing_documents = self.search_documents(
             index_name=index_name,
             keyword="",
             options={},
         )
-        existing_keys = [document[key] for document in existing_documents]
+        existing_ids = [document["id"] for document in existing_documents]
 
-        keys = [document[key] for document in documents]
+        ids = [document["id"] for document in documents]
 
-        for key in keys:
-            if key in existing_keys:
-                return True, key
-        return False, None
+        for id in ids:
+            if id in existing_ids:
+                return id
+        return None
 
     def get_document(self, index_name: str, id: UUID) -> Document:
         try:
@@ -139,9 +130,7 @@ class TaskStatus(str, Enum):
 
 
 class DocumentAlreadyExistsError(Exception):
-    def __init__(self, key: str) -> None:
-        super().__init__()
-        self.key = key
+    pass
 
 
 class DocumentNotFoundError(Exception):
@@ -150,3 +139,9 @@ class DocumentNotFoundError(Exception):
 
 class InvalidDocumentError(Exception):
     pass
+
+
+class DocumentIdDuplicateError(Exception):
+    def __init__(self, id: UUID) -> None:
+        super().__init__()
+        self.id = id

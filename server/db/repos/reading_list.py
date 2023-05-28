@@ -4,7 +4,12 @@ import random
 from enum import Enum
 from uuid import UUID
 
-from db.client import DocumentAlreadyExistsError, DocumentNotFoundError, Options
+from db.client import (
+    DocumentAlreadyExistsError,
+    DocumentIdDuplicateError,
+    DocumentNotFoundError,
+    Options,
+)
 from db.models.reading_list import (
     PrivateReadingList,
     PrivateReadingListRecord,
@@ -176,8 +181,8 @@ class ReadingListRepository(BaseRepository):
             self._db_client.add_documents(
                 index_name=self._index_name, documents=documents
             )
-        except DocumentAlreadyExistsError as e:
-            raise ReadingListRecordDuplicateError(key=UUID(e.key))
+        except DocumentIdDuplicateError as e:
+            raise ReadingListRecordDuplicateError(id=e.id)
 
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
@@ -216,6 +221,6 @@ class ReadingListRecordNotYetReadError(Exception):
 
 
 class ReadingListRecordDuplicateError(Exception):
-    def __init__(self, key: UUID) -> None:
+    def __init__(self, id: UUID) -> None:
         super().__init__()
-        self.message = f"Reading list record duplicate: {key}"
+        self.message = f"Reading list record duplicate: {id}"
