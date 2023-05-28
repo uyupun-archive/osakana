@@ -1,4 +1,3 @@
-import json
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, UploadFile
@@ -30,6 +29,7 @@ from api.schemas.reading_list import (
 )
 from db.models.reading_list import ReadingListRecord
 from db.repos.reading_list import ReadingListCountType, ReadingListRepository
+from services.json_import import JsonImportService
 from services.web_scraping import (
     FaviconNotFoundError,
     IconNotFoundError,
@@ -230,10 +230,16 @@ def export(
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
     },
 )
-async def import_(reading_list: UploadFile = File(...)) -> ReadingListImportResponse:
-    if reading_list.filename and reading_list.filename.endswith(".json"):
-        contents = await reading_list.read()
-        json_data = json.loads(contents)
-        print(json_data)
+async def import_(
+    file: UploadFile = File(...),
+    service: JsonImportService = Depends(JsonImportService),
+) -> ReadingListImportResponse:
+    service.create(file=file)
+    await service.validate()
+    service.parse()
+    # await check_duplicate_ids(records)
+    # await save_to_db(records)
 
-    return ReadingListImportResponse()
+    return (
+        ReadingListImportResponse()
+    )  # Please adjust this according to your implementation.

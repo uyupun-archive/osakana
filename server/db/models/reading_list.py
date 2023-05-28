@@ -99,3 +99,6 @@ class PrivateReadingListRecord(ReadingListRecord):
             title_trigrams=document["_title_trigrams"],
             title_morphemes=document["_title_morphemes"],
         )
+
+
+PrivateReadingList = list[PrivateReadingListRecord]
