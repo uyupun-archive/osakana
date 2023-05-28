@@ -57,22 +57,31 @@ class DBClient:
     def add_documents(self, index_name: str, documents: Documents) -> None:
         index = self._client.index(uid=index_name)
 
-        duplicate_id = self._are_duplicates(index_name=index_name, documents=documents)
+        duplicate_id = self._are_duplicate_documents(
+            index_name=index_name, documents=documents
+        )
         if duplicate_id:
             raise DocumentIdDuplicateError(id=duplicate_id)
 
         task = index.add_documents(documents=documents)
         self._check_task_status(index_name=index_name, task=task)
 
-    def _are_duplicates(self, index_name: str, documents: Documents) -> UUID | None:
+    def _are_duplicate_documents(
+        self, index_name: str, documents: Documents
+    ) -> UUID | None:
         existing_documents = self.search_documents(
             index_name=index_name,
             keyword="",
             options={},
         )
-        existing_ids = [document["id"] for document in existing_documents]
 
-        ids = [document["id"] for document in documents]
+        existing_ids = []
+        ids = []
+        try:
+            existing_ids = [document["id"] for document in existing_documents]
+            ids = [document["id"] for document in documents]
+        except KeyError:
+            raise DocumentIdNotFoundError()
 
         for id in ids:
             if id in existing_ids:
@@ -145,3 +154,7 @@ class DocumentIdDuplicateError(Exception):
     def __init__(self, id: UUID) -> None:
         super().__init__()
         self.id = id
+
+
+class DocumentIdNotFoundError(Exception):
+    pass
