@@ -42,13 +42,16 @@ class DBClient:
             {"filterableAttributes": attributes}
         )
 
-    def add_document(self, index_name: str, key: str, document: Document) -> None:
+    def add_document(
+        self, index_name: str, document: Document, key: str = "id"
+    ) -> None:
         index = self._client.index(uid=index_name)
 
-        documents = self.search_documents(
-            index_name=index_name, keyword=f'"{document[key]}"'
-        )
-        if documents:
+        try:
+            document = self.get_document(index_name=index_name, id=document[key])
+        except DocumentNotFoundError:
+            pass
+        else:
             raise DocumentAlreadyExistsError()
 
         task = index.add_documents(documents=[document])

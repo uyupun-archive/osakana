@@ -23,9 +23,7 @@ class ReadingListRepository(BaseRepository):
             reading_list_record=reading_list_record
         )
         try:
-            self._db_client.add_document(
-                index_name=self._index_name, key="url", document=document
-            )
+            self._db_client.add_document(index_name=self._index_name, document=document)
         except DocumentAlreadyExistsError:
             raise UrlAlreadyExistsError()
 
