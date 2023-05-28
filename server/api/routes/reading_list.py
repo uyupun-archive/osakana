@@ -236,10 +236,9 @@ async def import_(
 ) -> ReadingListImportResponse:
     service.create(file=file)
     await service.validate()
-    service.parse()
+    private_reading_list = service.parse()
+    print(private_reading_list)
     # await check_duplicate_ids(records)
     # await save_to_db(records)
 
-    return (
-        ReadingListImportResponse()
-    )  # Please adjust this according to your implementation.
+    return ReadingListImportResponse()
