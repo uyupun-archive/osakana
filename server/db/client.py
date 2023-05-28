@@ -54,6 +54,11 @@ class DBClient:
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
 
+    def add_documents(self, index_name: str, documents: Documents) -> None:
+        index = self._client.index(uid=index_name)
+        task = index.add_documents(documents=documents)
+        self._check_task_status(index_name=index_name, task=task)
+
     def get_document(self, index_name: str, id: UUID) -> Document:
         try:
             document = self._client.index(uid=index_name).get_document(

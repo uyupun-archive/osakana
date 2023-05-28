@@ -172,7 +172,11 @@ class ReadingListRepository(BaseRepository):
         is_duplicated, duplicate_id = self._are_duplicates(ids=ids)
         if is_duplicated and duplicate_id:
             raise PrivateReadingListRecordIdDuplicateError(id=duplicate_id)
-        # TODO: 一括で追加する
+        documents = [
+            PrivateReadingListRecord.convert_dict(private_reading_list_record=record)
+            for record in private_reading_list
+        ]
+        self._db_client.add_documents(index_name=self._index_name, documents=documents)
 
     def _are_duplicates(self, ids: list[UUID]) -> tuple[bool, UUID | None]:
         records = self.all()
