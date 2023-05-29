@@ -1,6 +1,6 @@
 from pydantic import BaseModel, HttpUrl, conint
 
-from db.models.reading_list import ReadingListRecord
+from db.models.reading_list import PrivateReadingListRecord, ReadingListRecord
 
 
 class ReadingListAddRequest(BaseModel):
@@ -41,3 +41,10 @@ class ReadingListCountsResponse(BaseModel):
     reads: UnsignedInteger  # type: ignore
     unreads: UnsignedInteger  # type: ignore
     bookmarks: UnsignedInteger  # type: ignore
+
+
+ReadingListExportResponse = list[PrivateReadingListRecord]
+
+
+class ReadingListImportResponse(BaseModel):
+    pass

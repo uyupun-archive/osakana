@@ -8,9 +8,9 @@ from pydantic import Field, HttpUrl, PrivateAttr
 
 from db.client import Document
 from db.models.base import OsakanaBaseModel
-from lib.morphological_analysis import MorphologicalAnalysisService
-from lib.ngrams import NgramService
-from lib.timezone import get_timezone
+from services.morphological_analysis import MorphologicalAnalysisService
+from services.ngrams import NgramService
+from services.timezone import get_timezone
 
 
 class ReadingListRecord(OsakanaBaseModel):
@@ -65,39 +65,56 @@ class ReadingListRecord(OsakanaBaseModel):
 
     @classmethod
     def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:
-        document = {
-            "id": str(reading_list_record.id),
-            "url": reading_list_record.url,
-            "title": reading_list_record.title,
-            "_title_bigrams": reading_list_record._title_bigrams,
-            "_title_trigrams": reading_list_record._title_trigrams,
-            "_title_morphemes": reading_list_record._title_morphemes,
-            "is_read": reading_list_record.is_read,
-            "is_bookmarked": reading_list_record.is_bookmarked,
-            "thumb": reading_list_record.thumb,
-            "created_at": reading_list_record.created_at.isoformat(),
-            "updated_at": reading_list_record.updated_at.isoformat(),
-            "read_at": reading_list_record.read_at.isoformat()
-            if reading_list_record.read_at
-            else None,
-            "bookmarked_at": reading_list_record.bookmarked_at.isoformat()
-            if reading_list_record.bookmarked_at
-            else None,
-        }
+        document = reading_list_record.dict()
+
+        document["id"] = str(reading_list_record.id)
+        document["_title_bigrams"] = reading_list_record._title_bigrams
+        document["_title_trigrams"] = reading_list_record._title_trigrams
+        document["_title_morphemes"] = reading_list_record._title_morphemes
+        document["created_at"] = reading_list_record.created_at.isoformat()
+        document["updated_at"] = reading_list_record.updated_at.isoformat()
+
+        if reading_list_record.read_at:
+            document["read_at"] = reading_list_record.read_at.isoformat()
+        if reading_list_record.bookmarked_at:
+            document["bookmarked_at"] = reading_list_record.bookmarked_at.isoformat()
+
         return document
 
     @classmethod
     def convert_instance(cls, document: Document) -> ReadingListRecord:
-        reading_list_record = ReadingListRecord(
-            id=document["id"],
-            url=document["url"],
-            title=document["title"],
-            is_read=document["is_read"],
-            is_bookmarked=document["is_bookmarked"],
-            thumb=document["thumb"],
-            created_at=document["created_at"],
-            updated_at=document["updated_at"],
-            read_at=document["read_at"],
-            bookmarked_at=document["bookmarked_at"],
+        return ReadingListRecord(**document)
+
+
+class PrivateReadingListRecord(ReadingListRecord):
+    title_bigrams: list[str] = Field(default=[])
+    title_trigrams: list[str] = Field(default=[])
+    title_morphemes: list[str] = Field(default=[])
+
+    @classmethod
+    def convert_dict(
+        cls, private_reading_list_record: PrivateReadingListRecord
+    ) -> Document:
+        document = ReadingListRecord.convert_dict(private_reading_list_record)
+
+        del document["title_bigrams"]
+        del document["title_trigrams"]
+        del document["title_morphemes"]
+
+        document["_title_bigrams"] = private_reading_list_record.title_bigrams
+        document["_title_trigrams"] = private_reading_list_record.title_trigrams
+        document["_title_morphemes"] = private_reading_list_record.title_morphemes
+
+        return document
+
+    @classmethod
+    def convert_instance(cls, document: Document) -> PrivateReadingListRecord:
+        return PrivateReadingListRecord(
+            **document,
+            title_bigrams=document["_title_bigrams"],
+            title_trigrams=document["_title_trigrams"],
+            title_morphemes=document["_title_morphemes"],
         )
-        return reading_list_record
+
+
+PrivateReadingList = list[PrivateReadingListRecord]

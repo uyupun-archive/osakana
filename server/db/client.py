@@ -42,7 +42,7 @@ class DBClient:
             {"filterableAttributes": attributes}
         )
 
-    def add_document(self, index_name: str, key: str, document: Document) -> None:
+    def add_document(self, index_name: str, document: Document, key: str) -> None:
         index = self._client.index(uid=index_name)
 
         documents = self.search_documents(
@@ -53,6 +53,40 @@ class DBClient:
 
         task = index.add_documents(documents=[document])
         self._check_task_status(index_name=index_name, task=task)
+
+    def add_documents(self, index_name: str, documents: Documents) -> None:
+        index = self._client.index(uid=index_name)
+
+        duplicate_id = self._are_duplicate_documents(
+            index_name=index_name, documents=documents
+        )
+        if duplicate_id:
+            raise DocumentIdDuplicateError(id=duplicate_id)
+
+        task = index.add_documents(documents=documents)
+        self._check_task_status(index_name=index_name, task=task)
+
+    def _are_duplicate_documents(
+        self, index_name: str, documents: Documents
+    ) -> UUID | None:
+        existing_documents = self.search_documents(
+            index_name=index_name,
+            keyword="",
+            options={},
+        )
+
+        existing_ids = []
+        ids = []
+        try:
+            existing_ids = [document["id"] for document in existing_documents]
+            ids = [document["id"] for document in documents]
+        except KeyError:
+            raise DocumentIdNotFoundError()
+
+        for id in ids:
+            if id in existing_ids:
+                return id
+        return None
 
     def get_document(self, index_name: str, id: UUID) -> Document:
         try:
@@ -113,4 +147,14 @@ class DocumentNotFoundError(Exception):
 
 
 class InvalidDocumentError(Exception):
+    pass
+
+
+class DocumentIdDuplicateError(Exception):
+    def __init__(self, id: UUID) -> None:
+        super().__init__()
+        self.id = id
+
+
+class DocumentIdNotFoundError(Exception):
     pass

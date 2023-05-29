@@ -36,13 +36,13 @@ $ python -m db.migrations.run 01 down
 $ open http://localhost:8000/redoc
 
 # タイトルを取得するスクレイピングの実行(検証用途)
-$ python -m lib.web_scraping <url>
+$ python -m services.web_scraping <url>
 
 # n-gramの実行(検証用途)
-$ python -m lib.ngrams <title>
+$ python -m services.ngrams <title>
 
 # 形態素解析の実行(検証用途)
-$ python -m lib.morphological_analysis <title>
+$ python -m services.morphological_analysis <title>
 
 # リンター、フォーマッタの実行
 $ poetry run flake8 .

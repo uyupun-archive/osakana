@@ -4,8 +4,17 @@ import random
 from enum import Enum
 from uuid import UUID
 
-from db.client import DocumentAlreadyExistsError, DocumentNotFoundError, Options
-from db.models.reading_list import ReadingListRecord
+from db.client import (
+    DocumentAlreadyExistsError,
+    DocumentIdDuplicateError,
+    DocumentNotFoundError,
+    Options,
+)
+from db.models.reading_list import (
+    PrivateReadingList,
+    PrivateReadingListRecord,
+    ReadingListRecord,
+)
 from db.repos.base import BaseRepository
 
 
@@ -20,7 +29,7 @@ class ReadingListRepository(BaseRepository):
         )
         try:
             self._db_client.add_document(
-                index_name=self._index_name, key="url", document=document
+                index_name=self._index_name, document=document, key="url"
             )
         except DocumentAlreadyExistsError:
             raise UrlAlreadyExistsError()
@@ -150,6 +159,31 @@ class ReadingListRepository(BaseRepository):
         )
         return count
 
+    def all(self) -> list[PrivateReadingListRecord]:
+        options: Options = {"sort": ["created_at:asc"]}
+        documents = self._db_client.search_documents(
+            index_name=self._index_name,
+            keyword="",
+            options=options,
+        )
+        reading_list = [
+            PrivateReadingListRecord.convert_instance(document=document)
+            for document in documents
+        ]
+        return reading_list
+
+    def bulk_add(self, private_reading_list: PrivateReadingList):
+        documents = [
+            PrivateReadingListRecord.convert_dict(private_reading_list_record=record)
+            for record in private_reading_list
+        ]
+        try:
+            self._db_client.add_documents(
+                index_name=self._index_name, documents=documents
+            )
+        except DocumentIdDuplicateError as e:
+            raise ReadingListRecordDuplicateError(id=e.id)
+
     @classmethod
     def get_repository(cls) -> ReadingListRepository:
         return cls()
@@ -184,3 +218,9 @@ class ReadingListRecordNotYetReadError(Exception):
     def __init__(self) -> None:
         super().__init__()
         self.message = "Reading list record already unread"
+
+
+class ReadingListRecordDuplicateError(Exception):
+    def __init__(self, id: UUID) -> None:
+        super().__init__()
+        self.message = f"Reading list record duplicate: {id}"

@@ -3,9 +3,12 @@ from typing import Any
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, validator
 from starlette.status import (
+    HTTP_400_BAD_REQUEST,
     HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     HTTP_409_CONFLICT,
+    HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+    HTTP_415_UNSUPPORTED_MEDIA_TYPE,
     HTTP_422_UNPROCESSABLE_ENTITY,
 )
 
@@ -36,8 +39,15 @@ def _create_error_res_doc(desc: str, status_code: int, message: str) -> dict[str
     }
 
 
+http_400_error_res_doc = _create_error_res_doc(
+    desc="Empty file error",
+    status_code=HTTP_400_BAD_REQUEST,
+    message="Empty file",
+)
+
+
 http_403_error_res_doc = _create_error_res_doc(
-    desc="Web page access error",
+    desc="Reading list record already read error",
     status_code=HTTP_403_FORBIDDEN,
     message="Reading list record already read",
 )
@@ -51,9 +61,23 @@ http_404_error_res_doc = _create_error_res_doc(
 
 
 http_409_error_res_doc = _create_error_res_doc(
-    desc="URL already exists",
+    desc="URL already exists error",
     status_code=HTTP_409_CONFLICT,
-    message="URL already exists error",
+    message="URL already exists",
+)
+
+
+http_413_error_res_doc = _create_error_res_doc(
+    desc="File size limit exceeded error",
+    status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+    message="File size limit exceeded",
+)
+
+
+http_415_error_res_doc = _create_error_res_doc(
+    desc="Invalid file extension error",
+    status_code=HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+    message="Invalid file extension",
 )
 
 

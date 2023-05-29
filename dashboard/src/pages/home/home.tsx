@@ -10,6 +10,8 @@ import {
   deleteReadingListRecord,
   bookmarkReadingListRecord,
   getReadingListCounts,
+  exportReadingList,
+  importReadingList,
 } from '../../api/endpoints/readingList';
 import type {
   Uuid4,
@@ -27,6 +29,14 @@ import {
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError,
   ReadingListCountsTypeError,
+  ExportReadingListRecordTypeError,
+  EmptyFileError,
+  FileSizeLimitExceededError,
+  InvalidFileExtensionError,
+  InvalidJsonContentsError,
+  InvalidJsonStructureError,
+  ExportReadingListRecordParseError,
+  ReadingListRecordDuplicateError,
 } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
@@ -61,7 +71,11 @@ export const Home = (): JSX.Element => {
     };
   }
 
+  const [importedReadingList, setImportedReadingList] = useState<File | null>(null);
+  const [isImportLoading, setIsImportLoading] = useState<boolean>(false);
+  const [importedReadingListMessage, setImportedReadingListMessage] = useState<string | null>(null);
   const [inputAddForm, setInputAddForm] = useState<string>('');
+  const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
@@ -70,6 +84,89 @@ export const Home = (): JSX.Element => {
   const [readingList, setReadingList] = useState<ReadingList>([]);
   const [readingListCounts, setReadingListCounts] = useState<ReadingListCounts>({total: 0, reads: 0, unreads: 0, bookmarks: 0});
 
+  const handleExportReadingList = async (): Promise<void> => {
+    let res;
+    try {
+      res = await exportReadingList();
+    } catch (e: unknown) {
+      if (e instanceof ExportReadingListRecordTypeError) {
+        console.error(e.message);
+        return;
+      }
+      console.error('Unknown error');
+    }
+
+    const readingListJson = JSON.stringify(res);
+    const readingListBlob = new Blob([readingListJson], { type: "application/json" });
+    const exportUrl = URL.createObjectURL(readingListBlob);
+
+    const exportLink = document.createElement('a');
+    exportLink.href = exportUrl;
+    exportLink.download = 'reading-list.json';
+    exportLink.style.display = 'none';
+    document.body.appendChild(exportLink);
+    exportLink.click();
+    document.body.removeChild(exportLink);
+  };
+
+  const handleSelectImportReadingList = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files) {
+      setImportedReadingList(target.files[0]);
+    }
+  };
+
+  const handleUploadImportReadingList = async (): Promise<void> => {
+    setIsImportLoading(true);
+    if (!importedReadingList) {
+      setImportedReadingListMessage('No file selected');
+      return;
+    }
+    setImportedReadingListMessage('Uploading ...');
+    const formData = new FormData();
+    formData.append(
+      'file',
+      importedReadingList,
+      importedReadingList.name,
+    );
+    try {
+      await importReadingList(formData);
+      setImportedReadingListMessage('Uploaded');
+    } catch (e: unknown) {
+      if (e instanceof EmptyFileError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof ReadingListRecordDuplicateError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof FileSizeLimitExceededError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidFileExtensionError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidJsonContentsError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidJsonStructureError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof ExportReadingListRecordParseError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      setImportedReadingListMessage('Unknown error');
+    } finally {
+      setIsImportLoading(false);
+    }
+  };
+
   const handleInputAddForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
     setInputAddForm(target.value);
@@ -77,6 +174,7 @@ export const Home = (): JSX.Element => {
 
   const handleAddReadingListRecord = async (): Promise<void> => {
     const url = inputAddForm;
+    setIsAddLoading(true);
     setInputAddFormMessage("Adding ...");
     try {
       await addReadingListRecord(url);
@@ -97,6 +195,7 @@ export const Home = (): JSX.Element => {
       setInputAddFormMessage('Unknown error');
     } finally {
       setInputAddForm('');
+      setIsAddLoading(false);
     }
   };
 
@@ -175,8 +274,14 @@ export const Home = (): JSX.Element => {
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
       <div>
+        <input type="file" onChange={handleSelectImportReadingList} />
+        <button type="button" onClick={handleUploadImportReadingList} disabled={isImportLoading}>Import</button>
+        <button type="button" onClick={handleExportReadingList}>Export</button>
+        {importedReadingListMessage && <div>{importedReadingListMessage}</div>}
+      </div>
+      <div>
 				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
-				<button type="button" onClick={handleAddReadingListRecord}>Add</button>
+				<button type="button" onClick={handleAddReadingListRecord} disabled={isAddLoading}>Add</button>
         {inputAddFormMessage && <div>{inputAddFormMessage}</div>}
 			</div>
       <div>

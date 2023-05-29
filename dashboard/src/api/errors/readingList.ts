@@ -69,3 +69,75 @@ export class ReadingListCountsTypeError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };
+
+export class ExportReadingListRecordTypeError extends Error {
+  constructor() {
+    const message = 'ExportReadingListRecord type error';
+    super(message);
+    this.name = 'ExportReadingListRecordTypeError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class EmptyFileError extends Error {
+  constructor() {
+    const message = 'Empty file error';
+    super(message);
+    this.name = 'EmptyFileError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class FileSizeLimitExceededError extends Error {
+  constructor() {
+    const message = 'File size limit exceeded error';
+    super(message);
+    this.name = 'FileSizeLimitExceededError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class InvalidFileExtensionError extends Error {
+  constructor() {
+    const message = 'Invalid file extension error';
+    super(message);
+    this.name = 'InvalidFileExtensionError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class InvalidJsonContentsError extends Error {
+  constructor() {
+    const message = 'Invalid JSON contents error';
+    super(message);
+    this.name = 'InvalidJsonContentsError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class InvalidJsonStructureError extends Error {
+  constructor() {
+    const message = 'Invalid JSON structure error';
+    super(message);
+    this.name = 'InvalidJsonStructureError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class ExportReadingListRecordParseError extends Error {
+  constructor() {
+    const message = 'Export reading list record parse error';
+    super(message);
+    this.name = 'ExportReadingListRecordParseError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
+
+export class ReadingListRecordDuplicateError extends Error {
+  constructor() {
+    const message = 'Reading list record duplicate error';
+    super(message);
+    this.name = 'ReadingListRecordDuplicateError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};

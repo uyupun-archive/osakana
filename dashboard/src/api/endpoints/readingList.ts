@@ -9,10 +9,12 @@ import type {
   ReadingListRecord,
   ReadingListSearchFilters,
   ReadingListCounts,
+  ExportReadingListRecord,
+  ExportReadingList,
 } from '../../types';
-import type { ReadingListRecordResponse } from '../types';
+import type { ReadingListRecordResponse, ExportReadingListRecordResponse } from '../types';
 import { isUuid4, isHttpUrl, isValidReadingListCounts } from '../../types';
-import { isValidReadingListRecordResponse } from '../types';
+import { isValidReadingListRecordResponse, isValidExportReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
 import {
   ValidationError,
@@ -23,6 +25,14 @@ import {
   ReadingListRecordAlreadyReadError,
   ReadingListRecordNotYetReadError,
   ReadingListCountsTypeError,
+  ExportReadingListRecordTypeError,
+  EmptyFileError,
+  FileSizeLimitExceededError,
+  InvalidFileExtensionError,
+  InvalidJsonContentsError,
+  InvalidJsonStructureError,
+  ExportReadingListRecordParseError,
+  ReadingListRecordDuplicateError,
 } from '../errors';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -173,6 +183,49 @@ export const getReadingListCounts = async (): Promise<ReadingListCounts> => {
   throw new ReadingListCountsTypeError();
 };
 
+export const exportReadingList = async (): Promise<ExportReadingList> => {
+  const res = await axios.get<Array<ExportReadingListRecordResponse>>(`${apiUrl}/api/reading-list/export`);
+  if (Array.isArray(res.data) && res.data.every(isValidExportReadingListRecordResponse)) {
+    return res.data.map(_parseExportReadingListRecord);
+  }
+  throw new ExportReadingListRecordTypeError();
+};
+
+export const importReadingList = async (formData: FormData): Promise<void> => {
+  try {
+    await axios.post(`${apiUrl}/api/reading-list/import`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.BAD_REQUEST) {
+        if (e.response.data.message === 'Empty file') {
+          throw new EmptyFileError();
+        }
+        if (e.response.data.message === 'Invalid json contents') {
+          throw new InvalidJsonContentsError();
+        }
+        if (e.response.data.message === 'Invalid json structure') {
+          throw new InvalidJsonStructureError();
+        }
+        throw new UnknownError();
+      }
+      if (e.response?.status === StatusCodes.CONFLICT) {
+        throw new ReadingListRecordDuplicateError();
+      }
+      if (e.response?.status === StatusCodes.REQUEST_TOO_LONG) {
+        throw new FileSizeLimitExceededError();
+      }
+      if (e.response?.status === StatusCodes.UNSUPPORTED_MEDIA_TYPE) {
+        throw new InvalidFileExtensionError();
+      }
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ExportReadingListRecordParseError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
+};
+
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
   return {
     id: record.id,
@@ -185,5 +238,15 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     updatedAt: new Date(record.updated_at),
     readAt: record.read_at ? new Date(record.read_at) : null,
     bookmarkedAt: record.bookmarked_at ? new Date(record.bookmarked_at) : null,
+  };
+};
+
+const _parseExportReadingListRecord = (record: ExportReadingListRecordResponse): ExportReadingListRecord => {
+  const baseRecord = _parseReadingListRecord(record);
+  return {
+    ...baseRecord,
+    title_bigrams: record.title_bigrams,
+    title_trigrams: record.title_trigrams,
+    title_morphemes: record.title_morphemes,
   };
 };
