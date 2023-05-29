@@ -42,7 +42,7 @@ class JsonImportService:
 
     def _validate_empty_file(self) -> None:
         if not self._contents:
-            raise FileEmptyError()
+            raise EmptyFileError()
 
     def _validate_file_size(self) -> None:
         if len(self._contents) > self.max_file_size:
@@ -54,7 +54,7 @@ class JsonImportService:
 
         _, file_extension = os.path.splitext(self._file.filename)
         if file_extension != ".json":
-            raise InvalidJsonFileExtensionError()
+            raise InvalidFileExtensionError()
 
     def _validate_contents(self) -> None:
         try:
@@ -84,10 +84,6 @@ class JsonImportService:
         self._private_reading_list = private_reading_list
 
 
-class FileEmptyError(Exception):
-    pass
-
-
 class FileNotExistsError(Exception):
     pass
 
@@ -96,21 +92,37 @@ class FileNameNotExistsError(Exception):
     pass
 
 
-class InvalidJsonFileExtensionError(Exception):
-    pass
+class EmptyFileError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Empty file"
 
 
 class FileSizeLimitExceededError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "File size limit exceeded"
+
+
+class InvalidFileExtensionError(Exception):
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Invalid file extension"
 
 
 class InvalidJsonContentsError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Invalid json contents"
 
 
 class InvalidJsonStructureError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Invalid json structure"
 
 
 class PrivateReadingListRecordParseError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.message = "Private reading list record parse"
