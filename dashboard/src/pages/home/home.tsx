@@ -65,6 +65,7 @@ export const Home = (): JSX.Element => {
   }
 
   const [importedReadingList, setImportedReadingList] = useState<File | null>(null);
+  const [isImportLoading, setIsImportLoading] = useState<boolean>(false);
   const [importedReadingListMessage, setImportedReadingListMessage] = useState<string | null>(null);
   const [inputAddForm, setInputAddForm] = useState<string>('');
   const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
@@ -109,6 +110,7 @@ export const Home = (): JSX.Element => {
   };
 
   const handleUploadImportReadingList = async (): Promise<void> => {
+    setIsImportLoading(true);
     if (!importedReadingList) {
       setImportedReadingListMessage('No file selected');
       return;
@@ -122,6 +124,7 @@ export const Home = (): JSX.Element => {
     );
     await importReadingList(formData);
     setImportedReadingListMessage('Uploaded');
+    setIsImportLoading(false);
   };
 
   const handleInputAddForm = (e: Event): void => {
@@ -232,7 +235,7 @@ export const Home = (): JSX.Element => {
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
       <div>
         <input type="file" onChange={handleSelectImportReadingList} />
-        <button type="button" onClick={handleUploadImportReadingList}>Import</button>
+        <button type="button" onClick={handleUploadImportReadingList} disabled={isImportLoading}>Import</button>
         <button type="button" onClick={handleExportReadingList}>Export</button>
         {importedReadingListMessage && <div>{importedReadingListMessage}</div>}
       </div>
