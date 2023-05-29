@@ -26,10 +26,18 @@ class JsonImportService:
         if self._file.filename is None:
             raise FileNameNotExistsError()
 
+        await self._validate_empty_file()
         self._validate_file_extension()
         await self._validate_contents()
         await self._validate_file_size()
         self._validate_structure()
+
+    async def _validate_empty_file(self):
+        assert self._file is not None
+
+        contents = await self._file.read()
+        if not contents:
+            raise FileEmptyError()
 
     def _validate_file_extension(self):
         assert self._file is not None
@@ -78,6 +86,10 @@ class JsonImportService:
             raise PrivateReadingListRecordParseError()
 
         return records
+
+
+class FileEmptyError(Exception):
+    pass
 
 
 class FileNotExistsError(Exception):
