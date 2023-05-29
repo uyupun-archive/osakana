@@ -67,6 +67,7 @@ export const Home = (): JSX.Element => {
   const [importedReadingList, setImportedReadingList] = useState<File | null>(null);
   const [importedReadingListMessage, setImportedReadingListMessage] = useState<string | null>(null);
   const [inputAddForm, setInputAddForm] = useState<string>('');
+  const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
   const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
@@ -130,6 +131,7 @@ export const Home = (): JSX.Element => {
 
   const handleAddReadingListRecord = async (): Promise<void> => {
     const url = inputAddForm;
+    setIsAddLoading(true);
     setInputAddFormMessage("Adding ...");
     try {
       await addReadingListRecord(url);
@@ -150,6 +152,7 @@ export const Home = (): JSX.Element => {
       setInputAddFormMessage('Unknown error');
     } finally {
       setInputAddForm('');
+      setIsAddLoading(false);
     }
   };
 
@@ -235,7 +238,7 @@ export const Home = (): JSX.Element => {
       </div>
       <div>
 				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
-				<button type="button" onClick={handleAddReadingListRecord}>Add</button>
+				<button type="button" onClick={handleAddReadingListRecord} disabled={isAddLoading}>Add</button>
         {inputAddFormMessage && <div>{inputAddFormMessage}</div>}
 			</div>
       <div>
