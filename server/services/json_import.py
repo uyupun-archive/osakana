@@ -10,6 +10,8 @@ from db.models.reading_list import PrivateReadingList, PrivateReadingListRecord
 
 
 class JsonImportService:
+    max_file_size = 1024 * 1024 * 10  # 10MB
+
     def __init__(self):
         self._file = None
         self._json_contents = None
@@ -26,6 +28,7 @@ class JsonImportService:
 
         self._validate_file_extension()
         await self._validate_contents()
+        await self._validate_file_size()
         self._validate_structure()
 
     def _validate_file_extension(self):
@@ -35,6 +38,13 @@ class JsonImportService:
         _, file_extension = os.path.splitext(self._file.filename)
         if file_extension != ".json":
             raise InvalidJsonFileExtensionError()
+
+    async def _validate_file_size(self):
+        assert self._file is not None
+
+        contents = await self._file.read()
+        if len(contents) > self.max_file_size:
+            raise FileSizeLimitExceededError()
 
     async def _validate_contents(self):
         assert self._file is not None
@@ -79,6 +89,10 @@ class FileNameNotExistsError(Exception):
 
 
 class InvalidJsonFileExtensionError(Exception):
+    pass
+
+
+class FileSizeLimitExceededError(Exception):
     pass
 
 
