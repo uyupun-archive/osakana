@@ -11,6 +11,7 @@ import {
   bookmarkReadingListRecord,
   getReadingListCounts,
   exportReadingList,
+  importReadingList,
 } from '../../api/endpoints/readingList';
 import type {
   Uuid4,
@@ -118,7 +119,7 @@ export const Home = (): JSX.Element => {
       importedReadingList,
       importedReadingList.name,
     );
-    // TODO: Add
+    await importReadingList(formData);
     setImportedReadingListMessage('Uploaded');
   };
 

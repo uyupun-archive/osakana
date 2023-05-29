@@ -184,6 +184,10 @@ export const exportReadingList = async (): Promise<ExportReadingList> => {
   throw new ExportReadingListRecordTypeError();
 };
 
+export const importReadingList = async (formData: FormData): Promise<void> => {
+  await axios.post(`${apiUrl}/api/reading-list/import`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+};
+
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
   return {
     id: record.id,
