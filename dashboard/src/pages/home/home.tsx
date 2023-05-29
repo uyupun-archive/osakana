@@ -30,6 +30,12 @@ import {
   ReadingListRecordNotYetReadError,
   ReadingListCountsTypeError,
   ExportReadingListRecordTypeError,
+  EmptyFileError,
+  FileSizeLimitExceededError,
+  InvalidFileExtensionError,
+  InvalidJsonContentsError,
+  InvalidJsonStructureError,
+  ExportReadingListRecordParseError,
 } from '../../api/errors';
 import LogoWithText from '../../assets/logo-with-text.svg';
 import NoImage from '../../assets/no-image.svg';
@@ -122,9 +128,38 @@ export const Home = (): JSX.Element => {
       importedReadingList,
       importedReadingList.name,
     );
-    await importReadingList(formData);
-    setImportedReadingListMessage('Uploaded');
-    setIsImportLoading(false);
+    try {
+      await importReadingList(formData);
+      setImportedReadingListMessage('Uploaded');
+    } catch (e: unknown) {
+      if (e instanceof EmptyFileError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof FileSizeLimitExceededError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidFileExtensionError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidJsonContentsError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof InvalidJsonStructureError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      if (e instanceof ExportReadingListRecordParseError) {
+        setImportedReadingListMessage(e.message);
+        return;
+      }
+      setImportedReadingListMessage('Unknown error');
+    } finally {
+      setIsImportLoading(false);
+    }
   };
 
   const handleInputAddForm = (e: Event): void => {

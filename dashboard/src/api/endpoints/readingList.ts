@@ -26,6 +26,12 @@ import {
   ReadingListRecordNotYetReadError,
   ReadingListCountsTypeError,
   ExportReadingListRecordTypeError,
+  EmptyFileError,
+  FileSizeLimitExceededError,
+  InvalidFileExtensionError,
+  InvalidJsonContentsError,
+  InvalidJsonStructureError,
+  ExportReadingListRecordParseError,
 } from '../errors';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -185,7 +191,35 @@ export const exportReadingList = async (): Promise<ExportReadingList> => {
 };
 
 export const importReadingList = async (formData: FormData): Promise<void> => {
-  await axios.post(`${apiUrl}/api/reading-list/import`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+  try {
+    await axios.post(`${apiUrl}/api/reading-list/import`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === StatusCodes.BAD_REQUEST) {
+        if (e.response.data.message === 'Empty file') {
+          throw new EmptyFileError();
+        }
+        if (e.response.data.message === 'Invalid json contents') {
+          throw new InvalidJsonContentsError();
+        }
+        if (e.response.data.message === 'Invalid json structure') {
+          throw new InvalidJsonStructureError();
+        }
+        throw new UnknownError();
+      }
+      if (e.response?.status === StatusCodes.REQUEST_TOO_LONG) {
+        throw new FileSizeLimitExceededError();
+      }
+      if (e.response?.status === StatusCodes.UNSUPPORTED_MEDIA_TYPE) {
+        throw new InvalidFileExtensionError();
+      }
+      if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
+        throw new ExportReadingListRecordParseError();
+      }
+      throw new UnknownError();
+    }
+    throw new UnknownError();
+  }
 };
 
 const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingListRecord => {
