@@ -235,9 +235,7 @@ async def import_(
     service: JsonImportService = Depends(JsonImportService),
     repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
 ) -> ReadingListImportResponse:
-    service.create(file=file)
-    await service.validate()
-    private_reading_list = service.parse()
+    private_reading_list = await service.import_(file=file)
     repo.bulk_add(private_reading_list=private_reading_list)
 
     return ReadingListImportResponse()

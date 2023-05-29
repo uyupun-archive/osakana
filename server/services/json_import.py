@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from typing import Any
 
 from fastapi import UploadFile
 from pydantic import ValidationError
@@ -13,33 +14,41 @@ class JsonImportService:
     max_file_size = 1024 * 1024 * 10  # 10MB
 
     def __init__(self):
-        self._file = None
-        self._json_contents = None
+        self._file: UploadFile | None = None
+        self._contents: bytes = b""
+        self._json_contents: Any = None
+        self._private_reading_list: PrivateReadingList | None = None
 
-    def create(self, file: UploadFile):
+    async def import_(self, file: UploadFile) -> PrivateReadingList:
         self._file = file
+        await self._validate()
+        self._parse()
+        assert self._private_reading_list is not None
+        return self._private_reading_list
 
-    async def validate(self):
+    async def _validate(self) -> None:
         if self._file is None:
             raise FileNotExistsError()
-
         if self._file.filename is None:
             raise FileNameNotExistsError()
 
-        await self._validate_empty_file()
+        self._contents = await self._file.read()
+        self._validate_empty_file()
+        self._validate_file_size()
         self._validate_file_extension()
-        await self._validate_contents()
-        await self._validate_file_size()
+        self._validate_contents()
+        self._json_contents = json.loads(self._contents)
         self._validate_structure()
 
-    async def _validate_empty_file(self):
-        assert self._file is not None
-
-        contents = await self._file.read()
-        if not contents:
+    def _validate_empty_file(self) -> None:
+        if not self._contents:
             raise FileEmptyError()
 
-    def _validate_file_extension(self):
+    def _validate_file_size(self) -> None:
+        if len(self._contents) > self.max_file_size:
+            raise FileSizeLimitExceededError()
+
+    def _validate_file_extension(self) -> None:
         assert self._file is not None
         assert self._file.filename is not None
 
@@ -47,23 +56,13 @@ class JsonImportService:
         if file_extension != ".json":
             raise InvalidJsonFileExtensionError()
 
-    async def _validate_file_size(self):
-        assert self._file is not None
-
-        contents = await self._file.read()
-        if len(contents) > self.max_file_size:
-            raise FileSizeLimitExceededError()
-
-    async def _validate_contents(self):
-        assert self._file is not None
-
-        contents = await self._file.read()
+    def _validate_contents(self) -> None:
         try:
-            self._json_contents = json.loads(contents)
+            self._json_contents = json.loads(self._contents)
         except (UnicodeDecodeError, json.JSONDecodeError):
             raise InvalidJsonContentsError()
 
-    def _validate_structure(self):
+    def _validate_structure(self) -> None:
         if not isinstance(self._json_contents, list):
             raise InvalidJsonStructureError()
 
@@ -74,18 +73,15 @@ class JsonImportService:
                 if not isinstance(key, str):
                     raise InvalidJsonStructureError()
 
-    def parse(self) -> PrivateReadingList:
-        if self._json_contents is None:
-            raise InvalidJsonContentsError()
-
+    def _parse(self) -> None:
         try:
-            records = [
+            private_reading_list = [
                 PrivateReadingListRecord(**content) for content in self._json_contents
             ]
         except ValidationError:
             raise PrivateReadingListRecordParseError()
 
-        return records
+        self._private_reading_list = private_reading_list
 
 
 class FileEmptyError(Exception):
