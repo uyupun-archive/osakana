@@ -63,6 +63,8 @@ export const Home = (): JSX.Element => {
     };
   }
 
+  const [importedReadingList, setImportedReadingList] = useState<File | null>(null);
+  const [importedReadingListMessage, setImportedReadingListMessage] = useState<string | null>(null);
   const [inputAddForm, setInputAddForm] = useState<string>('');
   const [inputAddFormMessage, setInputAddFormMessage] = useState<string | null>(null);
   const [inputSearchForm, setInputSearchForm] = useState<string>('');
@@ -71,6 +73,54 @@ export const Home = (): JSX.Element => {
   const [inputSearchErrorMessage, setInputSearchErrorMessage] = useState<string | null>(null);
   const [readingList, setReadingList] = useState<ReadingList>([]);
   const [readingListCounts, setReadingListCounts] = useState<ReadingListCounts>({total: 0, reads: 0, unreads: 0, bookmarks: 0});
+
+  const handleExportReadingList = async (): Promise<void> => {
+    let res;
+    try {
+      res = await exportReadingList();
+    } catch (e: unknown) {
+      if (e instanceof ExportReadingListRecordTypeError) {
+        console.error(e.message);
+        return;
+      }
+      console.error('Unknown error');
+    }
+
+    const readingListJson = JSON.stringify(res);
+    const readingListBlob = new Blob([readingListJson], { type: "application/json" });
+    const exportUrl = URL.createObjectURL(readingListBlob);
+
+    const exportLink = document.createElement('a');
+    exportLink.href = exportUrl;
+    exportLink.download = 'reading-list.json';
+    exportLink.style.display = 'none';
+    document.body.appendChild(exportLink);
+    exportLink.click();
+    document.body.removeChild(exportLink);
+  };
+
+  const handleSelectImportReadingList = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files) {
+      setImportedReadingList(target.files[0]);
+    }
+  };
+
+  const handleUploadImportReadingList = async (): Promise<void> => {
+    if (!importedReadingList) {
+      setImportedReadingListMessage('No file selected');
+      return;
+    }
+    setImportedReadingListMessage('Uploading ...');
+    const formData = new FormData();
+    formData.append(
+      'file',
+      importedReadingList,
+      importedReadingList.name,
+    );
+    // TODO: Add
+    setImportedReadingListMessage('Uploaded');
+  };
 
   const handleInputAddForm = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -169,31 +219,6 @@ export const Home = (): JSX.Element => {
     }
   };
 
-  const handleExportReadingList = async (): Promise<void> => {
-    let res;
-    try {
-      res = await exportReadingList();
-    } catch (e: unknown) {
-      if (e instanceof ExportReadingListRecordTypeError) {
-        console.error(e.message);
-        return;
-      }
-      console.error('Unknown error');
-    }
-
-    const readingListJson = JSON.stringify(res);
-    const readingListBlob = new Blob([readingListJson], { type: "application/json" });
-    const exportUrl = URL.createObjectURL(readingListBlob);
-
-    const exportLink = document.createElement('a');
-    exportLink.href = exportUrl;
-    exportLink.download = 'reading-list.json';
-    exportLink.style.display = 'none';
-    document.body.appendChild(exportLink);
-    exportLink.click();
-    document.body.removeChild(exportLink);
-  }
-
   useEffect(() => {
     handleReadingListCounts();
   }, [readingList]);
@@ -202,7 +227,10 @@ export const Home = (): JSX.Element => {
     <>
       <img src={LogoWithText} alt="Osakana logo with text" width="500" />
       <div>
+        <input type="file" onChange={handleSelectImportReadingList} />
+        <button type="button" onClick={handleUploadImportReadingList}>Import</button>
         <button type="button" onClick={handleExportReadingList}>Export</button>
+        {importedReadingListMessage && <div>{importedReadingListMessage}</div>}
       </div>
       <div>
 				<input type="text" placeholder="https://..." value={inputAddForm} onChange={handleInputAddForm} />
