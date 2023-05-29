@@ -32,6 +32,7 @@ import {
   InvalidJsonContentsError,
   InvalidJsonStructureError,
   ExportReadingListRecordParseError,
+  ReadingListRecordDuplicateError,
 } from '../errors';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -206,6 +207,9 @@ export const importReadingList = async (formData: FormData): Promise<void> => {
           throw new InvalidJsonStructureError();
         }
         throw new UnknownError();
+      }
+      if (e.response?.status === StatusCodes.CONFLICT) {
+        throw new ReadingListRecordDuplicateError();
       }
       if (e.response?.status === StatusCodes.REQUEST_TOO_LONG) {
         throw new FileSizeLimitExceededError();

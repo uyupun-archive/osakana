@@ -15,6 +15,7 @@ from starlette.status import (
 from api.errors.responses import ApiError
 from db.repos.reading_list import (
     ReadingListRecordAlreadyReadError,
+    ReadingListRecordDuplicateError,
     ReadingListRecordNotFoundError,
     ReadingListRecordNotYetReadError,
     UrlAlreadyExistsError,
@@ -97,6 +98,12 @@ def private_reading_list_record_parse_error_handler(
     ).response()
 
 
+def reading_list_record_duplicate_error_handler(
+    req: Request, e: ReadingListRecordDuplicateError
+):
+    return ApiError(status_code=HTTP_409_CONFLICT, message=e.message).response()
+
+
 def internal_server_error_handler(req: Request, e: Exception) -> JSONResponse:
     return ApiError(
         status_code=HTTP_500_INTERNAL_SERVER_ERROR, message="Internal server error"
@@ -151,6 +158,10 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         exc_class_or_status_code=PrivateReadingListRecordParseError,
         handler=private_reading_list_record_parse_error_handler,
+    )
+    app.add_exception_handler(
+        exc_class_or_status_code=ReadingListRecordDuplicateError,
+        handler=reading_list_record_duplicate_error_handler,
     )
     app.add_exception_handler(
         exc_class_or_status_code=HTTP_500_INTERNAL_SERVER_ERROR,

@@ -132,3 +132,12 @@ export class ExportReadingListRecordParseError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   };
 };
+
+export class ReadingListRecordDuplicateError extends Error {
+  constructor() {
+    const message = 'Reading list record duplicate error';
+    super(message);
+    this.name = 'ReadingListRecordDuplicateError';
+    Object.setPrototypeOf(this, new.target.prototype);
+  };
+};
