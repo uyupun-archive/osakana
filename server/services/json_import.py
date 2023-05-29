@@ -125,4 +125,4 @@ class InvalidJsonStructureError(Exception):
 class PrivateReadingListRecordParseError(Exception):
     def __init__(self) -> None:
         super().__init__()
-        self.message = "Private reading list record parse"
+        self.message = "Private reading list record parse error"

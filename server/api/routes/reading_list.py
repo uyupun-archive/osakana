@@ -2,16 +2,22 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, UploadFile
 from starlette.status import (
+    HTTP_400_BAD_REQUEST,
     HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     HTTP_409_CONFLICT,
+    HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+    HTTP_415_UNSUPPORTED_MEDIA_TYPE,
     HTTP_422_UNPROCESSABLE_ENTITY,
 )
 
 from api.errors.responses import (
+    http_400_error_res_doc,
     http_403_error_res_doc,
     http_404_error_res_doc,
     http_409_error_res_doc,
+    http_413_error_res_doc,
+    http_415_error_res_doc,
     http_422_error_res_doc,
 )
 from api.schemas.reading_list import (
@@ -227,6 +233,9 @@ def export(
     "/import",
     response_model=ReadingListImportResponse,
     responses={
+        HTTP_400_BAD_REQUEST: http_400_error_res_doc,
+        HTTP_413_REQUEST_ENTITY_TOO_LARGE: http_413_error_res_doc,
+        HTTP_415_UNSUPPORTED_MEDIA_TYPE: http_415_error_res_doc,
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
     },
 )
