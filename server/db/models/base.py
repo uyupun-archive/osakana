@@ -19,12 +19,12 @@ class OsakanaBaseModel(BaseModel):
             return field
         raise FieldNotDefinedError()
 
-    @abstractclassmethod
-    def convert_dict(cls, model: OsakanaBaseModel) -> Document:
+    @abstractmethod
+    def to_dict(cls, model: OsakanaBaseModel) -> Document:
         return Document()
 
     @abstractclassmethod
-    def convert_instance(cls, document: Document) -> OsakanaBaseModel:
+    def to_instance(cls, document: Document) -> OsakanaBaseModel:
         return OsakanaBaseModel()
 
 
