@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Type
 from uuid import UUID, uuid4
 from zoneinfo import ZoneInfo
 
@@ -33,12 +34,12 @@ class ReadingListRecord(OsakanaBaseModel):
     def get_name(cls) -> str:
         return "reading_list"
 
-    def set_title_ngrams(self, service: NgramService = NgramService()):
+    def set_title_ngrams(self, service: Type[NgramService] = NgramService):
         self._title_bigrams = service.generate(text=self.title, n=2)
         self._title_trigrams = service.generate(text=self.title, n=3)
 
     def set_title_morphemes(
-        self, service: MorphologicalAnalysisService = MorphologicalAnalysisService()
+        self, service: Type[MorphologicalAnalysisService] = MorphologicalAnalysisService
     ):
         self._title_morphemes = service.generate(text=self.title)
 
