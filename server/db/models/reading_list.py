@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Type
 from uuid import UUID, uuid4
 from zoneinfo import ZoneInfo
 
@@ -33,12 +34,12 @@ class ReadingListRecord(OsakanaBaseModel):
     def get_name(cls) -> str:
         return "reading_list"
 
-    def set_title_ngrams(self, service: NgramService = NgramService()):
+    def set_title_ngrams(self, service: Type[NgramService] = NgramService):
         self._title_bigrams = service.generate(text=self.title, n=2)
         self._title_trigrams = service.generate(text=self.title, n=3)
 
     def set_title_morphemes(
-        self, service: MorphologicalAnalysisService = MorphologicalAnalysisService()
+        self, service: Type[MorphologicalAnalysisService] = MorphologicalAnalysisService
     ):
         self._title_morphemes = service.generate(text=self.title)
 
@@ -63,26 +64,25 @@ class ReadingListRecord(OsakanaBaseModel):
         else:
             self.bookmarked_at = None
 
-    @classmethod
-    def convert_dict(cls, reading_list_record: ReadingListRecord) -> Document:
-        document = reading_list_record.dict()
+    def to_dict(self) -> Document:
+        document = self.dict()
 
-        document["id"] = str(reading_list_record.id)
-        document["_title_bigrams"] = reading_list_record._title_bigrams
-        document["_title_trigrams"] = reading_list_record._title_trigrams
-        document["_title_morphemes"] = reading_list_record._title_morphemes
-        document["created_at"] = reading_list_record.created_at.isoformat()
-        document["updated_at"] = reading_list_record.updated_at.isoformat()
+        document["id"] = str(self.id)
+        document["_title_bigrams"] = self._title_bigrams
+        document["_title_trigrams"] = self._title_trigrams
+        document["_title_morphemes"] = self._title_morphemes
+        document["created_at"] = self.created_at.isoformat()
+        document["updated_at"] = self.updated_at.isoformat()
 
-        if reading_list_record.read_at:
-            document["read_at"] = reading_list_record.read_at.isoformat()
-        if reading_list_record.bookmarked_at:
-            document["bookmarked_at"] = reading_list_record.bookmarked_at.isoformat()
+        if self.read_at:
+            document["read_at"] = self.read_at.isoformat()
+        if self.bookmarked_at:
+            document["bookmarked_at"] = self.bookmarked_at.isoformat()
 
         return document
 
     @classmethod
-    def convert_instance(cls, document: Document) -> ReadingListRecord:
+    def to_instance(cls, document: Document) -> ReadingListRecord:
         return ReadingListRecord(**document)
 
 
@@ -91,24 +91,21 @@ class PrivateReadingListRecord(ReadingListRecord):
     title_trigrams: list[str] = Field(default=[])
     title_morphemes: list[str] = Field(default=[])
 
-    @classmethod
-    def convert_dict(
-        cls, private_reading_list_record: PrivateReadingListRecord
-    ) -> Document:
-        document = ReadingListRecord.convert_dict(private_reading_list_record)
+    def to_dict(self) -> Document:
+        document = super().to_dict()
 
         del document["title_bigrams"]
         del document["title_trigrams"]
         del document["title_morphemes"]
 
-        document["_title_bigrams"] = private_reading_list_record.title_bigrams
-        document["_title_trigrams"] = private_reading_list_record.title_trigrams
-        document["_title_morphemes"] = private_reading_list_record.title_morphemes
+        document["_title_bigrams"] = self.title_bigrams
+        document["_title_trigrams"] = self.title_trigrams
+        document["_title_morphemes"] = self.title_morphemes
 
         return document
 
     @classmethod
-    def convert_instance(cls, document: Document) -> PrivateReadingListRecord:
+    def to_instance(cls, document: Document) -> PrivateReadingListRecord:
         return PrivateReadingListRecord(
             **document,
             title_bigrams=document["_title_bigrams"],

@@ -24,9 +24,7 @@ class ReadingListRepository(BaseRepository):
     def add(self, reading_list_record: ReadingListRecord) -> None:
         reading_list_record.set_title_ngrams()
         reading_list_record.set_title_morphemes()
-        document = ReadingListRecord.convert_dict(
-            reading_list_record=reading_list_record
-        )
+        document = reading_list_record.to_dict()
         try:
             self._db_client.add_document(
                 index_name=self._index_name, document=document, key="url"
@@ -36,7 +34,7 @@ class ReadingListRepository(BaseRepository):
 
     def find(self, id: UUID) -> ReadingListRecord:
         document = self._db_client.get_document(index_name=self._index_name, id=id)
-        reading_list_record = ReadingListRecord.convert_instance(document=document)
+        reading_list_record = ReadingListRecord.to_instance(document=document)
         return reading_list_record
 
     def search(
@@ -57,8 +55,7 @@ class ReadingListRepository(BaseRepository):
             options=options,
         )
         reading_list = [
-            ReadingListRecord.convert_instance(document=document)
-            for document in documents
+            ReadingListRecord.to_instance(document=document) for document in documents
         ]
         return reading_list
 
@@ -110,9 +107,7 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordAlreadyReadError()
 
         reading_list_record.read()
-        document = ReadingListRecord.convert_dict(
-            reading_list_record=reading_list_record
-        )
+        document = reading_list_record.to_dict()
         self._db_client.update_document(index_name=self._index_name, document=document)
 
     def unread(self, id: UUID) -> None:
@@ -124,9 +119,7 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordNotYetReadError()
 
         reading_list_record.unread()
-        document = ReadingListRecord.convert_dict(
-            reading_list_record=reading_list_record
-        )
+        document = reading_list_record.to_dict()
         self._db_client.update_document(index_name=self._index_name, document=document)
 
     def delete(self, id: UUID) -> None:
@@ -144,9 +137,7 @@ class ReadingListRepository(BaseRepository):
             raise ReadingListRecordNotFoundError()
 
         reading_list_record.bookmark()
-        document = ReadingListRecord.convert_dict(
-            reading_list_record=reading_list_record
-        )
+        document = reading_list_record.to_dict()
         self._db_client.update_document(index_name=self._index_name, document=document)
 
     def count(self, type: ReadingListCountType) -> int:
@@ -167,16 +158,13 @@ class ReadingListRepository(BaseRepository):
             options=options,
         )
         reading_list = [
-            PrivateReadingListRecord.convert_instance(document=document)
+            PrivateReadingListRecord.to_instance(document=document)
             for document in documents
         ]
         return reading_list
 
     def bulk_add(self, private_reading_list: PrivateReadingList):
-        documents = [
-            PrivateReadingListRecord.convert_dict(private_reading_list_record=record)
-            for record in private_reading_list
-        ]
+        documents = [record.to_dict() for record in private_reading_list]
         try:
             self._db_client.add_documents(
                 index_name=self._index_name, documents=documents
