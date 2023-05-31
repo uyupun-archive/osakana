@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.errors.handlers import register_error_handlers
+from api.errors.register import register_error_handlers
 from api.routes import ping, reading_list
 from settings import Settings
 
