@@ -11,7 +11,7 @@ from starlette.status import (
     HTTP_422_UNPROCESSABLE_ENTITY,
 )
 
-from api.errors.responses import (
+from api.errors.docs import (
     http_400_error_res_doc,
     http_403_error_res_doc,
     http_404_error_res_doc,
