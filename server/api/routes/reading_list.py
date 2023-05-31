@@ -50,9 +50,14 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
     "",
     response_model=ReadingListAddResponse,
     responses={
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-        HTTP_409_CONFLICT: http_409_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_404_NOT_FOUND: http_404_error_res_doc(
+            desc="Web page access error",
+            message="404 Client Error: Not Found for url: https://example.com",
+        ),
+        HTTP_409_CONFLICT: http_409_error_res_doc(
+            desc="URL already exists error", message="URL already exists"
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(),
     },
 )
 def add(
@@ -84,7 +89,7 @@ def add(
     "",
     response_model=ReadingListSearchResponse,
     responses={
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(),
     },
 )
 def search(
@@ -109,9 +114,6 @@ def search(
 @router.get(
     "/fishing",
     response_model=ReadingListFishingResponse,
-    responses={
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-    },
 )
 def fishing(
     repo: ReadingListRepository = Depends(ReadingListRepository.get_repository),
@@ -127,9 +129,17 @@ def fishing(
     "/read/{id}",
     response_model=ReadingListReadResponse,
     responses={
-        HTTP_403_FORBIDDEN: http_403_error_res_doc,
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_403_FORBIDDEN: http_403_error_res_doc(
+            desc="Reading list record already read error",
+            message="Reading list record already read",
+        ),
+        HTTP_404_NOT_FOUND: http_404_error_res_doc(
+            desc="Reading list record not found error",
+            message="Reading list record not found",
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
+            message="value is not a valid uuid"
+        ),
     },
 )
 def read(
@@ -147,9 +157,17 @@ def read(
     "/unread/{id}",
     response_model=ReadingListUnreadResponse,
     responses={
-        HTTP_403_FORBIDDEN: http_403_error_res_doc,
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_403_FORBIDDEN: http_403_error_res_doc(
+            desc="Reading list record already unread error",
+            message="Reading list record already unread",
+        ),
+        HTTP_404_NOT_FOUND: http_404_error_res_doc(
+            desc="Reading list record not found error",
+            message="Reading list record not found",
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
+            message="value is not a valid uuid"
+        ),
     },
 )
 def unread(
@@ -167,8 +185,13 @@ def unread(
     "/{id}",
     response_model=ReadingListDeleteResponse,
     responses={
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_404_NOT_FOUND: http_404_error_res_doc(
+            desc="Reading list record not found error",
+            message="Reading list record not found",
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
+            message="value is not a valid uuid"
+        ),
     },
 )
 def delete(
@@ -186,8 +209,13 @@ def delete(
     "/bookmark/{id}",
     response_model=ReadingListBookmarkResponse,
     responses={
-        HTTP_404_NOT_FOUND: http_404_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_404_NOT_FOUND: http_404_error_res_doc(
+            desc="Reading list record not found error",
+            message="Reading list record not found",
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
+            message="value is not a valid uuid"
+        ),
     },
 )
 def bookmark(
@@ -233,11 +261,20 @@ def export(
     "/import",
     response_model=ReadingListImportResponse,
     responses={
-        HTTP_400_BAD_REQUEST: http_400_error_res_doc,
-        HTTP_409_CONFLICT: http_409_error_res_doc,
-        HTTP_413_REQUEST_ENTITY_TOO_LARGE: http_413_error_res_doc,
-        HTTP_415_UNSUPPORTED_MEDIA_TYPE: http_415_error_res_doc,
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc,
+        HTTP_400_BAD_REQUEST: http_400_error_res_doc(
+            desc="Empty file error", message="Empty file"
+        ),
+        HTTP_409_CONFLICT: http_409_error_res_doc(
+            desc="Reading list record duplicate error",
+            message="Reading list record duplicate",
+        ),
+        HTTP_413_REQUEST_ENTITY_TOO_LARGE: http_413_error_res_doc(
+            desc="File size limit exceeded error", message="File size limit exceeded"
+        ),
+        HTTP_415_UNSUPPORTED_MEDIA_TYPE: http_415_error_res_doc(
+            desc="Invalid file extension error", message="Invalid file extension"
+        ),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(),
     },
 )
 async def import_(

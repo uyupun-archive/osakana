@@ -39,50 +39,59 @@ def _create_error_res_doc(desc: str, status_code: int, message: str) -> dict[str
     }
 
 
-http_400_error_res_doc = _create_error_res_doc(
-    desc="Empty file error",
-    status_code=HTTP_400_BAD_REQUEST,
-    message="Empty file",
-)
+def http_400_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_400_BAD_REQUEST,
+        message=message,
+    )
 
 
-http_403_error_res_doc = _create_error_res_doc(
-    desc="Reading list record already read error",
-    status_code=HTTP_403_FORBIDDEN,
-    message="Reading list record already read",
-)
+def http_403_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_403_FORBIDDEN,
+        message=message,
+    )
 
 
-http_404_error_res_doc = _create_error_res_doc(
-    desc="Web page access error",
-    status_code=HTTP_404_NOT_FOUND,
-    message="404 Client Error: Not Found for url: https://example.com",
-)
+def http_404_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_404_NOT_FOUND,
+        message=message,
+    )
 
 
-http_409_error_res_doc = _create_error_res_doc(
-    desc="URL already exists error",
-    status_code=HTTP_409_CONFLICT,
-    message="URL already exists",
-)
+def http_409_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_409_CONFLICT,
+        message=message,
+    )
 
 
-http_413_error_res_doc = _create_error_res_doc(
-    desc="File size limit exceeded error",
-    status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-    message="File size limit exceeded",
-)
+def http_413_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+        message=message,
+    )
 
 
-http_415_error_res_doc = _create_error_res_doc(
-    desc="Invalid file extension error",
-    status_code=HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-    message="Invalid file extension",
-)
+def http_415_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        message=message,
+    )
 
 
-http_422_error_res_doc = _create_error_res_doc(
-    desc="Validation error",
-    status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-    message="field required",
-)
+def http_422_error_res_doc(
+    desc: str = "Validation error", message: str = "field required"
+) -> dict[str, Any]:
+    return _create_error_res_doc(
+        desc=desc,
+        status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+        message=message,
+    )
