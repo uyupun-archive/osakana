@@ -51,11 +51,11 @@ router = APIRouter(prefix="/reading-list", tags=["reading-list"])
     response_model=ReadingListAddResponse,
     responses={
         HTTP_404_NOT_FOUND: http_404_error_res_doc(
-            desc="Web page access error",
+            desc="WebPageAccessError Response",
             message="404 Client Error: Not Found for url: https://example.com",
         ),
         HTTP_409_CONFLICT: http_409_error_res_doc(
-            desc="URL already exists error", message="URL already exists"
+            desc="UrlAlreadyExistsError Response", message="URL already exists"
         ),
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(),
     },
@@ -130,11 +130,11 @@ def fishing(
     response_model=ReadingListReadResponse,
     responses={
         HTTP_403_FORBIDDEN: http_403_error_res_doc(
-            desc="Reading list record already read error",
+            desc="ReadingListRecordAlreadyReadError Response",
             message="Reading list record already read",
         ),
         HTTP_404_NOT_FOUND: http_404_error_res_doc(
-            desc="Reading list record not found error",
+            desc="ReadingListRecordNotFoundError Response",
             message="Reading list record not found",
         ),
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
@@ -158,11 +158,11 @@ def read(
     response_model=ReadingListUnreadResponse,
     responses={
         HTTP_403_FORBIDDEN: http_403_error_res_doc(
-            desc="Reading list record already unread error",
+            desc="ReadingListRecordAlreadyUnreadError Response",
             message="Reading list record already unread",
         ),
         HTTP_404_NOT_FOUND: http_404_error_res_doc(
-            desc="Reading list record not found error",
+            desc="ReadingListRecordNotFoundError Response",
             message="Reading list record not found",
         ),
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
@@ -186,7 +186,7 @@ def unread(
     response_model=ReadingListDeleteResponse,
     responses={
         HTTP_404_NOT_FOUND: http_404_error_res_doc(
-            desc="Reading list record not found error",
+            desc="ReadingListRecordNotFoundError Response",
             message="Reading list record not found",
         ),
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
@@ -210,7 +210,7 @@ def delete(
     response_model=ReadingListBookmarkResponse,
     responses={
         HTTP_404_NOT_FOUND: http_404_error_res_doc(
-            desc="Reading list record not found error",
+            desc="ReadingListRecordNotFoundError Response",
             message="Reading list record not found",
         ),
         HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
@@ -262,19 +262,27 @@ def export(
     response_model=ReadingListImportResponse,
     responses={
         HTTP_400_BAD_REQUEST: http_400_error_res_doc(
-            desc="Empty file error", message="Empty file"
+            desc=(
+                "EmptyFileError | "
+                "InvalidJsonContentsError | "
+                "InvalidJsonStructureError Response"
+            ),
+            message="Empty file",
         ),
         HTTP_409_CONFLICT: http_409_error_res_doc(
-            desc="Reading list record duplicate error",
+            desc="ReadingListRecordDuplicateError Response",
             message="Reading list record duplicate",
         ),
         HTTP_413_REQUEST_ENTITY_TOO_LARGE: http_413_error_res_doc(
-            desc="File size limit exceeded error", message="File size limit exceeded"
+            desc="FileSizeLimitExceededError Response",
+            message="File size limit exceeded",
         ),
         HTTP_415_UNSUPPORTED_MEDIA_TYPE: http_415_error_res_doc(
-            desc="Invalid file extension error", message="Invalid file extension"
+            desc="InvalidFileExtensionError Response", message="Invalid file extension"
         ),
-        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(),
+        HTTP_422_UNPROCESSABLE_ENTITY: http_422_error_res_doc(
+            desc="ValidationError | PrivateReadingListRecordParseError Response"
+        ),
     },
 )
 async def import_(

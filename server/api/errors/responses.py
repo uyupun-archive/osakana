@@ -88,7 +88,7 @@ def http_415_error_res_doc(desc: str = "", message: str = "") -> dict[str, Any]:
 
 
 def http_422_error_res_doc(
-    desc: str = "Validation error", message: str = "field required"
+    desc: str = "ValidationError Response", message: str = "field required"
 ) -> dict[str, Any]:
     return _create_error_res_doc(
         desc=desc,
