@@ -31,7 +31,15 @@ def register_middleware(
 def register_routes(app: FastAPI) -> None:
     router = APIRouter(prefix="/api")
     router.include_router(router=ping.router)
-    router.include_router(router=reading_list.router)
+    router.include_router(router=reading_list.add.router)
+    router.include_router(router=reading_list.bookmark.router)
+    router.include_router(router=reading_list.counts.router)
+    router.include_router(router=reading_list.delete.router)
+    router.include_router(router=reading_list.export.router)
+    router.include_router(router=reading_list.fishing.router)
+    router.include_router(router=reading_list.read.router)
+    router.include_router(router=reading_list.search.router)
+    router.include_router(router=reading_list.unread.router)
     app.include_router(router=router)
 
 
