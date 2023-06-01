@@ -94,9 +94,11 @@ $ make down
     ├── Dockerfile
     ├── README.md
     ├── api
-    │   │   ├── errors
+    │   ├── errors
+    │   │   ├── docs.py                 # エラーのドキュメント
     │   │   ├── handlers.py             # エラーハンドラ
-    │   │   └── responses.py            # エラーのレスポンスとそのドキュメントの定義
+    │   │   ├── register.py             # エラーハンドラの登録
+    │   │   └── responses.py            # エラーのレスポンス
     │   ├── routes                      # APIのルーティング
     │   └── schemas                     # APIのスキーマ
     ├── compose.yml
