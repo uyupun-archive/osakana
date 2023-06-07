@@ -13,8 +13,6 @@ up:
 
 down:
 	cd engine && docker compose -p osakana down
-	cd server && docker compose -p osakana down
-	cd dashboard && docker compose -p osakana down
 
 ps:
 	@cd engine && docker compose -p osakana ps
