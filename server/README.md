@@ -48,5 +48,5 @@ $ python -m services.morphological_analysis <title>
 $ poetry run flake8 .
 $ poetry run black .
 $ poetry run isort .
-$ npm run pyright
+$ npm run pyright .
 ```
