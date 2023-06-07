@@ -22,6 +22,7 @@ class ReadingListRepository(BaseRepository):
     _index_name = "reading_list"
 
     def add(self, reading_list_record: ReadingListRecord) -> None:
+        reading_list_record.set_timestamp()
         reading_list_record.set_title_ngrams()
         reading_list_record.set_title_morphemes()
         document = reading_list_record.to_dict()

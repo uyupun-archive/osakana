@@ -21,8 +21,8 @@ class ReadingListRecord(OsakanaBaseModel):
     is_read: bool = False
     is_bookmarked: bool = False
     thumb: HttpUrl | None = None
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = datetime.now()
+    updated_at: datetime = datetime.now()
     read_at: datetime | None = None
     bookmarked_at: datetime | None = None
 
@@ -33,6 +33,11 @@ class ReadingListRecord(OsakanaBaseModel):
     @classmethod
     def get_name(cls) -> str:
         return "reading_list"
+
+    def set_timestamp(self, timezone: ZoneInfo = get_timezone()):
+        now = datetime.now(tz=timezone)
+        self.created_at = now
+        self.updated_at = now
 
     def set_title_ngrams(self, service: Type[NgramService] = NgramService):
         self._title_bigrams = service.generate(text=self.title, n=2)
