@@ -3,7 +3,7 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["standard-with-typescript", "preact"],
+  "extends": ["standard-with-typescript", "preact", "prettier"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
