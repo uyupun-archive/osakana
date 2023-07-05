@@ -29,6 +29,14 @@
         "alphabetize": { "order": "asc", "caseInsensitive": true }
       }
     ],
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ]
   }
 }
