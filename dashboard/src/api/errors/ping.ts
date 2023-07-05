@@ -4,5 +4,5 @@ export class PingTypeError extends Error {
     super(message);
     this.name = 'PingTypeError';
     Object.setPrototypeOf(this, new.target.prototype);
-  };
-};
+  }
+}

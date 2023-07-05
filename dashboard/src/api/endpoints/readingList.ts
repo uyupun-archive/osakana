@@ -1,21 +1,20 @@
-import axios from 'axios';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
-import type {
-  Uuid4,
-  HttpUrl,
-  ReadingList,
-  ReadingListRecord,
-  ReadingListSearchFilters,
-  ReadingListCounts,
-  ExportReadingListRecord,
-  ExportReadingList,
-} from '../../types';
-import type { ReadingListRecordResponse, ExportReadingListRecordResponse } from '../types';
-import { isUuid4, isHttpUrl, isValidReadingListCounts } from '../../types';
-import { isValidReadingListRecordResponse, isValidExportReadingListRecordResponse } from '../types';
 import { UnknownError, InvalidUuid4Error, InvalidHttpUrlError } from '../../errors';
+import {
+  isUuid4,
+  isHttpUrl,
+  isValidReadingListCounts,
+  type Uuid4,
+  type HttpUrl,
+  type ReadingList,
+  type ReadingListRecord,
+  type ReadingListSearchFilters,
+  type ReadingListCounts,
+  type ExportReadingListRecord,
+  type ExportReadingList,
+} from '../../types';
 import {
   ValidationError,
   UrlNotFoundError,
@@ -34,6 +33,12 @@ import {
   ExportReadingListRecordParseError,
   ReadingListRecordDuplicateError,
 } from '../errors';
+import {
+  isValidReadingListRecordResponse,
+  isValidExportReadingListRecordResponse,
+  type ReadingListRecordResponse,
+  type ExportReadingListRecordResponse,
+} from '../types';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -42,7 +47,7 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
     throw new InvalidHttpUrlError();
   }
   try {
-    await axios.post(`${apiUrl}/api/reading-list`, {url});
+    await axios.post(`${apiUrl}/api/reading-list`, { url });
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
@@ -60,10 +65,15 @@ export const addReadingListRecord = async (url: HttpUrl): Promise<void> => {
   }
 };
 
-export const searchReadingList = async (keyword: string, filters: ReadingListSearchFilters): Promise<ReadingList> => {
+export const searchReadingList = async (
+  keyword: string,
+  filters: ReadingListSearchFilters
+): Promise<ReadingList> => {
   let res;
   try {
-    res = await axios.get<Array<ReadingListRecordResponse>>(`${apiUrl}/api/reading-list`, {params: {keyword, ...filters}});
+    res = await axios.get<ReadingListRecordResponse[]>(`${apiUrl}/api/reading-list`, {
+      params: { keyword, ...filters },
+    });
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.UNPROCESSABLE_ENTITY) {
@@ -184,7 +194,9 @@ export const getReadingListCounts = async (): Promise<ReadingListCounts> => {
 };
 
 export const exportReadingList = async (): Promise<ExportReadingList> => {
-  const res = await axios.get<Array<ExportReadingListRecordResponse>>(`${apiUrl}/api/reading-list/export`);
+  const res = await axios.get<ExportReadingListRecordResponse[]>(
+    `${apiUrl}/api/reading-list/export`
+  );
   if (Array.isArray(res.data) && res.data.every(isValidExportReadingListRecordResponse)) {
     return res.data.map(_parseExportReadingListRecord);
   }
@@ -193,7 +205,9 @@ export const exportReadingList = async (): Promise<ExportReadingList> => {
 
 export const importReadingList = async (formData: FormData): Promise<void> => {
   try {
-    await axios.post(`${apiUrl}/api/reading-list/import`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    await axios.post(`${apiUrl}/api/reading-list/import`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
       if (e.response?.status === StatusCodes.BAD_REQUEST) {
@@ -236,12 +250,14 @@ const _parseReadingListRecord = (record: ReadingListRecordResponse): ReadingList
     thumb: record.thumb,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
-    readAt: record.read_at ? new Date(record.read_at) : null,
-    bookmarkedAt: record.bookmarked_at ? new Date(record.bookmarked_at) : null,
+    readAt: record.read_at !== null ? new Date(record.read_at) : null,
+    bookmarkedAt: record.bookmarked_at !== null ? new Date(record.bookmarked_at) : null,
   };
 };
 
-const _parseExportReadingListRecord = (record: ExportReadingListRecordResponse): ExportReadingListRecord => {
+const _parseExportReadingListRecord = (
+  record: ExportReadingListRecordResponse
+): ExportReadingListRecord => {
   const baseRecord = _parseReadingListRecord(record);
   return {
     ...baseRecord,
