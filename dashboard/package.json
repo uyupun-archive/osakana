@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint:eslint": "eslint --max-warnings 0 . --ignore-path .eslintignore --cache --cache-strategy content --cache-file=node_modules/.cache/eslint/.eslintcache",
+    "lint:prettier": "prettier --check . --ignore-path .prettierignore --cache --cache-strategy content",
+    "fix:eslint": "eslint --fix --max-warnings 0 . --ignore-path .eslintignore --cache --cache-strategy content --cache-file=node_modules/.cache/eslint/.eslintcache",
+    "fix:prettier": "prettier --write . --ignore-path .prettierignore --cache --cache-strategy content"
   },
   "dependencies": {
     "axios": "^1.4.0",
