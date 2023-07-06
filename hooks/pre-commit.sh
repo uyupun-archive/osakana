@@ -10,6 +10,19 @@ if echo "$STAGED_FILES" | grep -q "\.py$"; then
     poetry run black --check .
     poetry run isort --check-only .
     npm run pyright .
+    cd - > /dev/null
+fi
+
+if echo "$STAGED_FILES" | grep -q -E "\.(ts|js|jsx|tsx)$"; then
+    cd dashboard
+    npm run lint:eslint
+    cd - > /dev/null
+fi
+
+if echo "$STAGED_FILES" | grep -q "dashboard/.*"; then
+    cd dashboard
+    npm run lint:prettier
+    cd - > /dev/null
 fi
 
 exit 0
