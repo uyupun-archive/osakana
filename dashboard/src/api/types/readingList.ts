@@ -39,13 +39,27 @@ export interface ExportReadingListRecordResponse extends ReadingListRecordRespon
 export const isValidExportReadingListRecordResponse = (
   record: any
 ): record is ExportReadingListRecordResponse => {
+  if (!isValidReadingListRecordResponse(record as ReadingListRecordResponse)) {
+    return false;
+  }
+
+  const {
+    title_bigrams: titleBigrams,
+    title_trigrams: titleTrigrams,
+    title_morphemes: titleMorphemes,
+  } = record;
+
+  if (
+    !Array.isArray(titleBigrams) ||
+    !Array.isArray(titleTrigrams) ||
+    !Array.isArray(titleMorphemes)
+  ) {
+    return false;
+  }
+
   return (
-    isValidReadingListRecordResponse(record as ReadingListRecordResponse) &&
-    Array.isArray(record.title_bigrams) &&
-    (record.title_bigrams as any[]).every((bigram: any) => typeof bigram === 'string') &&
-    Array.isArray(record.title_trigrams) &&
-    (record.title_trigrams as any[]).every((trigram: any) => typeof trigram === 'string') &&
-    Array.isArray(record.title_morphemes) &&
-    (record.title_morphemes as any[]).every((morpheme: any) => typeof morpheme === 'string')
+    titleBigrams.every((bigram: any) => typeof bigram === 'string') &&
+    titleTrigrams.every((trigram: any) => typeof trigram === 'string') &&
+    titleMorphemes.every((morpheme: any) => typeof morpheme === 'string')
   );
 };
