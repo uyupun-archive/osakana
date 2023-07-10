@@ -2,10 +2,10 @@ import preact from '@preact/preset-vite';
 import { defineConfig, loadEnv, type UserConfigExport } from 'vite';
 
 // https://vitejs.dev/config/
-export default async ({ mode }): Promise<UserConfigExport> => {
+export default async ({ mode }: { mode: string }): Promise<UserConfigExport> => {
   process.env = { ...loadEnv(mode, process.cwd()) };
 
-  const port = parseInt(process.env.VITE_PORT, 10);
+  const port = parseInt(process.env.VITE_PORT ?? '', 10);
 
   return await defineConfig({
     plugins: [preact()],
