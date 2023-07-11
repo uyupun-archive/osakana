@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-import type { PingResponse } from '../types';
-import { isValidPingResponse } from '../types';
 import { PingTypeError } from '../errors';
+import { isValidPingResponse, type PingResponse } from '../types';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 

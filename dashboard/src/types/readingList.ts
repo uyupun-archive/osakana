@@ -1,6 +1,4 @@
-import { type } from 'os';
-import type { Uuid4, HttpUrl, UnsignedInteger } from './common';
-import { isUnsignedInteger } from './common';
+import { isUnsignedInteger, type Uuid4, type HttpUrl, type UnsignedInteger } from './common';
 
 export interface ReadingListRecord {
   id: Uuid4;
@@ -13,22 +11,22 @@ export interface ReadingListRecord {
   updatedAt: Date;
   readAt: Date | null;
   bookmarkedAt: Date | null;
-};
+}
 
-export type ReadingList = Array<ReadingListRecord>;
+export type ReadingList = ReadingListRecord[];
 
 export interface ReadingListSearchFilters {
   is_bookmarked?: boolean;
   is_read?: boolean;
   is_unread?: boolean;
-};
+}
 
 export interface ReadingListCounts {
   total: UnsignedInteger;
   reads: UnsignedInteger;
   unreads: UnsignedInteger;
   bookmarks: UnsignedInteger;
-};
+}
 
 export const isValidReadingListCounts = (counts: any): counts is ReadingListCounts => {
   return (
@@ -40,9 +38,9 @@ export const isValidReadingListCounts = (counts: any): counts is ReadingListCoun
 };
 
 export interface ExportReadingListRecord extends ReadingListRecord {
-  title_bigrams: Array<string>;
-  title_trigrams: Array<string>;
-  title_morphemes: Array<string>;
-};
+  title_bigrams: string[];
+  title_trigrams: string[];
+  title_morphemes: string[];
+}
 
-export type ExportReadingList = Array<ExportReadingListRecord>;
+export type ExportReadingList = ExportReadingListRecord[];

@@ -4,7 +4,7 @@ export class UnknownError extends Error {
     super(message);
     this.name = 'UnknownError';
     Object.setPrototypeOf(this, new.target.prototype);
-  };
+  }
 }
 
 export class InvalidUuid4Error extends Error {
@@ -13,7 +13,7 @@ export class InvalidUuid4Error extends Error {
     super(message);
     this.name = 'InvalidUuid4Error';
     Object.setPrototypeOf(this, new.target.prototype);
-  };
+  }
 }
 
 export class InvalidHttpUrlError extends Error {
@@ -22,5 +22,5 @@ export class InvalidHttpUrlError extends Error {
     super(message);
     this.name = 'InvalidHttpUrlError';
     Object.setPrototypeOf(this, new.target.prototype);
-  };
-};
+  }
+}
